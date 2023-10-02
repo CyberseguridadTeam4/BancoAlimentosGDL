@@ -42,6 +42,7 @@ function BADropdownMenu({
       {options.map((item) => {
         return (
           <BAMenuCell
+            key={item.value}
             icon={item.icon}
             onSelect={onSelect}
             text={item.text}

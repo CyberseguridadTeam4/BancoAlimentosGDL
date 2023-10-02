@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
   },
   textInput: {
     textAlignVertical: "center",
-    outline: "none",
     borderColor: "transparent", // Set to your background color
     borderWidth: 1,
   },
