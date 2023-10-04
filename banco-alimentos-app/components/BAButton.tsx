@@ -11,8 +11,10 @@ import {
   View,
   TouchableOpacity,
   ImageSourcePropType,
+  StyleProp,
+  ViewStyle,
 } from "react-native";
-import BAIcon from "../resources/icons/BAIcon";
+import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAText, { TypeText } from "./BAText";
 import BAPallete from "../resources/BAPallete";
 
@@ -25,26 +27,39 @@ export enum ButtonState {
 }
 
 type Props = {
-  text: string;
+  text?: string;
   onPress: () => void;
   state?: ButtonState;
   icon?: ImageSourcePropType;
+  iconSize?: IconSize;
+  style?: StyleProp<ViewStyle>;
+  disableShadow?: boolean;
 };
 
 function BAButton({
   text,
   onPress,
   icon,
+  iconSize = IconSize.medium,
   state = ButtonState.enabled,
+  style,
+  disableShadow = false,
 }: Props): JSX.Element {
   return (
     <TouchableOpacity
-      style={[styles.container, { backgroundColor: getBackgroundColor(state) }]}
+      style={[
+        styles.container,
+        !disableShadow && styles.shadow,
+        { backgroundColor: getBackgroundColor(state) },
+        style,
+      ]}
       onPress={onPress}
     >
       <View style={styles.wrapper}>
-        {icon && <BAIcon icon={icon} color={getIconColor(state)} />}
-        <BAText type={getFontStyle(state)}>{text}</BAText>
+        {icon && (
+          <BAIcon icon={icon} size={iconSize} color={getIconColor(state)} />
+        )}
+        {text && <BAText type={getFontStyle(state)}>{text}</BAText>}
       </View>
     </TouchableOpacity>
   );
@@ -90,15 +105,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     color: "black",
     borderRadius: 10,
-    shadowRadius: 15,
-    shadowColor: "black",
-    shadowOpacity: 0.15,
+    justifyContent: "center",
   },
   wrapper: {
     flexDirection: "row",
     alignItems: "center",
     margin: 10,
     gap: 14,
+  },
+  shadow: {
+    shadowRadius: 15,
+    shadowColor: "black",
+    shadowOpacity: 0.15,
   },
 });
 
