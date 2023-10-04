@@ -22,7 +22,10 @@ export enum IconSize {
 
 function BAIcon({ icon, color, size = IconSize.medium }: Props): JSX.Element {
   return (
-    <Image source={icon} style={[getIconSize(size), { tintColor: color }]} />
+    <Image
+      source={icon}
+      style={[getIconSize(size), { tintColor: color, resizeMode: "contain" }]}
+    />
   );
 }
 
@@ -36,7 +39,7 @@ const getIconSize = (size: IconSize) => {
     case IconSize.medium:
       return { width: 20, height: 20 };
     case IconSize.large:
-      return { width: 24, height: 24 };
+      return { width: 28, height: 28 };
 
     default:
       return {};
