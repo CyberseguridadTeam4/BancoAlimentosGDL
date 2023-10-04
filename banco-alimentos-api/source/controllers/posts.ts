@@ -13,16 +13,30 @@ if (appID && jsKey) {
     Parse.serverURL = 'https://parseapi.back4app.com/';
 }
 
-//Create user in database
+// Create user in database
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
-    //Create pollo
+    try {
+        const {name,nextStage}=req.body
+        // Example: Creating a new object
+        const Pollo=Parse.Object.extend('Pollo');
+        const pollo = new Pollo();
     
-    //Create User
-    
-    return res.status(200).json({
-        message: "hola"
-    });
-};
+        // Set properties for the object
+        pollo.set('name', name);
+        pollo.set('nextStage', nextStage);
 
+        // Save the object to the database
+        await pollo.save();
+
+        return res.status(200).json({
+            message: 'New object created successfully',
+        });
+    } catch (error) {
+        console.log('Error creating object: ', error);
+        return res.status(500).json({
+            message: 'Error creating object',
+        });
+    }
+};
 
 export default { createUser };
