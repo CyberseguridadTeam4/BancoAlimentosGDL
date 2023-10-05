@@ -5,21 +5,21 @@ import Parse from 'parse/node';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-
+//DB CONNECTION
 const appID = process.env.APPLICATION_ID;
 const jsKey = process.env.JAVASCRIPT_KEY;
+const rest= process.env.REST_API
 if (appID && jsKey) {
-    Parse.initialize(appID,jsKey);
+    Parse.initialize(appID,jsKey,rest);
     Parse.serverURL = 'https://parseapi.back4app.com/';
 }
-
-// Create user in database
+//USER
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
+    // Create user in database
     try {
-        const { username, password, email, name, nextStage } = req.body; 
+        const { username, password, email, name, nextStage } = req.body;         
         const Pollo=Parse.Object.extend('Pollo');
         const pollo = new Pollo();
-    
         // Set properties for the object
         pollo.set('name', name);
         pollo.set('nextStage', nextStage);
@@ -36,11 +36,6 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
         user.set('password', password);
         user.set('email', email);
 
-        // Set additional properties for the User object
-        
-        //////////////////////////////
-        user.set('emailVerified', false); // Email verification status
-        //////////////////////////
 
         user.set('badges', []); // Initialize badges as an empty array
         user.set('idProfilePicture', 0); // Initialize profile picture ID 0 is starting picture for everyone
@@ -49,40 +44,34 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
         // Create a pointer to the Pollo object
         const polloPointer = Pollo.createWithoutData(pollo.id); // 
         user.set('pollo', polloPointer);
-
+        
         // Save the User object to the database
-        await user.save();
+        await user.signUp();
 
         return res.status(200).json({
             message: 'New object created successfully',
         });
     } catch (error) {
-        console.log('Error creating object: ', error);
         return res.status(500).json({
-            message: 'Error creating object',
+            message: error,
         });
     }
 };
 
 // Get user by objectId
-const getUserById = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const { userId } = req.params; // Extract the userId from the URL parameters
-
-        // Create a new Parse Query for the "_User" class
-        const User = Parse.Object.extend('_User');
-        const query = new Parse.Query(User);
-
-        // Use the objectId to find the user
-        const user = await query.get(userId);
-
-        return res.status(200).json(user);
-    } catch (error) {
-        console.log('Error fetching user: ', error);
+const userLogin = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+    const{username,password}=req.body
+    const user = await Parse.User.logIn("myname", "mypass", { usePost: false });
+    return res.status(200).json({
+        user: user,
+    });
+    }catch (error) {
         return res.status(500).json({
-            message: 'Error fetching user',
+            message: error,
         });
     }
+
 };
 
-export default { createUser ,getUserById};
+export default { createUser ,userLogin};
