@@ -12,6 +12,8 @@ const rest= process.env.REST_API
 if (appID && jsKey) {
     Parse.initialize(appID,jsKey,rest);
     Parse.serverURL = 'https://parseapi.back4app.com/';
+} else {
+    console.log("No Parse error");
 }
 //USER
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -74,4 +76,52 @@ const userLogin = async (req: Request, res: Response, next: NextFunction) => {
 
 };
 
-export default { createUser ,userLogin};
+const createPost = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        //Get body from endpoint call
+        const { userId, text, title }  = req.body;
+        const Post = Parse.Object.extend('Post');
+        const post = new Post();
+
+        //Setting Properties for the title and text:
+        post.set('text', text);
+        post.set('title', title);
+
+        const User = Parse.Object.extend('_User');
+        const postPointer = User.createWithoutData(userId);
+        
+        post.set('userId', postPointer);
+
+        //Save to database
+        await post.save();
+        
+        return res.status(200).json({
+            message: 'New post created successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error,
+        });
+    }
+}
+
+const getPost = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        // Create a Query to Post table
+        const parseQuery = new Parse.Query('Post');
+        // Save objects returned from find query
+        let posts: Parse.Object[] = await parseQuery.find();
+        return res.status(200).json({
+            message: 'Posts retrieved',
+            posts: posts,
+        });
+
+    } catch(error) {
+        return res.status(500).json({
+            message: error,
+        });
+    }
+}
+
+
+export default { createUser ,userLogin, createPost, getPost};
