@@ -101,7 +101,7 @@ const getBackgroundColor = (state: ButtonState) => {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
+    flex: 1,
     alignItems: "center",
     color: "black",
     borderRadius: 10,
