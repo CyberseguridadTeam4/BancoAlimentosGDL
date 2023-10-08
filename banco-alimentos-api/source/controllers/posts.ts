@@ -123,5 +123,57 @@ const getPost = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+//Comments
 
-export default { createUser ,userLogin, createPost, getPost};
+const createComment = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+
+        const {userId, postId, text} = req.body;
+        const Comment = Parse.Object.extend('Comment');
+        const comment = new Comment();
+
+        //Set properties of the object Comment
+        comment.set('text', text);
+
+        const User = Parse.Object.extend('_User');
+        const commentPointerU = User.createWithoutData(userId);
+
+        const Post = Parse.Object.extend('Post');
+        const commentPointerP = Post.createWithoutData(postId);
+
+        comment.set('userId', commentPointerU);
+        comment.set('postId', commentPointerP);
+
+        //Save to database
+        await comment.save();
+
+        return res.status(200).json({
+            message: 'New comment created successfully',
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: error,
+        });
+    }
+}
+
+const getComment = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const query  = new Parse.Query('Comment');
+
+        let comments: Parse.Object[] = await query.find();
+        return res.status(200).json({
+            message: 'Comments retrieved',
+            comments: comments,
+        });
+
+    } catch (error){
+        return res.status(500).json({
+            message: error,
+        });
+    }
+}
+
+
+export default { createUser ,userLogin, createPost, getPost, createComment, getComment};
