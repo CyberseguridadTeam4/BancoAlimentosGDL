@@ -25,7 +25,6 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
         // Set properties for the object
         pollo.set('name', name);
         pollo.set('nextStage', nextStage);
-
         // Save the object to the database
         await pollo.save();
 
@@ -64,7 +63,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 const userLogin = async (req: Request, res: Response, next: NextFunction) => {
     try{
     const{username,password}=req.body
-    const user = await Parse.User.logIn("myname", "mypass", { usePost: false });
+    const user = await Parse.User.logIn(username, password, { usePost: false });
     return res.status(200).json({
         user: user,
     });
