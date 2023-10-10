@@ -1,13 +1,8 @@
-import { Text, View, Animated, StyleSheet, Easing } from "react-native";
-import React, {
-  Component,
-  useRef,
-  useEffect,
-  useState,
-  useCallback,
-} from "react";
-import Svg, { Path, Ellipse, G } from "react-native-svg";
+import { View, Animated, StyleSheet, Easing } from "react-native";
+import React, { useRef, useState, useCallback, useEffect } from "react";
+import Svg, { Path, Ellipse } from "react-native-svg";
 import BAButton, { ButtonState } from "./BAButton";
+import BAPallete from "../resources/BAPallete";
 
 type BirdBodyProps = {
   eyeClosed: boolean;
@@ -17,166 +12,295 @@ type BirdWIngProps = {
   scaleWingRef: Animated.Value;
 };
 
+type BirdFeetProps = {
+  leftFootRefRotation: Animated.AnimatedInterpolation<string | number>;
+  rightFootRefRotation: Animated.AnimatedInterpolation<string | number>;
+};
+
+type HeartReactionProps = {
+  setHeartReaction: (v: boolean) => void;
+};
+
 export default function BABird() {
-  const [feed, setFeed] = useState(false);
-  const [happy, setHappy] = useState(false);
+  const [animIsPlaying, setAnimIsPlaying] = useState(false);
   const [happyEye, setHappyEye] = useState(false);
+  const [heartReaction, setHeartReaction] = useState(false);
 
-  const rotateValue = useRef(new Animated.Value(0)).current;
-  const scaleWingValue = useRef(new Animated.Value(0)).current;
-  const FEED_ANIMATION_DURATION = 150;
-  const HAPPY_ANIMATION_DURATION = 150;
+  const birdPositionRef = useRef(new Animated.Value(0)).current;
+  const bodyRotationRef = useRef(new Animated.Value(0)).current;
+  const scaleWingRef = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    {
-      feed
-        ? Animated.sequence([
-            Animated.timing(rotateValue, {
-              toValue: 1,
-              duration: FEED_ANIMATION_DURATION,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-            Animated.timing(rotateValue, {
-              toValue: 2,
-              duration: FEED_ANIMATION_DURATION / 2,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-            Animated.timing(rotateValue, {
-              toValue: 1,
-              duration: FEED_ANIMATION_DURATION,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-            Animated.timing(rotateValue, {
-              toValue: 2,
-              duration: FEED_ANIMATION_DURATION / 2,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-            Animated.timing(rotateValue, {
-              toValue: 1,
-              duration: FEED_ANIMATION_DURATION,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-            Animated.timing(rotateValue, {
-              toValue: 0,
-              duration: FEED_ANIMATION_DURATION,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-          ]).start(() => {
-            setFeed(false);
-          })
-        : Animated.sequence([
-            Animated.timing(rotateValue, {
-              toValue: 1,
-              duration: FEED_ANIMATION_DURATION,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-            Animated.timing(rotateValue, {
-              toValue: 0,
-              duration: FEED_ANIMATION_DURATION,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-          ]).reset();
-    }
-    {
-      happy
-        ? Animated.sequence([
-            Animated.timing(scaleWingValue, {
-              toValue: 0,
-              duration: HAPPY_ANIMATION_DURATION,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-            Animated.timing(scaleWingValue, {
-              toValue: 1,
-              duration: HAPPY_ANIMATION_DURATION / 2,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-            Animated.timing(scaleWingValue, {
-              toValue: 0,
-              duration: HAPPY_ANIMATION_DURATION / 2,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-            Animated.timing(scaleWingValue, {
-              toValue: 1,
-              duration: HAPPY_ANIMATION_DURATION / 2,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-            Animated.timing(scaleWingValue, {
-              toValue: 0,
-              duration: HAPPY_ANIMATION_DURATION,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-          ]).start(() => {
-            setHappyEye(false);
+  const leftFootRef = useRef(new Animated.Value(0)).current;
+  const rightFootRef = useRef(new Animated.Value(0)).current;
+  const feetAnimation = new Animated.ValueXY({
+    x: leftFootRef,
+    y: rightFootRef,
+  });
 
-            setHappy(false);
-          })
-        : Animated.sequence([
-            Animated.timing(scaleWingValue, {
-              toValue: 1,
-              duration: HAPPY_ANIMATION_DURATION,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-            Animated.timing(scaleWingValue, {
-              toValue: 0,
-              duration: HAPPY_ANIMATION_DURATION,
-              easing: Easing.linear,
-              useNativeDriver: true,
-            }),
-          ]).reset();
-    }
-  }, [rotateValue, feed, happy]);
+  const FeedAnimation = useCallback(() => {
+    setAnimIsPlaying(true);
+    Animated.sequence([
+      Animated.timing(bodyRotationRef, {
+        toValue: 1,
+        duration: 150,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      Animated.timing(bodyRotationRef, {
+        toValue: 2,
+        duration: 150 / 2,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      Animated.timing(bodyRotationRef, {
+        toValue: 1,
+        duration: 150,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      Animated.timing(bodyRotationRef, {
+        toValue: 2,
+        duration: 150 / 2,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      Animated.timing(bodyRotationRef, {
+        toValue: 1,
+        duration: 150,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      Animated.timing(bodyRotationRef, {
+        toValue: 0,
+        duration: 50,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      Animated.delay(200).start(() => {
+        setHappyEye(true);
+        setHeartReaction(true);
+      });
 
-  const spin = rotateValue.interpolate({
+      Animated.sequence([
+        Animated.timing(scaleWingRef, {
+          toValue: 0,
+          duration: 150,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleWingRef, {
+          toValue: 1,
+          duration: 80,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleWingRef, {
+          toValue: 0,
+          duration: 80,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleWingRef, {
+          toValue: 1,
+          duration: 80,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleWingRef, {
+          toValue: 0,
+          duration: 80,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleWingRef, {
+          toValue: 1,
+          duration: 80,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleWingRef, {
+          toValue: 0,
+          duration: 80,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleWingRef, {
+          toValue: 1,
+          duration: 80,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleWingRef, {
+          toValue: 0,
+          duration: 80,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleWingRef, {
+          toValue: 1,
+          duration: 80,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleWingRef, {
+          toValue: 0,
+          duration: 150,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      Animated.sequence([
+        Animated.timing(bodyRotationRef, {
+          toValue: 0,
+          duration: 150,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bodyRotationRef, {
+          toValue: -1,
+          duration: 500,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bodyRotationRef, {
+          toValue: 0,
+          duration: 300,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        setHappyEye(false);
+        setAnimIsPlaying(false);
+      });
+
+      Animated.sequence([
+        Animated.timing(feetAnimation, {
+          toValue: { x: 0, y: 0 },
+          duration: 150,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(feetAnimation, {
+          toValue: { x: 1, y: -1 },
+          duration: 200,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(feetAnimation, {
+          toValue: { x: 1, y: -1 },
+          duration: 500,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(feetAnimation, {
+          toValue: { x: 0, y: 0 },
+          duration: 200,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      Animated.sequence([
+        Animated.timing(birdPositionRef, {
+          toValue: 0,
+          duration: 100,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(birdPositionRef, {
+          toValue: 2,
+          duration: 300,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(birdPositionRef, {
+          toValue: 1,
+          duration: 200,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(birdPositionRef, {
+          toValue: 2,
+          duration: 200,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(birdPositionRef, {
+          toValue: 0,
+          duration: 250,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+  }, []);
+
+  const birdPosition = birdPositionRef.interpolate({
     inputRange: [0, 1, 2],
-    outputRange: ["0deg", "20deg", "50deg"],
+    outputRange: [0, -30, -60],
+    extrapolate: "identity",
+  });
+
+  const bodyRotation = bodyRotationRef.interpolate({
+    inputRange: [-1, 0, 1, 2],
+    outputRange: ["-15deg", "0deg", "20deg", "50deg"],
+    extrapolate: "identity",
+  });
+
+  const rightFootRotation = rightFootRef.interpolate({
+    inputRange: [-1, 0, 1, 2, 3],
+    outputRange: ["-15deg", "0deg", "15deg", "30deg", "60deg"],
+    extrapolate: "identity",
+  });
+
+  const leftFootRotation = leftFootRef.interpolate({
+    inputRange: [-3, -2, -1, 0, 1],
+    outputRange: ["-60deg", "-30deg", "-15deg", "0deg", "15deg"],
+    extrapolate: "identity",
   });
 
   return (
     <View style={styles.body}>
-      <View style={styles.birdContainer}>
-        <BirdFeet />
+      {heartReaction && <HeartsReaction setHeartReaction={setHeartReaction} />}
+      <Animated.View
+        style={[
+          styles.birdContainer,
+          { transform: [{ translateY: birdPosition }, { scale: 0.8 }] },
+        ]}
+      >
+        <BirdFeet
+          leftFootRefRotation={leftFootRotation}
+          rightFootRefRotation={rightFootRotation}
+        />
         <Animated.View
           style={{
             transform: [
               { translateY: 500 / 2.5 },
-              { rotate: spin },
+              { rotate: bodyRotation },
               { translateY: -(500 / 2.5) },
             ],
           }}
         >
           <BirdBody eyeClosed={happyEye} />
-          <BirdWing scaleWingRef={scaleWingValue} />
+          <BirdWing scaleWingRef={scaleWingRef} />
         </Animated.View>
-      </View>
+      </Animated.View>
       <View style={styles.debugButtons}>
         <BAButton
-          state={ButtonState.alert}
+          style={styles.birdButtons}
           text="Feed"
           onPress={() => {
-            setFeed(true);
+            FeedAnimation();
           }}
+          state={animIsPlaying ? ButtonState.disabled : undefined}
         />
         <BAButton
-          state={ButtonState.alert}
-          text="Happy"
-          onPress={() => {
-            setHappy(true);
-            setHappyEye(true);
-          }}
+          style={styles.birdButtons}
+          text="Egg"
+          onPress={() => {}}
+          state={animIsPlaying ? ButtonState.disabled : undefined}
         />
       </View>
     </View>
@@ -236,11 +360,34 @@ const BirdBody = ({ eyeClosed = false }: BirdBodyProps) => {
   );
 };
 
-const BirdFeet = () => {
+const BirdFeet = ({
+  leftFootRefRotation,
+  rightFootRefRotation,
+}: BirdFeetProps) => {
   return (
     <Animated.View style={[styles.container, styles.absolute]}>
+      <BirdLeftFoot footRotation={leftFootRefRotation} />
+      <BirdRightFoot footRotation={rightFootRefRotation} />
+    </Animated.View>
+  );
+};
+
+const BirdLeftFoot = ({ footRotation }: any) => {
+  return (
+    <Animated.View
+      style={[
+        styles.container,
+        styles.absolute,
+        {
+          transform: [
+            { translateY: -(100 / 2.5) },
+            { rotate: footRotation },
+            { translateY: 100 / 2.5 },
+          ],
+        },
+      ]}
+    >
       <Svg viewBox="0 0 500 400">
-        {/* Patita izquierda */}
         <Path
           d="m443.743 470-1.621 87.986"
           stroke={"#ffae00"}
@@ -255,6 +402,27 @@ const BirdFeet = () => {
           strokeLinecap="round"
           transform="matrix(.67405 0 0 .78666 -101.473 -79.478)"
         />
+      </Svg>
+    </Animated.View>
+  );
+};
+
+const BirdRightFoot = ({ footRotation }: any) => {
+  return (
+    <Animated.View
+      style={[
+        styles.container,
+        styles.absolute,
+        {
+          transform: [
+            { translateY: -(100 / 2.5) },
+            { rotate: footRotation },
+            { translateY: 100 / 2.5 },
+          ],
+        },
+      ]}
+    >
+      <Svg viewBox="0 0 500 400">
         {/* Patita izquierda */}
         <Path
           d="m443.743 470-1.621 87.986"
@@ -308,9 +476,142 @@ const BirdWing = ({ scaleWingRef = new Animated.Value(1) }: BirdWIngProps) => {
   );
 };
 
-// Hooks
+const HeartsReaction = ({ setHeartReaction }: HeartReactionProps) => {
+  const heartPositionRef = useRef(new Animated.Value(0)).current;
+  const heartOpacityRef = useRef(new Animated.Value(0)).current;
 
-// export const useFeedAnimation = useCallback(() => {}, []);
+  const diagonalPosition = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const negDiagonalPosition = useRef(
+    new Animated.ValueXY({ x: 0, y: 0 })
+  ).current;
+
+  const HEART_ANIMATION_TIME = 1100;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.timing(heartPositionRef, {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+      Animated.timing(heartPositionRef, {
+        toValue: 1,
+        duration: HEART_ANIMATION_TIME,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setHeartReaction(false);
+    });
+
+    Animated.sequence([
+      Animated.timing(heartOpacityRef, {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+      Animated.timing(heartOpacityRef, {
+        toValue: 1,
+        duration: 700,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+      Animated.timing(heartOpacityRef, {
+        toValue: 2,
+        duration: 300,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setHeartReaction(false);
+    });
+
+    Animated.sequence([
+      Animated.timing(diagonalPosition, {
+        toValue: { x: 30, y: -20 },
+        duration: 200,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+      Animated.timing(diagonalPosition, {
+        toValue: { x: 110, y: -120 },
+        duration: 1000,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    Animated.sequence([
+      Animated.timing(negDiagonalPosition, {
+        toValue: { x: -10, y: -20 },
+        duration: 200,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+      Animated.timing(negDiagonalPosition, {
+        toValue: { x: -90, y: -120 },
+        duration: 1000,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  const heartPosition = heartPositionRef.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-40, -170],
+    extrapolate: "identity",
+  });
+
+  const heartOpacity = heartOpacityRef.interpolate({
+    inputRange: [0, 1, 2],
+    outputRange: [0, 1, 0],
+    extrapolate: "identity",
+  });
+
+  const direction = [-1, 0, 1];
+
+  return (
+    <View style={styles.heartContainer}>
+      {direction.map((item) => {
+        return (
+          <Animated.View
+            style={[
+              styles.heart,
+              {
+                transform: [
+                  {
+                    translateY: item != 0 ? diagonalPosition.y : heartPosition,
+                  },
+                  {
+                    translateX:
+                      item < 0
+                        ? negDiagonalPosition.x
+                        : item == 0
+                        ? 10
+                        : diagonalPosition.x,
+                  },
+                  { rotate: `${45 * item}deg` },
+                ],
+                opacity: heartOpacity,
+              },
+            ]}
+            key={item}
+          >
+            <Svg width={50} height={50} viewBox="0 0 24 24">
+              <Path
+                d="M14 20.408c-.492.308-.903.546-1.192.709-.153.086-.308.17-.463.252h-.002a.75.75 0 0 1-.686 0 16.709 16.709 0 0 1-.465-.252 31.147 31.147 0 0 1-4.803-3.34C3.8 15.572 1 12.331 1 8.513 1 5.052 3.829 2.5 6.736 2.5 9.03 2.5 10.881 3.726 12 5.605 13.12 3.726 14.97 2.5 17.264 2.5 20.17 2.5 23 5.052 23 8.514c0 3.818-2.801 7.06-5.389 9.262A31.146 31.146 0 0 1 14 20.408z"
+                fill={BAPallete.Red01}
+              />
+            </Svg>
+          </Animated.View>
+        );
+      })}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   body: {
@@ -331,7 +632,8 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-around",
-    gap: 10,
+    gap: 75,
+    paddingHorizontal: 50,
   },
   birdContainer: {
     width: "auto",
@@ -340,5 +642,19 @@ const styles = StyleSheet.create({
   container: {
     width: "auto",
     aspectRatio: 1 / 1,
+  },
+  birdButtons: {
+    width: 200,
+    aspectRatio: 1 / 1,
+  },
+  heartContainer: {
+    width: "100%",
+    aspectRatio: 1 / 1,
+    alignSelf: "center",
+    position: "absolute",
+  },
+  heart: {
+    alignSelf: "center",
+    position: "absolute",
   },
 });
