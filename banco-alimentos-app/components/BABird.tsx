@@ -6,6 +6,7 @@ import BAPallete from "../resources/BAPallete";
 
 type BirdBodyProps = {
   eyeClosed: boolean;
+  eyeWink: boolean;
 };
 
 type BirdWIngProps = {
@@ -24,9 +25,11 @@ type HeartReactionProps = {
 export default function BABird() {
   const [animIsPlaying, setAnimIsPlaying] = useState(false);
   const [happyEye, setHappyEye] = useState(false);
+  const [winkEye, setWinkEye] = useState(false);
   const [heartReaction, setHeartReaction] = useState(false);
 
   const birdPositionRef = useRef(new Animated.Value(0)).current;
+  const birdBodyPositionRef = useRef(new Animated.Value(0)).current;
   const bodyRotationRef = useRef(new Animated.Value(0)).current;
   const scaleWingRef = useRef(new Animated.Value(0)).current;
 
@@ -237,9 +240,168 @@ export default function BABird() {
     });
   }, []);
 
+  const HatchAnimation = useCallback(() => {
+    setAnimIsPlaying(true);
+    Animated.delay(200).start(() => {
+      setWinkEye(true);
+    });
+
+    Animated.sequence([
+      Animated.timing(birdBodyPositionRef, {
+        toValue: 0,
+        duration: 100,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+      Animated.timing(birdBodyPositionRef, {
+        toValue: -1,
+        duration: 200,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+      Animated.timing(birdBodyPositionRef, {
+        toValue: -1,
+        duration: 1000,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      Animated.delay(100).start(() => {
+        setWinkEye(false);
+        setHappyEye(true);
+      });
+
+      Animated.timing(birdBodyPositionRef, {
+        toValue: 0,
+        duration: 300,
+        easing: Easing.ease,
+        useNativeDriver: true,
+      }).start();
+
+      Animated.sequence([
+        Animated.timing(scaleWingRef, {
+          toValue: 0,
+          duration: 150,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleWingRef, {
+          toValue: 1,
+          duration: 80,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleWingRef, {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleWingRef, {
+          toValue: 0,
+          duration: 80,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      Animated.sequence([
+        Animated.timing(bodyRotationRef, {
+          toValue: 0,
+          duration: 10,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bodyRotationRef, {
+          toValue: -1,
+          duration: 200,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bodyRotationRef, {
+          toValue: -1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bodyRotationRef, {
+          toValue: 0,
+          duration: 200,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        setHappyEye(false);
+        setAnimIsPlaying(false);
+      });
+
+      Animated.sequence([
+        Animated.timing(feetAnimation, {
+          toValue: { x: 0, y: 0 },
+          duration: 150,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(feetAnimation, {
+          toValue: { x: 1, y: -1 },
+          duration: 200,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(feetAnimation, {
+          toValue: { x: 1, y: -1 },
+          duration: 800,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(feetAnimation, {
+          toValue: { x: 0, y: 0 },
+          duration: 200,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      Animated.sequence([
+        Animated.timing(birdPositionRef, {
+          toValue: 0,
+          duration: 100,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(birdPositionRef, {
+          toValue: 2,
+          duration: 300,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(birdPositionRef, {
+          toValue: 2,
+          duration: 800,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(birdPositionRef, {
+          toValue: 0,
+          duration: 250,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+  }, []);
+
+  const BIRD_BODY_ORIGIN = 500 / 2.5;
+
   const birdPosition = birdPositionRef.interpolate({
-    inputRange: [0, 1, 2],
-    outputRange: [0, -30, -60],
+    inputRange: [-1, 0, 1, 2],
+    outputRange: [30, 0, -30, -60],
+    extrapolate: "identity",
+  });
+
+  const birdBodyPosition = birdBodyPositionRef.interpolate({
+    inputRange: [-1, 0, 1, 2],
+    outputRange: [40, 0, -30, -60],
     extrapolate: "identity",
   });
 
@@ -277,13 +439,14 @@ export default function BABird() {
         <Animated.View
           style={{
             transform: [
-              { translateY: 500 / 2.5 },
+              { translateY: BIRD_BODY_ORIGIN },
+              { translateY: birdBodyPosition },
               { rotate: bodyRotation },
-              { translateY: -(500 / 2.5) },
+              { translateY: -BIRD_BODY_ORIGIN },
             ],
           }}
         >
-          <BirdBody eyeClosed={happyEye} />
+          <BirdBody eyeClosed={happyEye} eyeWink={winkEye} />
           <BirdWing scaleWingRef={scaleWingRef} />
         </Animated.View>
       </Animated.View>
@@ -299,7 +462,9 @@ export default function BABird() {
         <BAButton
           style={styles.birdButtons}
           text="Egg"
-          onPress={() => {}}
+          onPress={() => {
+            HatchAnimation();
+          }}
           state={animIsPlaying ? ButtonState.disabled : undefined}
         />
       </View>
@@ -307,7 +472,7 @@ export default function BABird() {
   );
 }
 
-const BirdBody = ({ eyeClosed = false }: BirdBodyProps) => {
+const BirdBody = ({ eyeClosed = false, eyeWink = false }: BirdBodyProps) => {
   return (
     <Animated.View style={[styles.container, styles.absolute]}>
       <Svg viewBox="0 0 500 400">
@@ -334,7 +499,7 @@ const BirdBody = ({ eyeClosed = false }: BirdBodyProps) => {
           transform="rotate(4.041 1559.212 -189.93) scale(.78666)"
         />
         {/* Ojo */}
-        {!eyeClosed && (
+        {!(eyeClosed || eyeWink) && (
           <Ellipse
             cx={406.496}
             cy={208.964}
@@ -351,6 +516,17 @@ const BirdBody = ({ eyeClosed = false }: BirdBodyProps) => {
             stroke={"#fff"}
             strokeWidth={"15px"}
             strokeLinecap="round"
+            fill={"none"}
+            transform="matrix(1 0 0 1 -31.195 -260.874)"
+          />
+        )}
+        {eyeWink && (
+          <Path
+            d="M315 315 L350 330 L315 345"
+            stroke={"#fff"}
+            strokeWidth={"13px"}
+            strokeLinecap="round"
+            strokeLinejoin="round"
             fill={"none"}
             transform="matrix(1 0 0 1 -31.195 -260.874)"
           />
