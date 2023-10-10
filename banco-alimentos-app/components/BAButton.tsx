@@ -54,7 +54,9 @@ function BAButton({
         style,
       ]}
       onPress={onPress}
+      disabled={state == ButtonState.disabled}
     >
+      {state == ButtonState.disabled && <View style={styles.disabledBg} />}
       <View style={styles.wrapper}>
         {icon && (
           <BAIcon icon={icon} size={iconSize} color={getIconColor(state)} />
@@ -66,7 +68,7 @@ function BAButton({
 }
 
 const getIconColor = (state: ButtonState) => {
-  if (state === ButtonState.enabled) {
+  if (state === ButtonState.enabled || state === ButtonState.disabled) {
     return BAPallete.Black;
   } else {
     return BAPallete.White;
@@ -74,7 +76,7 @@ const getIconColor = (state: ButtonState) => {
 };
 
 const getFontStyle = (state: ButtonState) => {
-  if (state === ButtonState.enabled) {
+  if (state === ButtonState.enabled || state === ButtonState.disabled) {
     return TypeText.label1;
   } else {
     return TypeText.label1_White;
@@ -88,7 +90,7 @@ const getBackgroundColor = (state: ButtonState) => {
     case ButtonState.secondary:
       return BAPallete.Blue01;
     case ButtonState.disabled:
-      return BAPallete.Gray04;
+      return BAPallete.White;
     case ButtonState.activate:
       return BAPallete.Green01;
     case ButtonState.alert:
@@ -117,6 +119,14 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
     shadowColor: "black",
     shadowOpacity: 0.15,
+  },
+  disabledBg: {
+    width: "100%",
+    aspectRatio: 1 / 1,
+    backgroundColor: "black",
+    opacity: 0.05,
+    position: "absolute",
+    borderRadius: 10,
   },
 });
 
