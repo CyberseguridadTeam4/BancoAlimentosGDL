@@ -38,7 +38,7 @@ export default class BABottomBar extends Component {
             );
           })}
         </View>
-        <Svg height="100vh" width="500">
+        <Svg height="100" width="500">
           <Path
             d="M0 0 L195 0 a10,10 0 0 1 10,10 L205 40 a10,10 0 0 0 10,10 L285 50  a10,10 0 0 0 10,-10 L295 10 a10,10 0 0 1 10,-10 L500 0 L500 100 L0 100 Z"
             fill={BAPallete.Red01}
@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     bottom: "-4%",
     alignItems: "center",
     justifyContent: "center",
+    zIndex: 10,
   },
   buttonContainer: {
     flex: 1,
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     alignContent: "center",
     top: "-15%",
-    zIndex: 10,
+    zIndex: 11,
     paddingHorizontal: "13%",
   },
   buttons: {
