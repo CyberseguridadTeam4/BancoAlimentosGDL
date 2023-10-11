@@ -39,7 +39,7 @@ export function BAScrollView({ children, style, title }: ViewProps) {
     <ScrollView style={styles.container}>
       <SafeAreaView>
         <BAText style={{ marginTop: 20 }} type={TypeText.label0}>
-          Cuarto de ???
+          {title}
         </BAText>
         <View style={style}>{children}</View>
       </SafeAreaView>
