@@ -116,14 +116,14 @@ export function BAModal({ title, content, onClose }: BAModalProps) {
           },
         ]}
       >
-        <TouchableOpacity onPress={onClose} style={{ flex: 1 }} />
+        <TouchableOpacity onPress={onCloseModal} style={{ flex: 1 }} />
       </Animated.View>
       <Animated.View
         style={[styles.content, { transform: [{ scale: modalScale }] }]}
       >
         <View style={styles.header}>
           <BAText type={TypeText.label0}>{title}</BAText>
-          <TouchableOpacity onPress={onClose}>
+          <TouchableOpacity onPress={onCloseModal}>
             <BAIcon
               icon={BAIcons.CrossIcon}
               color={BAPallete.Red01}
