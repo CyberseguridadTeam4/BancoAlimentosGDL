@@ -3,6 +3,8 @@ import React, { useRef, useState, useCallback, useEffect } from "react";
 import Svg, { Path, Ellipse } from "react-native-svg";
 import BAButton, { ButtonState } from "./BAButton";
 import BAPallete from "../resources/BAPallete";
+import BAView from "./BAView";
+import { useSheet } from "./Sheet/BASheetContext";
 
 type BirdBodyProps = {
   eyeClosed: boolean;
@@ -39,6 +41,8 @@ export default function BABird() {
     x: leftFootRef,
     y: rightFootRef,
   });
+
+  const { openSheet } = useSheet();
 
   const FeedAnimation = useCallback(() => {
     setAnimIsPlaying(true);
@@ -424,7 +428,7 @@ export default function BABird() {
   });
 
   return (
-    <View style={styles.body}>
+    <BAView title={"Cuarto de ???"} style={styles.body}>
       {heartReaction && <HeartsReaction setHeartReaction={setHeartReaction} />}
       <Animated.View
         style={[
@@ -468,7 +472,7 @@ export default function BABird() {
           state={animIsPlaying ? ButtonState.disabled : undefined}
         />
       </View>
-    </View>
+    </BAView>
   );
 }
 
@@ -791,11 +795,9 @@ const HeartsReaction = ({ setHeartReaction }: HeartReactionProps) => {
 
 const styles = StyleSheet.create({
   body: {
-    width: "100%",
-    height: "100%",
+    flex: 1,
     alignContent: "center",
     justifyContent: "center",
-    flexDirection: "column",
   },
   absolute: {
     width: "100%",
