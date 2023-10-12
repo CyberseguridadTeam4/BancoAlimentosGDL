@@ -10,6 +10,7 @@ import BAPallete from "../resources/BAPallete";
 import BAButton, { ButtonState } from "./BAButton";
 import BAIcons from "../resources/icons/BAIcons";
 import { IconSize } from "../resources/icons/BAIcon";
+import BAToastController from "./Toast/BAToast";
 
 const BUTTONS_STYLES: ImageSourcePropType[] = [
   BAIcons.ForoIcon,
@@ -25,7 +26,9 @@ export default class BABottomBar extends Component {
       <SafeAreaView style={styles.container}>
         <View style={styles.buttonContainer}>
           {BUTTONS_STYLES.map((item, index) => {
-            return (
+            return index == 2 ? (
+              <MiddleButton />
+            ) : (
               <BAButton
                 key={index}
                 onPress={() => {}}
@@ -48,6 +51,22 @@ export default class BABottomBar extends Component {
     );
   }
 }
+
+const MiddleButton = () => {
+  return (
+    <View style={styles.middleButtonWrapper}>
+      <BAToastController></BAToastController>
+      <BAButton
+        onPress={() => {}}
+        icon={BAIcons.BirdIcon}
+        iconSize={IconSize.large}
+        state={ButtonState.alert}
+        style={styles.middleButton}
+        disableShadow={true}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -72,8 +91,18 @@ const styles = StyleSheet.create({
     marginTop: 15,
     aspectRatio: 1 / 1,
   },
-  middleButton: {
-    top: -30,
+  middleButtonWrapper: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    top: -15,
     marginHorizontal: "5%",
+    position: "relative",
+  },
+  middleButton: {
+    width: 65,
+    marginBottom: 20,
+    aspectRatio: 1 / 1,
   },
 });
