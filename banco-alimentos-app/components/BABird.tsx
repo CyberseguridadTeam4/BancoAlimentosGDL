@@ -5,6 +5,10 @@ import BAButton, { ButtonState } from "./BAButton";
 import BAPallete from "../resources/BAPallete";
 import BAView from "./BAView";
 import { useSheet } from "./Sheet/BASheetContext";
+import BAText from "./BAText";
+import { useModal } from "./Modal/BAModalContext";
+import BASubView from "./BASubView";
+import { useToast } from "./Toast/BAToastContext";
 
 type BirdBodyProps = {
   eyeClosed: boolean;
@@ -29,6 +33,7 @@ export default function BABird() {
   const [happyEye, setHappyEye] = useState(false);
   const [winkEye, setWinkEye] = useState(false);
   const [heartReaction, setHeartReaction] = useState(false);
+  const [subpage, setSubpage] = useState(false);
 
   const birdPositionRef = useRef(new Animated.Value(0)).current;
   const birdBodyPositionRef = useRef(new Animated.Value(0)).current;
@@ -42,6 +47,8 @@ export default function BABird() {
     y: rightFootRef,
   });
 
+  const { openToast } = useToast();
+  const { openModal } = useModal();
   const { openSheet } = useSheet();
 
   const FeedAnimation = useCallback(() => {
@@ -428,51 +435,71 @@ export default function BABird() {
   });
 
   return (
-    <BAView title={"Cuarto de ???"} style={styles.body}>
-      {heartReaction && <HeartsReaction setHeartReaction={setHeartReaction} />}
-      <Animated.View
-        style={[
-          styles.birdContainer,
-          { transform: [{ translateY: birdPosition }, { scale: 0.8 }] },
-        ]}
-      >
-        <BirdFeet
-          leftFootRefRotation={leftFootRotation}
-          rightFootRefRotation={rightFootRotation}
-        />
+    <>
+      <BAView title={"Cuarto de ???"} style={styles.body}>
+        {heartReaction && (
+          <HeartsReaction setHeartReaction={setHeartReaction} />
+        )}
         <Animated.View
-          style={{
-            transform: [
-              { translateY: BIRD_BODY_ORIGIN },
-              { translateY: birdBodyPosition },
-              { rotate: bodyRotation },
-              { translateY: -BIRD_BODY_ORIGIN },
-            ],
-          }}
+          style={[
+            styles.birdContainer,
+            { transform: [{ translateY: birdPosition }, { scale: 0.8 }] },
+          ]}
         >
-          <BirdBody eyeClosed={happyEye} eyeWink={winkEye} />
-          <BirdWing scaleWingRef={scaleWingRef} />
+          <BirdFeet
+            leftFootRefRotation={leftFootRotation}
+            rightFootRefRotation={rightFootRotation}
+          />
+          <Animated.View
+            style={{
+              transform: [
+                { translateY: BIRD_BODY_ORIGIN },
+                { translateY: birdBodyPosition },
+                { rotate: bodyRotation },
+                { translateY: -BIRD_BODY_ORIGIN },
+              ],
+            }}
+          >
+            <BirdBody eyeClosed={happyEye} eyeWink={winkEye} />
+            <BirdWing scaleWingRef={scaleWingRef} />
+          </Animated.View>
         </Animated.View>
-      </Animated.View>
-      <View style={styles.debugButtons}>
-        <BAButton
-          style={styles.birdButtons}
-          text="Feed"
-          onPress={() => {
-            FeedAnimation();
-          }}
-          state={animIsPlaying ? ButtonState.disabled : undefined}
-        />
-        <BAButton
-          style={styles.birdButtons}
-          text="Egg"
-          onPress={() => {
-            HatchAnimation();
-          }}
-          state={animIsPlaying ? ButtonState.disabled : undefined}
-        />
-      </View>
-    </BAView>
+        <View style={styles.debugButtons}>
+          <BAButton
+            style={styles.birdButtons}
+            text="Feed"
+            onPress={() => {
+              FeedAnimation();
+            }}
+            state={animIsPlaying ? ButtonState.disabled : undefined}
+          />
+          <BAButton
+            style={styles.birdButtons}
+            text="Egg"
+            onPress={() => {
+              // HatchAnimation();
+              // setSubpage(true);
+              openModal(
+                <View>
+                  <BAText>Hello World!</BAText>
+                </View>,
+                "Hello World"
+              );
+              // openToast(
+              //   <View>
+              //     <BAText>Hello World!</BAText>
+              //   </View>,
+              //   1000
+              // );
+            }}
+            state={animIsPlaying ? ButtonState.disabled : undefined}
+          />
+        </View>
+      </BAView>
+      <BASubView title="Sub Page" isOpen={subpage} onReturn={setSubpage}>
+        <BAText>Hello World</BAText>
+      </BASubView>
+    </>
   );
 }
 

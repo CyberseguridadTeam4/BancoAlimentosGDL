@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     borderRadius: 10,
-    shadowRadius: 10,
+    shadowRadius: 15,
     shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.15,
     padding: 10,
