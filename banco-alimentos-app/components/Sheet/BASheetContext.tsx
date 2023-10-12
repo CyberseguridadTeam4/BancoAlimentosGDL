@@ -26,6 +26,7 @@ export const SheetProvider = ({ children }: any) => {
 
   const closeSheet = () => {
     setSheetContent(null);
+    setSheetTitle("");
     setShowSheet(false);
   };
 

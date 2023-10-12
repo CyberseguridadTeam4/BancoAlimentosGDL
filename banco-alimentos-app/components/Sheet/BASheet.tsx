@@ -2,7 +2,6 @@
 import React, { useEffect, useRef } from "react";
 import {
   View,
-  Button,
   StyleSheet,
   Animated,
   Easing,
@@ -186,6 +185,9 @@ const styles = StyleSheet.create({
     marginTop: 25,
     backgroundColor: BAPallete.Background,
     borderRadius: 20,
+    shadowRadius: 15,
+    shadowColor: "black",
+    shadowOpacity: 0.15,
   },
 });
 
