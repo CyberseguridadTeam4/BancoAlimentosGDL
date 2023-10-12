@@ -171,8 +171,8 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     backgroundColor: BAPallete.Background,
     borderRadius: 20,
-    shadowRadius: 15,
-    shadowColor: "black",
+    shadowRadius: 10,
+    shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.15,
   },
 });

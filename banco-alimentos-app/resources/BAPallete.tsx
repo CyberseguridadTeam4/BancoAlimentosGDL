@@ -1,5 +1,6 @@
 export default {
   Background: "#F4F5FF",
+  StrongBlue: "#151a59",
   Gray01: "#323232",
   Gray02: "#626262",
   Gray03: "#AFAFAF",

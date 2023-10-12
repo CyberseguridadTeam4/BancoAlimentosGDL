@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     width: 250,
     position: "absolute",
     shadowRadius: 10,
-    shadowColor: "black",
+    shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.2,
     flexDirection: "column",
     justifyContent: "center",
