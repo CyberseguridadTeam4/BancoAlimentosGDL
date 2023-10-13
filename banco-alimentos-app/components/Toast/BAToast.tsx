@@ -107,8 +107,9 @@ export function BAToast({
           useNativeDriver: true,
         }),
       ]).start(() => {
-        if (!clickBeforeEnd) return;
-        closeToast();
+        if (!clickBeforeEnd) {
+          closeToast();
+        }
       });
     });
   }, [openToast]);
