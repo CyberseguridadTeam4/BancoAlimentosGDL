@@ -14,19 +14,22 @@ import { useToast } from "./BAToastContext";
 type ToastProps = {
   toastContent: any;
   toastTime: number;
+  showToast: boolean;
   closeToast: () => void;
   openToast: (content: any, toastTime: number) => void;
 };
 
 export default function BAToastController() {
-  const { toastContent, toastTime, closeToast, openToast } = useToast();
+  const { toastContent, toastTime, closeToast, openToast, showToast } =
+    useToast();
 
   return (
     <>
-      {toastContent && (
+      {toastContent && showToast && (
         <BAToast
           toastContent={toastContent}
           toastTime={toastTime}
+          showToast={showToast}
           closeToast={closeToast}
           openToast={openToast}
         />
@@ -40,6 +43,7 @@ export function BAToast({
   toastTime,
   closeToast,
   openToast,
+  showToast,
 }: ToastProps) {
   const transitionRef = useRef(new Animated.Value(0)).current;
   const scale = useRef(new Animated.Value(0)).current;
@@ -47,7 +51,7 @@ export function BAToast({
   const OPEN_CLOSE_ANIMATION_TIME = 300;
 
   useEffect(() => {
-    if (!openToast) return;
+    if (!showToast) return;
     Animated.sequence([
       Animated.timing(transitionRef, {
         toValue: 0,
