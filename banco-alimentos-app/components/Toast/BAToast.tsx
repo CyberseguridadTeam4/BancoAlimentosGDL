@@ -171,7 +171,7 @@ export function BAToast({
           <TouchableOpacity onPress={() => onClickToClose()}>
             <View style={styles.container}>{toastContent}</View>
             <View style={styles.triangle}>
-              <Svg height="20" width="20" viewBox="0 0 40 40">
+              <Svg height="15" width="15" viewBox="0 0 40 40">
                 <Polygon
                   stroke={BAPallete.White}
                   fill={BAPallete.White}
