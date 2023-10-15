@@ -133,7 +133,10 @@ const styles = StyleSheet.create({
     bottom: "-4%",
     alignItems: "center",
     justifyContent: "center",
-    zIndex: 10,
+    zIndex: 1,
+    shadowRadius: 15,
+    shadowColor: BAPallete.StrongBlue,
+    shadowOpacity: 0.25,
   },
   buttonContainer: {
     flex: 1,
