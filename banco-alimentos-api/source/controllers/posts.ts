@@ -174,5 +174,120 @@ const getComment = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 
+const likePost = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const postId = req.params.postId; // Assuming you have a postId parameter in the URL
+        const query = new Parse.Query('Post');
+        
+        // Retrieve the post object based on the postId.
+        const post = await query.get(postId);
+        if (post) {
+            post.increment('nLikes', 1);
+            
+            const updatedPost = await post.save();
+            return res.status(200).json({
+                message: 'Post liked successfully',
+            });
+        } else {
+            return res.status(404).json({
+                message: 'Post not found',
+            });
+        }
 
-export default { createUser ,userLogin, createPost, getPost, createComment, getComment};
+    } catch (error){
+        return res.status(500).json({
+            message: error,
+        });
+    }
+}
+const viewPost = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const postId = req.params.postId; // Assuming you have a postId parameter in the URL
+        const query = new Parse.Query('Post');
+        
+        // Retrieve the post object based on the postId.
+        const post = await query.get(postId);
+        if (post) {
+            post.increment('nViews', 1);
+            
+            const updatedPost = await post.save();
+            return res.status(200).json({
+                message: 'Post viewed successfully',
+            });
+        } else {
+            return res.status(404).json({
+                message: 'Post not found',
+            });
+        }
+
+    } catch (error){
+        return res.status(500).json({
+            message: error,
+        });
+    }
+}
+const editPost = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const postId = req.params.postId; // Assuming you have a postId parameter in the URL
+        const {text,title} =req.body;
+        const query = new Parse.Query('Post');
+        
+        // Retrieve the post object based on the postId.
+        const post = await query.get(postId);
+        if (post) {
+            if(text){
+                post.set('text',text)
+            }
+            if(title){
+                post.set('title',title)
+            }
+            const updatedPost = await post.save();
+            return res.status(200).json({
+                message: 'Post updated successfully',
+            });
+        } else {
+            return res.status(404).json({
+                message: 'Post not found',
+            });
+        }
+
+    } catch (error){
+        return res.status(500).json({
+            message: error,
+        });
+    }
+}
+const reportPost = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const postId = req.params.postId; // Assuming you have a postId parameter in the URL
+        const query = new Parse.Query('Post');
+        // Retrieve the post object based on the postId.
+        const post = await query.get(postId);
+        if (post) {
+            post.set('reported',true)
+            const updatedPost = await post.save();
+
+            const ReportedPost = Parse.Object.extend('ReportedPost');
+            const reportedPost = new ReportedPost();
+
+            reportedPost.set('post', post);
+            // Save the reported post
+            await reportedPost.save();
+
+            return res.status(200).json({
+                message: 'Post reported successfully',
+            });
+
+        } else {
+            return res.status(404).json({
+                message: 'Post not found',
+            });
+        }
+
+    } catch (error){
+        return res.status(500).json({
+            message: error,
+        });
+    }
+}
+export default { createUser ,userLogin, createPost, getPost, createComment, getComment,likePost,viewPost,editPost,reportPost};

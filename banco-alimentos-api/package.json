@@ -5,6 +5,7 @@
   "main": "source/server.ts",
   "scripts": {
     "start": "nodemon source/server.ts",
+    "dev": "nodemon source/server.ts",
     "build": "rimraf dist && tsc",
     "ts.check": "tsc --project tsconfig.json",
     "add-build": "git add dist"
