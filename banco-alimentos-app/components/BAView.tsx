@@ -13,37 +13,37 @@ type ViewProps = {
   children: any;
   title: string;
   style?: StyleProp<ViewStyle>;
-  onReturn?: () => void;
+  isScrolling?: boolean;
 };
 
 export default function BAView({
   children,
   style,
   title,
-  onReturn,
+  isScrolling = false,
 }: ViewProps) {
   return (
-    <View style={styles.container}>
-      <SafeAreaView>
-        <BAText style={{ marginTop: 20 }} type={TypeText.label0}>
-          {title}
-        </BAText>
-        <View style={style}>{children}</View>
-      </SafeAreaView>
-    </View>
-  );
-}
-
-export function BAScrollView({ children, style, title }: ViewProps) {
-  return (
-    <ScrollView style={styles.container}>
-      <SafeAreaView>
-        <BAText style={{ marginTop: 20 }} type={TypeText.label0}>
-          {title}
-        </BAText>
-        <View style={style}>{children}</View>
-      </SafeAreaView>
-    </ScrollView>
+    <>
+      {isScrolling ? (
+        <ScrollView style={styles.container}>
+          <SafeAreaView>
+            <BAText style={{ marginTop: 20 }} type={TypeText.label0}>
+              {title}
+            </BAText>
+            <View style={style}>{children}</View>
+          </SafeAreaView>
+        </ScrollView>
+      ) : (
+        <View style={styles.container}>
+          <SafeAreaView>
+            <BAText style={{ marginTop: 20 }} type={TypeText.label0}>
+              {title}
+            </BAText>
+            <View style={style}>{children}</View>
+          </SafeAreaView>
+        </View>
+      )}
+    </>
   );
 }
 
