@@ -16,6 +16,9 @@ export default {
   get PersonIcon(): ImageSourcePropType {
     return require("./PersonIcon.png");
   },
+  get PersonActivatedIcon(): ImageSourcePropType {
+    return require("./PersonIconActivated.png");
+  },
   get PlayIcon(): ImageSourcePropType {
     return require("./PlayIcon.png");
   },
@@ -28,13 +31,25 @@ export default {
   get MapIcon(): ImageSourcePropType {
     return require("./MapIcon.png");
   },
+  get MapActivatedIcon(): ImageSourcePropType {
+    return require("./MapIconActivated.png");
+  },
   get BirdIcon(): ImageSourcePropType {
     return require("./BirdIcon.png");
+  },
+  get BirdActivatedIcon(): ImageSourcePropType {
+    return require("./BirdIconActivated.png");
   },
   get ForoIcon(): ImageSourcePropType {
     return require("./ForoIcon.png");
   },
+  get ForoActivatedIcon(): ImageSourcePropType {
+    return require("./ForoIconActivated.png");
+  },
   get SettingIcon(): ImageSourcePropType {
     return require("./SettingIcon.png");
+  },
+  get SettingActivatedIcon(): ImageSourcePropType {
+    return require("./SettingIconActivated.png");
   },
 };

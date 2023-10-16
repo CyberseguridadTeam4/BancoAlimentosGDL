@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     gap: 10,
     borderRadius: 10,
     shadowRadius: 15,
-    shadowColor: "black",
+    shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.15,
     padding: 10,
   },

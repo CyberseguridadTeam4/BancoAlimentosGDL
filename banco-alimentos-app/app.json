@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "banco-alimentos-app",
-    "slug": "banco-alimentos-app",
+    "slug": "piopio",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.iker8av.piopio"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,6 +26,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "67c0d5b2-3095-411a-a13d-8a42c904d72f"
+      }
+    },
+    "owner": "iker8av"
   }
 }
