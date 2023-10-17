@@ -131,8 +131,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: "absolute",
-    bottom: "-4%",
-    alignItems: "center",
+    bottom: "-5%",
+    alignSelf: "center",
     justifyContent: "center",
     zIndex: 1,
     shadowRadius: 15,
