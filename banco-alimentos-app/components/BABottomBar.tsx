@@ -45,7 +45,7 @@ export default function BABottomBar() {
               icon={optionSelected == index ? item[1] : item[0]}
               iconSize={IconSize.large}
               state={ButtonState.alert}
-              style={[styles.buttons, index == 2 && styles.middleButton]}
+              style={[styles.buttons]}
               disableShadow={true}
             />
           );
@@ -107,7 +107,7 @@ const MiddleButton = ({ index, optionSelected, setOptionSelected }: any) => {
       ]}
     >
       <BAToastController />
-      <View style={styles.middleButton}>
+      <View>
         <BAButton
           onPress={() => {
             setOptionSelected(index);
@@ -120,6 +120,7 @@ const MiddleButton = ({ index, optionSelected, setOptionSelected }: any) => {
           iconSize={IconSize.large}
           state={ButtonState.alert}
           disableShadow={true}
+          style={styles.middleButton}
         />
       </View>
     </Animated.View>
@@ -149,11 +150,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: "13%",
   },
   buttons: {
+    flex: 1,
     marginTop: 15,
     aspectRatio: 1 / 1,
   },
   middleButtonWrapper: {
-    flex: 1,
+    width: 65,
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "flex-end",
@@ -163,7 +165,8 @@ const styles = StyleSheet.create({
   },
   middleButton: {
     width: 65,
+    height: 65,
+    padding: 20,
     marginBottom: 20,
-    aspectRatio: 1 / 1,
   },
 });
