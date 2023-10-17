@@ -837,7 +837,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-around",
-    gap: 75,
+    gap: 150,
     paddingHorizontal: 50,
   },
   birdContainer: {
@@ -849,7 +849,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1 / 1,
   },
   birdButtons: {
-    width: 200,
+    width: "60%",
     aspectRatio: 1 / 1,
   },
   heartContainer: {
