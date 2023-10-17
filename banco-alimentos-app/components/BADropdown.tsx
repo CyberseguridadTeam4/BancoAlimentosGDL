@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 10,
     shadowRadius: 15,
-    shadowColor: "black",
+    shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.15,
   },
 });

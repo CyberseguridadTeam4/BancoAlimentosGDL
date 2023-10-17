@@ -104,6 +104,7 @@ const getBackgroundColor = (state: ButtonState) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    height: 50,
     alignItems: "center",
     color: "black",
     borderRadius: 10,
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
   },
   shadow: {
     shadowRadius: 15,
-    shadowColor: "black",
+    shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.15,
   },
   disabledBg: {

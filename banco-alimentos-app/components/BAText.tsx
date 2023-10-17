@@ -6,7 +6,13 @@
  */
 
 import React from "react";
-import { Text, TextStyle, PixelRatio } from "react-native";
+import {
+  Text,
+  TextStyle,
+  PixelRatio,
+  StyleProp,
+  ViewStyle,
+} from "react-native";
 import BAPallete from "../resources/BAPallete";
 
 export enum TypeText {
@@ -19,11 +25,16 @@ export enum TypeText {
 
 type Props = {
   type?: TypeText;
+  style?: StyleProp<ViewStyle>;
   children: string;
 };
 
-function BAText({ type = TypeText.label1, children }: Props): JSX.Element {
-  return <Text style={styleText(type)}>{children} </Text>;
+function BAText({
+  type = TypeText.label1,
+  children,
+  style,
+}: Props): JSX.Element {
+  return <Text style={[styleText(type), style]}>{children} </Text>;
 }
 
 export const styleText = (type: TypeText): TextStyle => {

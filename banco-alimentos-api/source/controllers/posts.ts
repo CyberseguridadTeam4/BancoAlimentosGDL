@@ -291,3 +291,4 @@ const reportPost = async (req: Request, res: Response, next: NextFunction) => {
     }
 }
 export default { createUser ,userLogin, createPost, getPost, createComment, getComment,likePost,viewPost,editPost,reportPost};
+
