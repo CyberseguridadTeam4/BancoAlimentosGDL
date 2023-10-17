@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, StatusBar } from "react-native";
+import { StyleSheet, Text, View, StatusBar, SafeAreaView } from "react-native";
 import BAButton, { ButtonState } from "./components/BAButton";
 import BAText, { TypeText } from "./components/BAText";
 import BATextInput from "./components/BATextInput";
@@ -6,6 +6,7 @@ import BAIcons from "./resources/icons/BAIcons";
 import BADropdownMenu from "./components/BADropdown";
 import { useState } from "react";
 import BABottomBar from "./components/BABottomBar";
+import BABird from "./components/BABird";
 
 export default function App() {
   const [selectedOption, setSelectedOption] = useState("1");
@@ -54,9 +55,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F4F5FF",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 20,
+    paddingTop: 50,
     paddingHorizontal: 20,
   },
 });
