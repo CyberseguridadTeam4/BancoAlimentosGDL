@@ -7,13 +7,15 @@ import BADropdownMenu from "./components/BADropdown";
 import { useState } from "react";
 import BABottomBar from "./components/BABottomBar";
 import BABird from "./components/BABird";
+import BAAcount from "./components/BAAccount";
 
 export default function App() {
   const [selectedOption, setSelectedOption] = useState("1");
   const [text, setText] = useState("Hello");
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={"dark-content"} />
+     <BAAcount></BAAcount>
+      {/*  <StatusBar barStyle={"dark-content"} />
       <BAText>Bienvenido</BAText>
       <BAText type={TypeText.label3}>Banco de alimentos</BAText>
       <BAButton icon={BAIcons.PersonIcon} text="Hello" onPress={() => {}} />
@@ -46,7 +48,8 @@ export default function App() {
           },
         ]}
       />
-      <BABottomBar />
+       */}
+       <BABottomBar />
     </View>
   );
 }
