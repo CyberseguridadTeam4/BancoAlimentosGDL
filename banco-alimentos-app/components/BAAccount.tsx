@@ -1,8 +1,9 @@
-import { StyleSheet, View} from "react-native";
+import { StyleSheet, View, Image, Dimensions} from "react-native";
 import React, {useState, useEffect} from "react";
 import BAView from "./BAView";
 import BASubView from "./BASubView";
 import BAText, { TypeText } from "./BAText"; 
+import Svg, { Polygon, Image as SvgImage, SvgUri } from 'react-native-svg';
 import BABadge from "./BABadge";
 import BAButton, {ButtonState} from "./BAButton";
 
@@ -12,7 +13,7 @@ export default function BAAcount(){
 
     const fetchUser = async () => {
         try {
-            const response = await fetch('https://localhost:6060/user');
+            const response = await fetch('https:://localhost:6060/user');
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -31,7 +32,23 @@ export default function BAAcount(){
     return (
         <>
         <BAView title={"Perfil"} style={styles.body} >
-            <BAText
+            <View style = {styles.container} >
+                <View style = {styles.imageContainer}>
+                        <Image
+                        source = {require('../resources/icons/PersonIcon.png')}
+                        style = {{alignSelf: "center"}}
+                        />
+                </View> 
+                <Svg style={styles.svg} height="60%" width="60%" viewBox="0 0 100 100">
+                    <Polygon points="50,0 100,50 50,100 0,50" fill="red" />
+                    <SvgImage 
+                        href={{uri: '../resources/icons/BirdIcon.png'}} 
+                        height="100%" 
+                        width="100%"
+                    />
+             </Svg> 
+            </View>
+            <BAText 
                 style={{ marginVertical: 20, width: "100%" }}
             >
                 Nombre de usuario
@@ -67,6 +84,8 @@ export default function BAAcount(){
     );
 }
 
+const { width, height } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
     body: {
         flex: 1,
@@ -80,5 +99,30 @@ const styles = StyleSheet.create({
         marginVertical: 20,
         gap: 20,
         flexDirection: "column",
+    },
+    imageContainer: {
+        width: width * 0.30, 
+        height: height * 0.30,
+        flex: 1,
+        alignSelf: "center",
+        gap: 20,
+        aspectRatio: 1 / 1,
+        backgroundColor: "pink",
+        justifyContent: "center",
+        zIndex: 1,
+    },
+    svg: {
+        position: 'absolute',
+        zIndex: 2,
+        bottom: 0,
+        right: -15,
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 20,
+        height: height * 0.20,
+        
     }
 });
