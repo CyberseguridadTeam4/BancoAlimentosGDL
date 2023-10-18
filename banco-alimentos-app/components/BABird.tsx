@@ -823,8 +823,7 @@ const HeartsReaction = ({ setHeartReaction }: HeartReactionProps) => {
 const styles = StyleSheet.create({
   body: {
     flex: 1,
-    alignContent: "center",
-    justifyContent: "center",
+    position: "relative",
   },
   absolute: {
     width: "100%",
@@ -834,14 +833,14 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   debugButtons: {
-    width: "100%",
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-around",
-    gap: 150,
+    gap: 100,
     paddingHorizontal: 50,
   },
   birdContainer: {
-    width: "auto",
+    flex: 1,
     aspectRatio: 1 / 1,
   },
   container: {
@@ -849,7 +848,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1 / 1,
   },
   birdButtons: {
-    width: "60%",
+    width: "40%",
     aspectRatio: 1 / 1,
   },
   heartContainer: {
