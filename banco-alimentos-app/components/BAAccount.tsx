@@ -3,9 +3,9 @@ import React, {useState, useEffect} from "react";
 import BAView from "./BAView";
 import BASubView from "./BASubView";
 import BAText, { TypeText } from "./BAText"; 
-import Svg, { Polygon, Image as SvgImage, SvgUri } from 'react-native-svg';
-import BABadge from "./BABadge";
+import Svg, { Polygon, Rect,Path, Image as SvgImage, SvgUri } from 'react-native-svg';
 import BAButton, {ButtonState} from "./BAButton";
+import BAPallete from "../resources/BAPallete";
 
 export default function BAAcount(){
     const [subpage, setSubpage] = useState(false);
@@ -13,7 +13,7 @@ export default function BAAcount(){
 
     const fetchUser = async () => {
         try {
-            const response = await fetch('https:://localhost:6060/user');
+            const response = await fetch('/user');
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -31,25 +31,53 @@ export default function BAAcount(){
 
     return (
         <>
-        <BAView title={"Perfil"} style={styles.body} >
-            <View style = {styles.container} >
+        <BAView title={"Perfil"} style={styles.body} isScrolling={true}>
+            {/* <View style = {styles.container} >
                 <View style = {styles.imageContainer}>
                         <Image
                         source = {require('../resources/icons/PersonIcon.png')}
                         style = {{alignSelf: "center"}}
                         />
                 </View> 
-                <Svg style={styles.svg} height="60%" width="60%" viewBox="0 0 100 100">
+               <Svg style={styles.svg} height="50%" width="50%" viewBox="0 0 100 100">
                     <Polygon points="50,0 100,50 50,100 0,50" fill="red" />
                     <SvgImage 
                         href={{uri: '../resources/icons/BirdIcon.png'}} 
                         height="100%" 
                         width="100%"
                     />
-             </Svg> 
+             </Svg>   
+            </View>*/}
+
+            <View style = {styles.container}>
+            <Svg>
+                <Rect
+                    x="100"
+                    y="0"
+                    width="200"
+                    height="200"
+                    fill="pink"
+                    rx="10"
+                    ry="10"
+                />
+        
+                <Polygon
+                    //points="50,0 100,50 50,100 0,50" 
+                    points="350,200 300,150 250,200 300,250" 
+                    fill= {BAPallete.Red01}
+                />
+             </Svg>
+             <Image
+                style={{ position: 'absolute', top: 50, left: 150, width: 100, height: 100 }}
+                source={require('../resources/icons/PersonIcon.png')}
+            />
+            <Image
+                style={{ position: 'absolute', top: 176, left: 280, width: 50, height: 50 }}
+                source={require('../resources/icons/BirdIconActivated.png')}
+            />
             </View>
             <BAText 
-                style={{ marginVertical: 20, width: "100%" }}
+                style={{ marginBottom: 20, width: "100%" }}
             >
                 Nombre de usuario
             </BAText>
@@ -101,28 +129,25 @@ const styles = StyleSheet.create({
         flexDirection: "column",
     },
     imageContainer: {
-        width: width * 0.30, 
-        height: height * 0.30,
-        flex: 1,
+        //gap:20,
+        //height: "70%",
         alignSelf: "center",
-        gap: 20,
-        aspectRatio: 1 / 1,
-        backgroundColor: "pink",
+        //aspectRatio: 1 / 1,
+       // backgroundColor: "pink",
+        borderRadius: 10, // Add this line
         justifyContent: "center",
-        zIndex: 1,
+        //zIndex: 1,
     },
     svg: {
-        position: 'absolute',
         zIndex: 2,
-        bottom: 0,
-        right: -15,
+        bottom: 75,
+        right: 45,
     },
     container: {
-        flex: 1,
+        //flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 20,
-        height: height * 0.20,
-        
+       // gap: 20,
+       height: height * 0.28,
     }
 });
