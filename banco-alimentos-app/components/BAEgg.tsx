@@ -4,7 +4,7 @@ import { Path, Svg } from "react-native-svg";
 import BAPallete from "../resources/BAPallete";
 import BABadge from "./BABadge";
 import BAIcons from "../resources/icons/BAIcons";
-import BAButton from "./BAButton";
+import BAButton, { ButtonState } from "./BAButton";
 
 type EggProps = {
   onClose: () => void;
@@ -180,6 +180,7 @@ export default function BAEgg({ onClose }: EggProps) {
           {isAnimationFinished && (
             <BAButton
               text="¡Recolectar!"
+              state={ButtonState.alert}
               onPress={() => {
                 onCloseModal();
               }}
@@ -238,8 +239,10 @@ function BAEggBottom({ positionYRef }: PartsEggProps) {
 const styles = StyleSheet.create({
   viewWrapper: {
     position: "absolute",
-    alignContent: "center",
+    alignSelf: "center",
     justifyContent: "center",
+    top: 0,
+    bottom: 0,
     flexDirection: "column",
     gap: 20,
     zIndex: 10,

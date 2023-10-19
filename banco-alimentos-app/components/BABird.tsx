@@ -9,6 +9,7 @@ import BAText from "./BAText";
 import { useModal } from "./Modal/BAModalContext";
 import BASubView from "./BASubView";
 import { useToast } from "./Toast/BAToastContext";
+import BAEgg from "./BAEgg";
 
 type BirdBodyProps = {
   eyeClosed: boolean;
@@ -33,7 +34,7 @@ export default function BABird() {
   const [happyEye, setHappyEye] = useState(false);
   const [winkEye, setWinkEye] = useState(false);
   const [heartReaction, setHeartReaction] = useState(false);
-  const [subpage, setSubpage] = useState(false);
+  const [openEgg, setOpenEgg] = useState(false);
 
   const birdPositionRef = useRef(new Animated.Value(0)).current;
   const birdBodyPositionRef = useRef(new Animated.Value(0)).current;
@@ -46,10 +47,6 @@ export default function BABird() {
     x: leftFootRef,
     y: rightFootRef,
   });
-
-  const { openToast } = useToast();
-  const { openModal } = useModal();
-  const { openSheet } = useSheet();
 
   const FeedAnimation = useCallback(() => {
     setAnimIsPlaying(true);
@@ -436,10 +433,12 @@ export default function BABird() {
 
   return (
     <>
+      {openEgg && <BAEgg onClose={() => setOpenEgg(false)} />}
       <BAView title={"Cuarto de ???"} style={styles.body}>
         {heartReaction && (
           <HeartsReaction setHeartReaction={setHeartReaction} />
         )}
+
         <Animated.View
           style={[
             styles.birdContainer,
@@ -477,28 +476,12 @@ export default function BABird() {
             style={styles.birdButtons}
             text="Egg"
             onPress={() => {
-              // HatchAnimation();
-              // setSubpage(true);
-              openModal(
-                <View>
-                  <BAText>Hello World!</BAText>
-                </View>,
-                "Hello World"
-              );
-              // openToast(
-              //   <View>
-              //     <BAText>Hello World!</BAText>
-              //   </View>,
-              //   1000
-              // );
+              setOpenEgg(true);
             }}
             state={animIsPlaying ? ButtonState.disabled : undefined}
           />
         </View>
       </BAView>
-      <BASubView title="Sub Page" isOpen={subpage} onReturn={setSubpage}>
-        <BAText>Hello World</BAText>
-      </BASubView>
     </>
   );
 }
