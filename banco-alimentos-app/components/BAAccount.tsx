@@ -1,4 +1,4 @@
-import { StyleSheet, View, Image, Dimensions} from "react-native";
+import { StyleSheet, View, Image, Dimensions, ImageBackground} from "react-native";
 import React, {useState, useEffect} from "react";
 import BAView from "./BAView";
 import BASubView from "./BASubView";
@@ -112,6 +112,7 @@ export default function BAAcount(){
     );
 }
 
+
 const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -148,6 +149,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
        // gap: 20,
-       height: height * 0.28,
+       height: height * 0.30,
     }
 });
