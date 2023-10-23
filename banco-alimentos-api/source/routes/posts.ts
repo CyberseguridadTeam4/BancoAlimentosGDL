@@ -18,4 +18,7 @@ router.patch('/view/:postId', controller.viewPost);
 router.patch('/editPost/:postId',controller.editPost)
 router.patch('/report/:postId',controller.reportPost)
 
+router.get('/getPollito', controller.getPollito);
+router.patch('/patchPollito', controller.patchPollito);
+
 export = router;
