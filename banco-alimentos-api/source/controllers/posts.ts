@@ -290,5 +290,52 @@ const reportPost = async (req: Request, res: Response, next: NextFunction) => {
         });
     }
 }
-export default { createUser ,userLogin, createPost, getPost, createComment, getComment,likePost,viewPost,editPost,reportPost};
+
+const getPollito = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const polloId = req.params;
+        const query = new Parse.Query('Pollo'); //Pollo
+        let pollito: Parse.Object[] = await query.find(polloId);
+        return res.status(200).json({
+            message: 'Pollo received',
+            pollo: pollito,
+        })
+        
+    } catch (error) {
+        return res.status(500).json({
+            message: error,
+
+        });
+    }
+}
+
+const patchPollito = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        //Get body from endpoint call
+        const {polloId, level, name, nextStage, nApple} = req.body;
+        const Pollo = Parse.Object.extend('Pollo');
+        const pollito = new Pollo();
+
+        //Set id from the database
+        pollito.set('objectId', polloId); 
+
+        //Update the rest of the fields
+        pollito.set('level', level);
+        pollito.set('name', name);
+        pollito.set('nextStage', nextStage);
+        pollito.set('nApple', nApple);
+
+        //Save to database
+        await pollito.save();
+
+        return res.status(200).json({
+            message: 'Pollito changed successfully',
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: error,
+        });
+    }
+}
+export default { createUser ,userLogin, createPost, getPost, createComment, getComment,likePost,viewPost,editPost,reportPost, getPollito, patchPollito};
 
