@@ -7,7 +7,7 @@ import BADropdownMenu from "./components/BADropdown";
 import { useState } from "react";
 import BABottomBar from "./components/BABottomBar";
 import BABird from "./components/BABird";
-import BAAcount from "./components/BAAccount";
+import BAAcount from "./components/BAAccountView";
 
 export default function App() {
   const [selectedOption, setSelectedOption] = useState("1");
