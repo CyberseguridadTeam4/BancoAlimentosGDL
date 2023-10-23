@@ -1,24 +1,22 @@
 /** source/routes/posts.ts */
-import express from 'express';
-import controller from '../controllers/posts';
+import express from "express";
+import controller from "../controllers/posts";
 const router = express.Router();
 //User
 
+router.get("/user", controller.userLogin); //
+router.get("/getPosts", controller.getPost);
+router.get("/getComments/:postId", controller.getComment);
 
-router.get('/user', controller.userLogin);//
-router.get('/getPosts', controller.getPost);
-router.get('/getComments/:postId', controller.getComment);
+router.post("/user", controller.createUser);
+router.post("/post", controller.createPost);
+router.post("/comment", controller.createComment);
 
-router.post('/user', controller.createUser);
-router.post('/post', controller.createPost);
-router.post('/comment', controller.createComment);
+router.patch("/like/:postId", controller.likePost);
+router.patch("/view/:postId", controller.viewPost);
+router.patch("/editPost/:postId", controller.editPost);
+router.patch("/report/:postId", controller.reportPost);
 
-router.patch('/like/:postId', controller.likePost);
-router.patch('/view/:postId', controller.viewPost);
-router.patch('/editPost/:postId',controller.editPost)
-router.patch('/report/:postId',controller.reportPost)
-
-router.get('/getPollito/:polloId', controller.getPollito);
-router.patch('/patchPollito/:polloId', controller.patchPollito);
-
+router.get("/getPollito/:polloId", controller.getPollito);
+router.patch("/patchPollito/:polloId", controller.patchPollito);
 export = router;
