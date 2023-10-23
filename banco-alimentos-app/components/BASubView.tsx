@@ -21,6 +21,7 @@ type SubViewProps = {
   title: string;
   style?: StyleProp<ViewStyle>;
   isOpen: boolean;
+  isScrolling?: boolean;
   onReturn: (e: boolean) => void;
 };
 
@@ -29,6 +30,7 @@ export default function BASubView({
   style,
   title,
   isOpen = false,
+  isScrolling = true,
   onReturn,
 }: SubViewProps) {
   const subpagePositionRef = useRef(new Animated.Value(0)).current;
@@ -72,30 +74,32 @@ export default function BASubView({
   return (
     <>
       {isOpen && (
-        <Animated.View
-          style={[
-            styles.container,
-            {
-              transform: [{ translateX: subpagePositionRef }],
-            },
-          ]}
-        >
-          <ScrollView>
-            <SafeAreaView>
-              <View style={styles.header}>
-                <TouchableOpacity onPress={() => onCloseSubpage()}>
-                  <BAIcon
-                    icon={BAIcons.BackIcon}
-                    color={BAPallete.Red01}
-                    size={IconSize.large}
-                  />
-                </TouchableOpacity>
-                <BAText type={TypeText.label0}>{title}</BAText>
-              </View>
+        <SafeAreaView style={styles.container}>
+          <Animated.View
+            style={[
+              {
+                transform: [{ translateX: subpagePositionRef }],
+              },
+            ]}
+          >
+            <View style={styles.header}>
+              <TouchableOpacity onPress={() => onCloseSubpage()}>
+                <BAIcon
+                  icon={BAIcons.BackIcon}
+                  color={BAPallete.Red01}
+                  size={IconSize.large}
+                />
+              </TouchableOpacity>
+              <BAText type={TypeText.label0}>{title}</BAText>
+            </View>
+            <ScrollView
+              scrollEnabled={isScrolling}
+              contentContainerStyle={isScrolling ? {} : styles.scroll}
+            >
               <View style={style}>{children}</View>
-            </SafeAreaView>
-          </ScrollView>
-        </Animated.View>
+            </ScrollView>
+          </Animated.View>
+        </SafeAreaView>
       )}
     </>
   );
@@ -109,14 +113,18 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     gap: 20,
   },
+  scroll: {
+    flexGrow: 1,
+    marginBottom: 150,
+  },
   container: {
-    transform: [{ translateX: -500 }],
     width: "100%",
+    flex: 1,
     height: "100%",
     flexDirection: "column",
+    alignSelf: "center",
     position: "absolute",
-    left: 0,
-    padding: 20,
+    paddingVertical: 20,
     backgroundColor: BAPallete.Background,
   },
 });
