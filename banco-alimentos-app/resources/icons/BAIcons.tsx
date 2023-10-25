@@ -52,4 +52,16 @@ export default {
   get SettingActivatedIcon(): ImageSourcePropType {
     return require("./SettingIconActivated.png");
   },
+  get FlagIcon(): ImageSourcePropType {
+    return require("./FlagIcon.png");
+  },
+  get HeartIcon(): ImageSourcePropType {
+    return require("./HeartIcon.png");
+  },
+  get HeartIconActivated(): ImageSourcePropType {
+    return require("./HeartIconActivated.png");
+  },
+  get ShareIcon(): ImageSourcePropType {
+    return require("./ShareIcon.png");
+  },
 };
