@@ -80,6 +80,7 @@ export default function BASubView({
               {
                 transform: [{ translateX: subpagePositionRef }],
               },
+              { paddingHorizontal: 20 },
             ]}
           >
             <View style={styles.header}>
@@ -93,6 +94,7 @@ export default function BASubView({
               <BAText type={TypeText.label0}>{title}</BAText>
             </View>
             <ScrollView
+              showsVerticalScrollIndicator={false}
               scrollEnabled={isScrolling}
               contentContainerStyle={isScrolling ? {} : styles.scroll}
             >

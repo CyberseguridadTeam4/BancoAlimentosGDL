@@ -25,14 +25,24 @@ export default function BAView({
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <BAText
-        style={{ marginVertical: 25, width: "100%" }}
+        style={{
+          marginTop: 20,
+          marginBottom: 10,
+          width: "100%",
+          paddingHorizontal: 20,
+        }}
         type={TypeText.label0}
       >
         {title}
       </BAText>
       <ScrollView
         scrollEnabled={isScrolling}
-        contentContainerStyle={isScrolling ? {} : styles.container}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={
+          isScrolling
+            ? { paddingHorizontal: 20, paddingTop: 20 }
+            : styles.container
+        }
       >
         <View style={style}>{children}</View>
       </ScrollView>
@@ -43,6 +53,8 @@ export default function BAView({
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
+    paddingHorizontal: 20,
     marginBottom: 150,
+    paddingTop: 20,
   },
 });
