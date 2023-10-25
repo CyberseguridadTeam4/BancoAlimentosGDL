@@ -8,6 +8,12 @@ import BASubView from "../components/BASubView";
 import BAPallete from "../resources/BAPallete";
 import { useModal } from "../components/Modal/BAModalContext";
 
+type ColorButtonProps = {
+  color: string;
+  colorSelected: string;
+  onClick: () => void;
+};
+
 export default function BABirdView() {
   const birdData = null;
 
@@ -122,7 +128,7 @@ function BABirdColor() {
   );
 }
 
-const ColorButton = ({ color, colorSelected, onClick }) => {
+const ColorButton = ({ color, colorSelected, onClick }: ColorButtonProps) => {
   return (
     <View style={{ aspectRatio: 1 / 1, width: 65 }}>
       <BAButton
