@@ -25,7 +25,7 @@ export enum TypeText {
 
 type Props = {
   type?: TypeText;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<any>;
   children: string;
 };
 

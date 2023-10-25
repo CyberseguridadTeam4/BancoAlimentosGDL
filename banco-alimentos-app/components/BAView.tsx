@@ -23,23 +23,38 @@ export default function BAView({
   isScrolling = false,
 }: ViewProps) {
   return (
-    <ScrollView scrollEnabled={isScrolling} style={styles.container}>
-      <SafeAreaView>
-        <BAText
-          style={{ marginVertical: 20, width: "100%" }}
-          type={TypeText.label0}
-        >
-          {title}
-        </BAText>
+    <SafeAreaView style={{ flex: 1 }}>
+      <BAText
+        style={{
+          marginTop: 20,
+          marginBottom: 10,
+          width: "100%",
+          paddingHorizontal: 20,
+        }}
+        type={TypeText.label0}
+      >
+        {title}
+      </BAText>
+      <ScrollView
+        scrollEnabled={isScrolling}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={
+          isScrolling
+            ? { paddingHorizontal: 20, paddingTop: 20 }
+            : styles.container
+        }
+      >
         <View style={style}>{children}</View>
-      </SafeAreaView>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: "column",
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    marginBottom: 150,
+    paddingTop: 20,
   },
 });
