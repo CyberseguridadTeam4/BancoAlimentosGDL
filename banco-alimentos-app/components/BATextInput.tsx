@@ -47,11 +47,12 @@ const styles = StyleSheet.create({
     gap: 10,
     borderRadius: 10,
     shadowRadius: 15,
-    shadowColor: "black",
+    shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.15,
     padding: 10,
   },
   textInput: {
+    width: "100%",
     textAlignVertical: "center",
     borderColor: "transparent", // Set to your background color
     borderWidth: 1,

@@ -6,7 +6,7 @@
  */
 
 import React from "react";
-import { Image, ImageSourcePropType } from "react-native";
+import { Image, ImageSourcePropType, PixelRatio } from "react-native";
 
 type Props = {
   icon: ImageSourcePropType;
@@ -33,13 +33,19 @@ const getIconSize = (size: IconSize) => {
   switch (size) {
     case IconSize.small:
       return {
-        width: 18,
-        height: 18,
+        width: PixelRatio.get() > 2 ? 18 : 14,
+        height: PixelRatio.get() > 2 ? 18 : 14,
       };
     case IconSize.medium:
-      return { width: 20, height: 20 };
+      return {
+        width: PixelRatio.get() > 2 ? 20 : 16,
+        height: PixelRatio.get() > 2 ? 20 : 16,
+      };
     case IconSize.large:
-      return { width: 28, height: 28 };
+      return {
+        width: PixelRatio.get() > 2 ? 28 : 24,
+        height: PixelRatio.get() > 2 ? 28 : 24,
+      };
 
     default:
       return {};
