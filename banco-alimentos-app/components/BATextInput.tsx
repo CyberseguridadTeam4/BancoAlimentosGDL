@@ -5,11 +5,12 @@
  * @format
  */
 
-import React from "react";
-import { ImageSourcePropType, StyleSheet, TextInput, View } from "react-native";
+import React, { useState } from "react";
+import { ImageSourcePropType, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import BAIcon from "../resources/icons/BAIcon";
 import BAPallete from "../resources/BAPallete";
-import { styleText, TypeText } from "./BAText";
+import BAText, { styleText, TypeText } from "./BAText";
+import DatePickerModal from "./Modal/BADatePickerModal";
 
 type Props = {
   icon?: ImageSourcePropType;
@@ -27,12 +28,14 @@ function BATextInput({
   onChange,
   isPassword = false, // Default to non-password input
   isShadowed = false, // Default to non-shadowed input
+  
 }: Props): JSX.Element {
+  
   const containerStyle = isShadowed ? [styles.wrapper, styles.shadow] : styles.wrapper;
 
   return (
     <View style={containerStyle}> 
-    {/* previouly style=styles.wrapper */}
+    {/* previouly: style=styles.wrapper */}
       {icon && <BAIcon icon={icon} color={BAPallete.Black} />}
       <TextInput
         placeholderTextColor={BAPallete.Gray03}
