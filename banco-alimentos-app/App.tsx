@@ -12,6 +12,7 @@ import BABird from "./components/BABird";
 import BAAcount from "./components/BAAccountView";
 import BAWelcomeView from "./components/BAWelcomeView";
 import BASignUpView from "./components/BASignUpView";
+import BAPasswordCreationView from "./components/BAPasswordCreation";
 
 export default function App() {
   const [selectedOption, setSelectedOption] = useState("1");
@@ -20,7 +21,8 @@ export default function App() {
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
-        <BABottomBar />
+        <BAWelcomeView />
+        {/* <BABottomBar /> */}
         <BAModalController />
         <BASheetController />
         <BAToastController />

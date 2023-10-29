@@ -1,4 +1,4 @@
-import { StyleSheet, Text, Linking, View, StatusBar, Alert, Dimensions } from "react-native";
+import { StyleSheet, Text, Linking, View, StatusBar, Alert, Dimensions, SafeAreaView, TextInput } from "react-native";
 import BAButton, { ButtonState } from "./BAButton";
 import BAText, { TypeText } from "./BAText";
 import BATextInput from "./BATextInput";
@@ -10,6 +10,7 @@ import BAView from "./BAView";
 import userLogin from "../../banco-alimentos-api/source/controllers/posts";
 import axios from 'axios';
 import React from "react";
+import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 // import BAModal from '../components/Modal/BAModal'
 // import BAModalController from '../components/Modal/BAModal'
 // import { useModal } from '../components/Modal/BAModalContext'
@@ -33,6 +34,17 @@ export default function LogIn({}) {
   const handleButtonPress = () => {
     Alert.alert('Button Pressed');
   };
+
+    // State variable to hold the password 
+    const [password, setPassword] = useState(''); 
+
+    // State variable to track password visibility 
+    const [showPassword, setShowPassword] = useState(false); 
+
+    // Function to toggle the password visibility state 
+    const toggleShowPassword = () => { 
+        setShowPassword(!showPassword); 
+    }; 
 
 
   return (
@@ -58,6 +70,7 @@ export default function LogIn({}) {
         isPassword={true}
         isShadowed={true}
         />
+
         <View style = {styles.containerInline}>
             <BAText type={TypeText.label3}>Aun no tienes cuenta?</BAText>
             <BAText 
@@ -118,5 +131,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     marginTop: 30,
   },
+  icon: { 
+    marginLeft: 10, 
+    },
 
 });

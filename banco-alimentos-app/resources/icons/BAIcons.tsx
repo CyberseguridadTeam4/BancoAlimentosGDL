@@ -67,4 +67,7 @@ export default {
   get SMSIcon(): ImageSourcePropType {
     return require("./SMSIcon.png");
   },
+  get EyeIcon(): ImageSourcePropType {
+    return require("./EyeIcon.png");
+  },
 };

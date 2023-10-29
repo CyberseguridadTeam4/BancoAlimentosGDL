@@ -11,6 +11,7 @@ import BAIcon from "../resources/icons/BAIcon";
 import BAPallete from "../resources/BAPallete";
 import BAText, { styleText, TypeText } from "./BAText";
 import DatePickerModal from "./Modal/BADatePickerModal";
+import BAIcons from "../resources/icons/BAIcons";
 
 type Props = {
   icon?: ImageSourcePropType;
@@ -31,6 +32,7 @@ function BATextInput({
   
 }: Props): JSX.Element {
   
+  const [showPassword, setShowPassword] = useState(false);
   const containerStyle = isShadowed ? [styles.wrapper, styles.shadow] : styles.wrapper;
 
   return (
@@ -45,6 +47,14 @@ function BATextInput({
         onChangeText={onChange}
         secureTextEntry={isPassword} // Set secureTextEntry based on the prop
       />
+      {isPassword && (
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <BAIcon
+            icon={showPassword ? BAIcons.EyeIcon : BAIcons.EyeIcon}
+            color={BAPallete.Gray03}
+          />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
