@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/user', controller.userLogin);
 router.get('/getPosts', controller.getPost);
-router.get('/getComments', controller.getComment);
+router.get('/getComments/:postId', controller.getComment);
 
 router.post('/user', controller.createUser);
 router.post('/post', controller.createPost);
