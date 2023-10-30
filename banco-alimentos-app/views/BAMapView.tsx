@@ -1,4 +1,4 @@
-import { StyleSheet, View,  Dimensions } from "react-native";
+import { StyleSheet, View,  Dimensions, TouchableOpacity, Text} from "react-native";
 import React, { useState } from "react";
 import BAView from "../components/BAView";
 import BATextInput from "../components/BATextInput";
@@ -7,7 +7,7 @@ import BAIcons from "../resources/icons/BAIcons";
 import { IconSize } from "../resources/icons/BAIcon";
 //import Constants from 'expo-constants';
 
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import BAText from "../components/BAText";
 
 //const apiKey = Constants.extra.googleMapsApiKey;
@@ -21,7 +21,29 @@ export default function BAMapView(){
             <MapView
             provider={PROVIDER_GOOGLE}
             style={styles.map}
-            />
+            initialRegion={{
+              latitude: 20.671333,
+              longitude: -103.357222,
+              latitudeDelta: 0.04,
+              longitudeDelta: 0.04,
+            }}
+            scrollEnabled={true}
+            zoomEnabled={true}
+            zoomTapEnabled={true}
+            >
+            <Marker
+              coordinate={{
+                latitude: 20.65596,
+                longitude: -103.35466,
+              }}
+              >
+              <Callout>
+                <View>
+                      <Text>Banco de alimentos de Guadalajara</Text>
+                  </View>
+              </Callout>    
+              </Marker>
+            </MapView>
           </View>
             <View style={styles.buttonContainer}>
                 <View style={styles.inputContainer}>
