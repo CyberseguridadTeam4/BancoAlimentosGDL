@@ -11,6 +11,10 @@ import userLogin from "../../banco-alimentos-api/source/controllers/posts";
 import axios from 'axios';
 import React from "react";
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import BASubView from "./BASubView";
+import BASignUpView from "./BASignUpView";
+import BAPasswordCreationView from "./BAPasswordCreationView";
+
 // import BAModal from '../components/Modal/BAModal'
 // import BAModalController from '../components/Modal/BAModal'
 // import { useModal } from '../components/Modal/BAModalContext'
@@ -28,6 +32,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 // );
 
 export default function LogIn({}) {
+  const [nextPage, setNextPage] = useState(false);
   const [selectedOption, setSelectedOption] = useState("1");
   const [email, setTextEmail] = useState("");
   const [contraseña, setTextContraseña] = useState("");
@@ -48,6 +53,10 @@ export default function LogIn({}) {
 
 
   return (
+  <>
+    <BAView title=" View">
+
+      
     <View style={styles.container}>
       <StatusBar barStyle={"dark-content"} />
 
@@ -80,31 +89,25 @@ export default function LogIn({}) {
                 console.log("REGISTER VIEW")
             }}
             >
-                Registrate aqui!
+              Registrate aqui!
             </BAText>
+            <BASubView
+              title="Registrate aqui!"
+              isOpen={nextPage}
+              onReturn={() => setNextPage(false)}
+              >
+              <BASignUpView />
+            </BASubView>
         </View>
 
-      <BAButton
-        text="Log in"
-        onPress={async () => {
-          const obj = {email, contraseña}
-          const res = await axios.get("https://parse-dashboard.back4app.com/apps/bc56963c-a392-4f24-ac57-f7e4e54ed418/browser/_Session/user");
-          console.log(res)
-          // Check the response for a successful login
-        if (res.status === 200) {
-          // Login was successful
-          console.log("Login successful");
-        //   navigation.navigate('BABird');
-          // You can update your app's state here or navigate to another screen.
-        } else {
-          // Login failed
-          console.log("Login failed");
-        }
-          // You can show an error message to the user.
-            }}
-        state={ButtonState.alert}
-      />
+    <BAButton
+      text="Log in"
+      state={ButtonState.alert}
+      onPress={() => setNextPage(true)}
+    />
     </View>
+    </BAView>
+  </>
   );
 }
 

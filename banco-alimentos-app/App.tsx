@@ -12,7 +12,10 @@ import BABird from "./components/BABird";
 import BAAcount from "./components/BAAccountView";
 import BAWelcomeView from "./components/BAWelcomeView";
 import BASignUpView from "./components/BASignUpView";
-import BAPasswordCreationView from "./components/BAPasswordCreation";
+import BAPasswordCreationView from "./components/BAPasswordCreationView";
+import BASubView from "./components/BASubView";
+import BAView from "./components/BAView";
+import BAButton, { ButtonState } from "./components/BAButton";
 
 export default function App() {
   const [selectedOption, setSelectedOption] = useState("1");
@@ -21,7 +24,7 @@ export default function App() {
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
-        <BAWelcomeView />
+        <BASignUpView />
         {/* <BABottomBar /> */}
         <BAModalController />
         <BASheetController />
@@ -30,6 +33,37 @@ export default function App() {
     </View>
   );
 }
+
+
+// export default function App() {
+//   const [nextPage, setNextPage] = useState(false);
+
+//   return (
+//     <>
+//       <BAView title=" View">
+//           <BAButton
+//           text="Siguiente"
+//           state={ButtonState.alert}
+//           onPress={() => setNextPage(true)}
+//           />
+//       </BAView>
+//       <BASubView
+//         title="Regresa"
+//         isOpen={nextPage}
+//         onReturn={() => setNextPage(false)}
+//         >
+//         <BABird />
+//       </BASubView>
+//       <BASubView
+//         title="Regresa"
+//         isOpen={nextPage}
+//         onReturn={() => setNextPage(false)}
+//         >
+//         <BABird />
+//       </BASubView>
+//     </>
+//   );
+// }
 
 const styles = StyleSheet.create({
   container: {

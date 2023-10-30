@@ -8,49 +8,61 @@ import { useState } from "react";
 import BABottomBar from "./BABottomBar";
 import BAView from "./BAView";
 import React from "react";
+import BASubView from "./BASubView";
+import BAPasswordCreationView from "./BAPasswordCreationView";
 
 export default function SignUp() {
+  const [nextPage, setNextPage] = useState(false);
   const [selectedOption, setSelectedOption] = useState("1");
   const [text, setText] = useState("");
   const [text2, setText2] = useState("");
   const [text3, setText3] = useState("");
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={"dark-content"} />
-      <BAText type={TypeText.label1}> </BAText>
-      <BAText type={TypeText.label1}> </BAText>
-      <BAText style={styles.center}>Usuario:</BAText>
-      <BATextInput
-        placeholder="Usuario"
-        icon={BAIcons.PersonIcon}
-        value={text}
-        onChange={setText}
-        isShadowed={true}
+    <>
+      <View style={styles.container}>
+        <StatusBar barStyle={"dark-content"} />
+        <BAText type={TypeText.label1}> </BAText>
+        <BAText type={TypeText.label1}> </BAText>
+        <BAText style={styles.center}>Usuario:</BAText>
+        <BATextInput
+          placeholder="Usuario"
+          icon={BAIcons.PersonIcon}
+          value={text}
+          onChange={setText}
+          isShadowed={true}
+          />
+        <BAText type={TypeText.label1}style={styles.center}>Email:</BAText>
+        <BATextInput
+          placeholder="Email"
+          icon={BAIcons.SMSIcon}
+          value={text2}
+          onChange={setText2}
+          isShadowed={true}
+          />
+        <BAText style={styles.center}>Fecha de nacimimento:</BAText>
+        <BATextInput
+          placeholder="00/00/0000"
+          icon={BAIcons.BirdIcon}
+          value={text3}
+          onChange={setText3}
+          isShadowed={true}
+          />
+        <BAButton
+          text="Siguiente"
+          state={ButtonState.alert}
+          style={styles.centerSiguiente}
+          onPress={() => setNextPage(true)}
         />
-      <BAText type={TypeText.label1}style={styles.center}>Email:</BAText>
-      <BATextInput
-        placeholder="Email"
-        icon={BAIcons.SMSIcon}
-        value={text2}
-        onChange={setText2}
-        isShadowed={true}
-        />
-      <BAText style={styles.center}>Fecha de nacimimento:</BAText>
-      <BATextInput
-        placeholder="00/00/0000"
-        icon={BAIcons.BirdIcon}
-        value={text3}
-        onChange={setText3}
-        isShadowed={true}
-        />
-      <BAButton
-        text="Siguiente"
-        onPress={() => {}}
-        state={ButtonState.alert}
-        style={styles.centerSiguiente}
-      />
-    </View>
+        <BASubView
+          title="Regresa"
+          isOpen={nextPage}
+          onReturn={() => setNextPage(false)}
+          >
+          <BAPasswordCreationView />
+        </BASubView>
+      </View>
+    </>
   );
 }
 
@@ -71,3 +83,42 @@ export default function SignUp() {
         marginTop: 150,
     },
 });
+
+
+// {/* <BASubView
+// title="Regresa"
+// isOpen={nextPage}
+// onReturn={() => setNextPage(false)}
+// >
+// <BAPasswordCreationView />
+// </BASubView> */}
+
+// export default function App() {
+//   const [nextPage, setNextPage] = useState(false);
+
+//   return (
+//     <>
+//       <BAView title=" View">
+//           <BAButton
+//           text="Siguiente"
+//           state={ButtonState.alert}
+//           onPress={() => setNextPage(true)}
+//           />
+//       </BAView>
+//       <BASubView
+//         title="Regresa"
+//         isOpen={nextPage}
+//         onReturn={() => setNextPage(false)}
+//         >
+//         <BABird />
+//       </BASubView>
+//       <BASubView
+//         title="Regresa"
+//         isOpen={nextPage}
+//         onReturn={() => setNextPage(false)}
+//         >
+//         <BABird />
+//       </BASubView>
+//     </>
+//   );
+// }

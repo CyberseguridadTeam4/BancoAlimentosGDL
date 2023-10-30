@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, StatusBar, Dimensions } from "react-native";
+import { StyleSheet, Text, View, StatusBar, Dimensions, SafeAreaView, TextInput } from "react-native";
 import BAButton, { ButtonState } from "./BAButton";
 import BAText, { TypeText } from "./BAText";
 import BATextInput from "./BATextInput";
@@ -8,8 +8,13 @@ import { useState } from "react";
 import BABottomBar from "./BABottomBar";
 import BAView from "./BAView";
 import React from "react";
+import BABird from "./BABird";
+import BASubView from "./BASubView";
+// import PassMeter from "react-native-passmeter";
+// import zxcvbn from 'zxcvbn';
 
 export default function SignUp() {
+  const [nextPage, setNextPage] = useState(false);
   const [selectedOption, setSelectedOption] = useState("1");
   const [text, setText] = useState("");
   const [text2, setText2] = useState("");
@@ -40,10 +45,17 @@ export default function SignUp() {
         />
       <BAButton
         text="Confirmar"
-        onPress={() => {}}
         state={ButtonState.alert}
         style={styles.centerConfirmar}
+        onPress={() => setNextPage(true)}
       />
+      <BASubView
+          title="Regresa"
+          isOpen={nextPage}
+          onReturn={() => setNextPage(false)}
+          >
+        <BABird />
+      </BASubView>
     </View>
   );
 }

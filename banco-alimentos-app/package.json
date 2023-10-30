@@ -9,10 +9,10 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/webpack-config": "^19.0.0",
+    "@expo/webpack-config": "^0.12.52",
     "@react-native-community/cli": "^11.3.8",
     "axios": "^1.6.0",
-    "expo": "~49.0.11",
+    "expo": "^44.0.6",
     "expo-status-bar": "~1.6.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -20,7 +20,8 @@
     "react-native-eject": "^0.2.0",
     "react-native-modal-datetime-picker": "^17.1.0",
     "react-native-svg": "13.9.0",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
