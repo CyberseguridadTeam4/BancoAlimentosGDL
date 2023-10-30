@@ -8,14 +8,37 @@ import { useState } from "react";
 import BABottomBar from "./BABottomBar";
 import BAView from "./BAView";
 import React from "react";
+import axios from '../axios';
 
-export default function SignUp() {
+
+export default function SignUp({username, email, name, nextStage}:any) {
   const [selectedOption, setSelectedOption] = useState("1");
-  const [text, setText] = useState("");
+  const [password, setText] = useState("");
   const [text2, setText2] = useState("");
-  const [text3, setText3] = useState("");
-  
-  return (
+
+  // const { username, password, email, name, nextStage } = req.body; 
+  function createUser() {
+    if (password != text2) {
+      console.log("Las contraseñas no coinciden");
+    }else {
+      console.log("Crear usuario");
+      axios.post('/user', { 
+        username: username,
+        password:password,
+        email:email,
+        name:name,
+        nextStage:nextStage,      
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
+  }
+
+    return (
     <View style={styles.container}>
       <StatusBar barStyle={"dark-content"} />
       <BAText type={TypeText.label1}> </BAText>
@@ -24,7 +47,7 @@ export default function SignUp() {
       <BATextInput
         placeholder="Contraseña"
         icon={BAIcons.PersonIcon}
-        value={text}
+        value={password}
         onChange={setText}
         isShadowed={true}
         isPassword={true}
@@ -40,7 +63,7 @@ export default function SignUp() {
         />
       <BAButton
         text="Confirmar"
-        onPress={() => {}}
+        onPress={() => {createUser()}}
         state={ButtonState.alert}
         style={styles.centerConfirmar}
       />

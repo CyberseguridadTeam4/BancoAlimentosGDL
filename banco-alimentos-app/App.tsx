@@ -21,11 +21,22 @@ export default function App() {
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
-        <BAWelcomeView />
-        {/* <BABottomBar /> */}
+        <BABottomBar />
+        <BAPasswordCreationView 
+          username="javs"
+          email="javiereric1309@gmail.com"
+          name="bebecita"
+          nextStage={0}
+        />
+        {/* <BASignUpView /> */}
+        {/* <BAPostsView /> */}
+        {/* <BABirdView /> */}
+        {/* <BAAcount /> */}
+        {/* <BABird /> */}
+        {/* <BAWelcomeView />
         <BAModalController />
         <BASheetController />
-        <BAToastController />
+        <BAToastController /> */}
       </BAContextProviderWrapper>
     </View>
   );
