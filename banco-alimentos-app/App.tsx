@@ -10,7 +10,7 @@ import BAToastController from "./components/Toast/BAToast";
 import BAPostsView from "./views/BAPostsView";
 import BABird from "./components/BABird";
 import BAAcount from "./components/BAAccountView";
-
+import BAAccountBadges from "./components/BABadgesView";
 export default function App() {
   const [selectedOption, setSelectedOption] = useState("1");
   const [text, setText] = useState("Hello");
@@ -19,9 +19,15 @@ export default function App() {
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
         <BABottomBar />
-        <BAModalController />
+        {/* <BAModalController />
         <BASheetController />
         <BAToastController />
+        <BAPostsView />
+        <BABirdView />
+        <BAAcount />
+        <BABird /> */}
+        <BAAccountBadges badges={null}/>
+        {/* <BAAcount /> */}
       </BAContextProviderWrapper>
     </View>
   );
