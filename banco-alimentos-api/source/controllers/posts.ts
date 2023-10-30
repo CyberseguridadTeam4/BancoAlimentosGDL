@@ -58,7 +58,6 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-// Get user by objectId
 const userLogin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, password } = req.body;
@@ -312,6 +311,7 @@ const patchPollito = async (
   res: Response,
   next: NextFunction
 ) => {
+  //
   try {
     //Get body from endpoint call
     const polloId = req.params.polloId;
