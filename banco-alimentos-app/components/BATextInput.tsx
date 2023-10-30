@@ -6,7 +6,13 @@
  */
 
 import React, { useState } from "react";
-import { ImageSourcePropType, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  ImageSourcePropType,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import BAIcon from "../resources/icons/BAIcon";
 import BAPallete from "../resources/BAPallete";
 import BAText, { styleText, TypeText } from "./BAText";
@@ -29,15 +35,15 @@ function BATextInput({
   onChange,
   isPassword = false, // Default to non-password input
   isShadowed = false, // Default to non-shadowed input
-  
 }: Props): JSX.Element {
-  
   const [showPassword, setShowPassword] = useState(false);
-  const containerStyle = isShadowed ? [styles.wrapper, styles.shadow] : styles.wrapper;
+  const containerStyle = isShadowed
+    ? [styles.wrapper, styles.shadow]
+    : styles.wrapper;
 
   return (
-    <View style={containerStyle}> 
-    {/* previouly: style=styles.wrapper */}
+    <View style={containerStyle}>
+      {/* previouly: style=styles.wrapper */}
       {icon && <BAIcon icon={icon} color={BAPallete.Black} />}
       <TextInput
         placeholderTextColor={BAPallete.Gray03}
@@ -58,7 +64,6 @@ function BATextInput({
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   wrapper: {

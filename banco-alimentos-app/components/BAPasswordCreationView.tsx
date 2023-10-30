@@ -1,4 +1,12 @@
-import { StyleSheet, Text, View, StatusBar, Dimensions, SafeAreaView, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  Dimensions,
+  SafeAreaView,
+  TextInput,
+} from "react-native";
 import BAButton, { ButtonState } from "./BAButton";
 import BAText, { TypeText } from "./BAText";
 import BATextInput from "./BATextInput";
@@ -19,61 +27,64 @@ export default function SignUp() {
   const [text, setText] = useState("");
   const [text2, setText2] = useState("");
   const [text3, setText3] = useState("");
-  
+
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={"dark-content"} />
-      <BAText type={TypeText.label1}> </BAText>
-      <BAText type={TypeText.label1}> </BAText>
-      <BAText style={styles.center}>Contraseña:</BAText>
-      <BATextInput
-        placeholder="Contraseña"
-        icon={BAIcons.PersonIcon}
-        value={text}
-        onChange={setText}
-        isShadowed={true}
-        isPassword={true}
+    <>
+      <View style={styles.container}>
+        <BAText type={TypeText.label1}> </BAText>
+        <BAText type={TypeText.label1}> </BAText>
+        <BAText style={styles.center}>Contraseña:</BAText>
+        <BATextInput
+          placeholder="Contraseña"
+          icon={BAIcons.PersonIcon}
+          value={text}
+          onChange={setText}
+          isShadowed={true}
+          isPassword={true}
         />
-      <BAText type={TypeText.label1}style={styles.center}>Confirmar contraseña:</BAText>
-      <BATextInput
-        placeholder="Contraseña"
-        icon={BAIcons.SMSIcon}
-        value={text2}
-        onChange={setText2}
-        isShadowed={true}
-        isPassword={true}
+        <BAText type={TypeText.label1} style={styles.center}>
+          Confirmar contraseña:
+        </BAText>
+        <BATextInput
+          placeholder="Contraseña"
+          icon={BAIcons.SMSIcon}
+          value={text2}
+          onChange={setText2}
+          isShadowed={true}
+          isPassword={true}
         />
-      <BAButton
-        text="Confirmar"
-        state={ButtonState.alert}
-        style={styles.centerConfirmar}
-        onPress={() => setNextPage(true)}
-      />
-      <BASubView
-          title="Regresa"
-          isOpen={nextPage}
-          onReturn={() => setNextPage(false)}
-          >
+        <BAButton
+          text="Confirmar"
+          state={ButtonState.alert}
+          style={styles.centerConfirmar}
+          onPress={() => setNextPage(true)}
+        />
+      </View>
+      {/* <BASubView
+        title="Regresa"
+        isOpen={nextPage}
+        onReturn={() => setNextPage(false)}
+      >
         <BABird />
-      </BASubView>
-    </View>
+      </BASubView> */}
+    </>
   );
 }
 
-    const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#F4F5FF",
-        alignItems: "center",
-        height: Dimensions.get('window').height,
-        gap: 20,
-        paddingHorizontal: 20,
-    },
-    center: {
-        width: Dimensions.get('window').width,
-        paddingHorizontal: 30,
-    },
-    centerConfirmar: {
-        marginTop: 60,
-    },
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F4F5FF",
+    alignItems: "center",
+    height: Dimensions.get("window").height,
+    gap: 20,
+    paddingHorizontal: 20,
+  },
+  center: {
+    width: Dimensions.get("window").width,
+    paddingHorizontal: 30,
+  },
+  centerConfirmar: {
+    marginTop: 60,
+  },
 });

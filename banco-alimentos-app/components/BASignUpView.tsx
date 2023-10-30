@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, StatusBar, Dimensions} from "react-native";
+import { StyleSheet, Text, View, StatusBar, Dimensions } from "react-native";
 import BAButton, { ButtonState } from "./BAButton";
 import BAText, { TypeText } from "./BAText";
 import BATextInput from "./BATextInput";
@@ -11,8 +11,7 @@ import React from "react";
 import BASubView from "./BASubView";
 import BAPasswordCreationView from "./BAPasswordCreationView";
 
-export default function SignUp() {
-  const [nextPage, setNextPage] = useState(false);
+export default function SignUp({ setIsInPasswordPage }: any) {
   const [selectedOption, setSelectedOption] = useState("1");
   const [text, setText] = useState("");
   const [text2, setText2] = useState("");
@@ -31,15 +30,17 @@ export default function SignUp() {
           value={text}
           onChange={setText}
           isShadowed={true}
-          />
-        <BAText type={TypeText.label1}style={styles.center}>Email:</BAText>
+        />
+        <BAText type={TypeText.label1} style={styles.center}>
+          Email:
+        </BAText>
         <BATextInput
           placeholder="Email"
           icon={BAIcons.SMSIcon}
           value={text2}
           onChange={setText2}
           isShadowed={true}
-          />
+        />
         <BAText style={styles.center}>Fecha de nacimimento:</BAText>
         <BATextInput
           placeholder="00/00/0000"
@@ -47,43 +48,35 @@ export default function SignUp() {
           value={text3}
           onChange={setText3}
           isShadowed={true}
-          />
+        />
         <BAButton
           text="Siguiente"
           state={ButtonState.alert}
           style={styles.centerSiguiente}
-          onPress={() => setNextPage(true)}
+          onPress={() => setIsInPasswordPage(true)}
         />
-        <BASubView
-          title="Regresa"
-          isOpen={nextPage}
-          onReturn={() => setNextPage(false)}
-          >
-          <BAPasswordCreationView />
-        </BASubView>
       </View>
     </>
   );
 }
 
-    const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#F4F5FF",
-        alignItems: "center",
-        height: Dimensions.get('window').height,
-        gap: 20,
-        paddingHorizontal: 20,
-    },
-    center: {
-        width: Dimensions.get('window').width,
-        paddingHorizontal: 30,
-    },
-    centerSiguiente: {
-        marginTop: 150,
-    },
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F4F5FF",
+    alignItems: "center",
+    height: Dimensions.get("window").height,
+    gap: 20,
+    paddingHorizontal: 20,
+  },
+  center: {
+    width: Dimensions.get("window").width,
+    paddingHorizontal: 30,
+  },
+  centerSiguiente: {
+    marginTop: 150,
+  },
 });
-
 
 // {/* <BASubView
 // title="Regresa"

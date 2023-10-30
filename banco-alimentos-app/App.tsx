@@ -24,8 +24,9 @@ export default function App() {
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
-        <BASignUpView />
+        {/* <BASignUpView /> */}
         {/* <BABottomBar /> */}
+        <BAWelcomeView />
         <BAModalController />
         <BASheetController />
         <BAToastController />
@@ -33,7 +34,6 @@ export default function App() {
     </View>
   );
 }
-
 
 // export default function App() {
 //   const [nextPage, setNextPage] = useState(false);
