@@ -37,7 +37,6 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
         user.set('password', password);
         user.set('email', email);
 
-
         user.set('badges', []); // Initialize badges as an empty array
         user.set('idProfilePicture', 0); // Initialize profile picture ID 0 is starting picture for everyone
         user.set('visBadge', -1); // Initialize visibility badge. -1 means no badges
@@ -293,9 +292,9 @@ const reportPost = async (req: Request, res: Response, next: NextFunction) => {
 
 const getPollito = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const polloId = req.params;
+        const polloId = req.params.polloId;//
         const query = new Parse.Query('Pollo'); //Pollo
-        let pollito: Parse.Object[] = await query.find(polloId);
+        const pollito = await query.get(polloId);
         return res.status(200).json({
             message: 'Pollo received',
             pollo: pollito,
@@ -310,6 +309,7 @@ const getPollito = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const patchPollito = async (req: Request, res: Response, next: NextFunction) => {
+    //
     try {
         //Get body from endpoint call
         const {polloId, level, name, nextStage, nApple} = req.body;
