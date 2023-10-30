@@ -20,9 +20,6 @@ export default function SignUp({ setIsInPasswordPage }: any) {
   return (
     <>
       <View style={styles.container}>
-        <StatusBar barStyle={"dark-content"} />
-        <BAText type={TypeText.label1}> </BAText>
-        <BAText type={TypeText.label1}> </BAText>
         <BAText style={styles.center}>Usuario:</BAText>
         <BATextInput
           placeholder="Usuario"
@@ -67,7 +64,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: Dimensions.get("window").height,
     gap: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
+    paddingTop: 20,
   },
   center: {
     width: Dimensions.get("window").width,

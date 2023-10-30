@@ -113,6 +113,7 @@ export default function LogIn({}) {
       <BASubView
         title="Registrate aqui!"
         isOpen={isInRegisterPage}
+        isScrolling={false}
         onReturn={() => setIsInRegisterPage(false)}
       >
         <BASignUpView setIsInPasswordPage={setIsInPasswordPage} />
@@ -120,6 +121,7 @@ export default function LogIn({}) {
       <BASubView
         title="Contraseña"
         isOpen={isInPasswordPage}
+        isScrolling={false}
         onReturn={() => setIsInPasswordPage(false)}
       >
         <BAPasswordCreationView />
@@ -136,19 +138,16 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height,
     paddingVertical: 60,
     gap: 20,
-    paddingHorizontal: 20,
   },
   containerInline: {
     flexDirection: "row",
     marginBottom: 30,
   },
   center: {
-    width: Dimensions.get("window").width,
-    paddingHorizontal: 30,
+    width: "100%",
   },
   centerEmail: {
-    width: Dimensions.get("window").width,
-    paddingHorizontal: 30,
+    width: "100%",
     marginTop: 30,
   },
   icon: {
