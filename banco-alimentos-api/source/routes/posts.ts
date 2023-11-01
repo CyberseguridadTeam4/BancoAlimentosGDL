@@ -19,6 +19,6 @@ router.patch('/editPost/:postId',controller.editPost)
 router.patch('/report/:postId',controller.reportPost)
 
 router.get('/getPollito/:polloId', controller.getPollito);
-router.patch('/patchPollito', controller.patchPollito);
+router.patch('/patchPollito/:polloId', controller.patchPollito);
 
 export = router;
