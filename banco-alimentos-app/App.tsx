@@ -9,12 +9,6 @@ import BASheetController from "./components/Sheet/BASheet";
 import BAToastController from "./components/Toast/BAToast";
 import BAPostsView from "./views/BAPostsView";
 import BABird from "./components/BABird";
-import BAWelcomeView from "./components/BAWelcomeView";
-import BASignUpView from "./components/BASignUpView";
-import BAPasswordCreationView from "./components/BAPasswordCreationView";
-import BASubView from "./components/BASubView";
-import BAView from "./components/BAView";
-import BAButton, { ButtonState } from "./components/BAButton";
 
 export default function App() {
   const [selectedOption, setSelectedOption] = useState("1");
@@ -23,7 +17,7 @@ export default function App() {
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
-        <BAWelcomeView />
+        <BABottomBar />
         <BAModalController />
         <BASheetController />
         <BAToastController />
