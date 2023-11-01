@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import BAView from "../components/BAView";
 import BATextInput from "../components/BATextInput";
 import BAPallete from "../resources/BAPallete";
+import BAIcon, { IconSize } from "../resources/icons/BAIcon";
+import BAIcons from "../resources/icons/BAIcons";
 
 //import Constants from 'expo-constants';
 
@@ -39,8 +41,8 @@ export default function BAMapView(){
             provider={PROVIDER_GOOGLE}
             style={styles.map}
             initialRegion={{
-              latitude: 20.671333,
-              longitude: -103.357222,
+              latitude: 20.65596,
+              longitude: -103.35466,
               latitudeDelta: 0.03,
               longitudeDelta: 0.03,
             }}
@@ -64,10 +66,16 @@ export default function BAMapView(){
           </View>
           <View style={styles.textContainer}>
               {name && <BAText style = {styles.textTitle}>{name}</BAText>}
-              {vicinity && <BAText style = {styles.textLabel}>{vicinity}</BAText>}
-              <TouchableOpacity onPress={handlePress}>
-                {phoneNumber && <BAText style = {styles.textLabel}>{phoneNumber}</BAText>}
-              </TouchableOpacity>
+              <View style= {styles.row}>
+                <BAIcon icon={BAIcons.MapIcon} color={BAPallete.Red01} size={IconSize.small}/>
+                {vicinity && <BAText style = {styles.textLabel}>{vicinity}</BAText>}
+              </View>
+              <View style = {styles.row}>
+              <BAIcon icon={BAIcons.PhoneIcon} color={BAPallete.Red01} size={IconSize.small}/>
+                <TouchableOpacity onPress={handlePress}>
+                  {phoneNumber && <BAText style = {styles.textLabel}>{phoneNumber}</BAText>}
+                </TouchableOpacity>
+              </View>
           </View>  
         </BAView>
     );
@@ -83,13 +91,13 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
       textContainer: {
-        alignItems: "center",
+        alignItems: "stretch",
         justifyContent: "center",
         marginTop: 20,
         flex: 1,
       },
       textLabel: {
-        textAlign: 'center',
+        textAlign: 'left',
         fontWeight: "500",
         fontSize: PixelRatio.get() > 2 ? 18 : 16,
         color: BAPallete.Gray01
@@ -102,7 +110,7 @@ const styles = StyleSheet.create({
       },
       mapContainer: {
         flex: 1,
-        height: windowHeight * 0.45,  // Half of the window height
+        height: windowHeight /2,  // Half of the window height
         shadowRadius: 15,
         shadowColor: BAPallete.StrongBlue,
         shadowOpacity: 0.15,
@@ -112,4 +120,8 @@ const styles = StyleSheet.create({
         height: '100%',
         borderRadius: 10,
       },
+      row: {
+        flexDirection: "row",
+        padding: 5,
+      }
 });
