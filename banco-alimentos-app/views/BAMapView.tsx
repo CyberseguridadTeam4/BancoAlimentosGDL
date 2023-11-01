@@ -1,5 +1,5 @@
-import { StyleSheet, View,  Dimensions, TouchableOpacity, Text} from "react-native";
-import React, { useState } from "react";
+import { StyleSheet, View,  Dimensions, TouchableOpacity, Text, Linking} from "react-native";
+import React, { useEffect, useState } from "react";
 import BAView from "../components/BAView";
 import BATextInput from "../components/BATextInput";
 import BAButton, { ButtonState } from "../components/BAButton";
@@ -8,12 +8,31 @@ import { IconSize } from "../resources/icons/BAIcon";
 //import Constants from 'expo-constants';
 
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
-import BAText from "../components/BAText";
+import BAText, {TypeText} from "../components/BAText";
 
 //const apiKey = Constants.extra.googleMapsApiKey;
 
 export default function BAMapView(){
-    const [place, setPlace] = useState("");
+    const [name, setName] = useState(null);
+    const [vicinity, setVicinity] = useState(null);
+    const [phoneNumber, setPhoneNumber] = useState(null);
+
+    useEffect(() => {
+      fetch('https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJEyCF-AayKIQRhWWzownuQ8s&fields=name,formatted_phone_number,geometry,vicinity&key=AIzaSyBZ-L6y4RM_Adga1qdKEj8ZTMCBkMHE_3o')
+      .then(response => response.json())
+      .then(json => {
+        setName(json.result.name);
+        setVicinity(json.result.vicinity);
+        setPhoneNumber(json.result.formatted_phone_number);
+      })
+      .catch(error => console.error(error));
+    }, []);
+
+    const handlePress = () => {
+      let phone = 'tel:' + phoneNumber;
+      Linking.openURL(phone).catch((err) => console.error('An error occurred', err));
+    };
+  
     return (
         <BAView title="Map" isScrolling={true}  style={styles.body}>
           <View style = {styles.mapContainer}>
@@ -45,11 +64,12 @@ export default function BAMapView(){
               </Marker>
             </MapView>
           </View>
-            <View style={styles.buttonContainer}>
-                <View style={styles.inputContainer}>
-                    <BATextInput value={place} onChange={setPlace} placeholder="Find place..."/> 
-                </View> 
-                <BAButton onPress={() =>{}} icon={BAIcons.SearchIcon} iconSize={IconSize.large} style={styles.buttons} />
+            <View style={styles.textContainer}>
+              {name && <BAText style = {TypeText.label1}>{name}</BAText>}
+              {vicinity && <BAText style = {TypeText.label3}>{vicinity}</BAText>}
+              <TouchableOpacity onPress={handlePress}>
+                {phoneNumber && <BAText style = {TypeText.label3}>{phoneNumber}</BAText>}
+              </TouchableOpacity>
             </View>  
         </BAView>
     );
@@ -64,20 +84,11 @@ const styles = StyleSheet.create({
         alignContent: "center",
         justifyContent: "center",
     },
-    buttons: {
-        flex: 1,
-        marginLeft:  20,
-        aspectRatio: 1 / 1,
-      },
-      buttonContainer: {
+      textContainer: {
         width: "100%",
-        flexDirection: "row",
+        flexDirection: "column",
         justifyContent: "space-between",
         marginTop: 20,
-      },
-      inputContainer: {
-        width: "80%",
-        height: "100%",
       },
       mapContainer: {
         flex: 1,
