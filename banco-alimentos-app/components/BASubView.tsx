@@ -8,6 +8,9 @@ import {
   TouchableOpacity,
   Animated,
   Easing,
+  KeyboardAvoidingView,
+  Platform,
+  RefreshControlProps,
 } from "react-native";
 import React, { useCallback, useEffect, useRef } from "react";
 import BAText, { TypeText } from "./BAText";
@@ -23,6 +26,12 @@ type SubViewProps = {
   isOpen: boolean;
   isScrolling?: boolean;
   onReturn: (e: boolean) => void;
+  onRefresh?:
+    | React.ReactElement<
+        RefreshControlProps,
+        string | React.JSXElementConstructor<any>
+      >
+    | undefined;
 };
 
 export default function BASubView({
@@ -32,6 +41,7 @@ export default function BASubView({
   isOpen = false,
   isScrolling = true,
   onReturn,
+  onRefresh,
 }: SubViewProps) {
   const subpagePositionRef = useRef(new Animated.Value(0)).current;
   const OPEN_CLOSE_ANIMATION_TIME = 200;
@@ -93,13 +103,26 @@ export default function BASubView({
               </TouchableOpacity>
               <BAText type={TypeText.label0}>{title}</BAText>
             </View>
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              scrollEnabled={isScrolling}
-              contentContainerStyle={isScrolling ? {} : styles.scroll}
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : undefined}
+              keyboardVerticalOffset={Platform.OS === "ios" ? 25 : undefined}
+              style={{ flex: 1 }}
             >
-              <View style={style}>{children}</View>
-            </ScrollView>
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: 20,
+                  paddingTop: 20,
+                  paddingBottom: 100,
+                  flexGrow: 1,
+                }}
+                keyboardShouldPersistTaps="handled"
+                refreshControl={onRefresh}
+                scrollEnabled={isScrolling}
+              >
+                <View style={style}>{children}</View>
+              </ScrollView>
+            </KeyboardAvoidingView>
           </Animated.View>
         </SafeAreaView>
       )}
@@ -117,7 +140,11 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flexGrow: 1,
-    marginBottom: 150,
+    marginBottom: 100,
+  },
+  view: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
   },
   container: {
     width: "100%",
