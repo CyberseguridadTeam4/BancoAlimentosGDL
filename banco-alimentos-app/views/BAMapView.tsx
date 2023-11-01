@@ -24,7 +24,7 @@ export default function BAMapView(){
       .then(json => {
         setName(json.result.name);
         setVicinity(json.result.vicinity);
-        setPhoneNumber(json.result.formatted_phone_number);
+        setPhoneNumber(json.result.formatted_phone_number.replace(/\D/g, ''));
       })
       .catch(error => console.error(error));
     }, []);
