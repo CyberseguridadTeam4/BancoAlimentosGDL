@@ -24,12 +24,13 @@ export enum TypeText {
   label3,
   label4,
   label5,
+  label6,
 }
 
 type Props = {
   type?: TypeText;
-  style?: StyleProp<ViewStyle>;
-  children: string;
+  style?: StyleProp<any>;
+  children: string | number;
   isLink?: boolean;
   onPress?: () => void;
 };
@@ -91,7 +92,14 @@ export const styleText = (type: TypeText): TextStyle => {
         alignContent: "space-around",
         textDecorationLine: "underline",
       };
-
+    case TypeText.label6:
+      return {
+        fontSize: PixelRatio.get() > 2 ? 18 : 14,
+        color: BAPallete.Red01,
+        fontWeight: "500",
+        alignContent: "space-around",
+        textDecorationLine: "underline",
+      };
     default:
       return {
         fontSize: 24,
