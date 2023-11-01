@@ -293,6 +293,7 @@ const reportPost = async (req: Request, res: Response, next: NextFunction) => {
 const getPollito = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const polloId = req.params.polloId;//
+        
         const query = new Parse.Query('Pollo'); //Pollo
         const pollito = await query.get(polloId);
         return res.status(200).json({
@@ -312,12 +313,11 @@ const patchPollito = async (req: Request, res: Response, next: NextFunction) => 
     //
     try {
         //Get body from endpoint call
-        const polloId = req.params.polloId
+        const polloId = req.params.polloId;
         const {nApple} = req.body;
-        
         const query = new Parse.Query('Pollo')
-        const pollo = await query.get(polloId)
-
+        console.log('Get')
+        const pollo = await query.get(polloId);
         if(pollo){
             pollo.set('nApple', nApple)
             const updatedPollo = await pollo.save()
