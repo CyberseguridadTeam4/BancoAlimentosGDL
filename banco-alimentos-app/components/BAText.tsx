@@ -12,8 +12,7 @@ import {
   PixelRatio,
   StyleProp,
   ViewStyle,
-  TouchableOpacity, 
-
+  TouchableOpacity,
 } from "react-native";
 import BAPallete from "../resources/BAPallete";
 
@@ -32,14 +31,14 @@ type Props = {
   style?: StyleProp<ViewStyle>;
   children: string;
   isLink?: boolean;
-  onPress?: () => void; 
+  onPress?: () => void;
 };
 
 function BAText({
   type = TypeText.label1,
   children,
   style,
-  isLink = false, 
+  isLink = false,
   onPress,
 }: Props): JSX.Element {
   if (isLink) {
@@ -47,7 +46,6 @@ function BAText({
       <TouchableOpacity onPress={onPress}>
         <Text style={[styleText(type), style]}>{children}</Text>
       </TouchableOpacity>
-      
     );
   }
   return <Text style={[styleText(type), style]}>{children} </Text>;
@@ -82,17 +80,17 @@ export const styleText = (type: TypeText): TextStyle => {
     case TypeText.label4:
       return {
         fontSize: PixelRatio.get() > 2 ? 61 : 57,
-        color: BAPallete.Red01, 
+        color: BAPallete.Red01,
         fontWeight: "bold",
-      }
+      };
     case TypeText.label5:
       return {
         fontSize: PixelRatio.get() > 2 ? 18 : 14,
-        color: BAPallete.Red01, 
+        color: BAPallete.Red01,
         fontWeight: "500",
         alignContent: "space-around",
-        textDecorationLine: "underline"
-      }
+        textDecorationLine: "underline",
+      };
 
     default:
       return {
