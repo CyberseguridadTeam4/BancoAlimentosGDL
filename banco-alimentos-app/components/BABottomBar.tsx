@@ -5,6 +5,8 @@ import {
   SafeAreaView,
   Animated,
   Easing,
+  Keyboard,
+  Platform,
 } from "react-native";
 import React, { Component, useEffect, useRef, useState } from "react";
 import Svg, { Path } from "react-native-svg";
@@ -25,8 +27,40 @@ const BUTTONS_STYLES: ImageSourcePropType[][] = [
 
 export default function BABottomBar() {
   const [optionSelected, setOptionSelected] = useState(0);
+  const [isKeyboardOnScreen, setIsKeyboardOnScreen] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsKeyboardOnScreen(true);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsKeyboardOnScreen(false);
+      }
+    );
+
+    // Don't forget to remove the event listeners when the component unmounts
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        {
+          display:
+            isKeyboardOnScreen && Platform.OS == "android" ? "none" : "flex",
+        },
+      ]}
+    >
       <View style={styles.buttonContainer}>
         {BUTTONS_STYLES.map((item: ImageSourcePropType[], index: number) => {
           return index == 2 ? (
