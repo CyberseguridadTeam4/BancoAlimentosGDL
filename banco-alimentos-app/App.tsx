@@ -9,7 +9,7 @@ import BASheetController from "./components/Sheet/BASheet";
 import BAToastController from "./components/Toast/BAToast";
 import BAPostsView from "./views/BAPostsView";
 import BABird from "./components/BABird";
-import BAAcount from "./components/BAAccountView";
+import BAAcount from "./views/BAAccountView";
 
 export default function App() {
   const [selectedOption, setSelectedOption] = useState("1");
