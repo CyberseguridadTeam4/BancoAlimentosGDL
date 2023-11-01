@@ -9,7 +9,6 @@ import BASheetController from "./components/Sheet/BASheet";
 import BAToastController from "./components/Toast/BAToast";
 import BAPostsView from "./views/BAPostsView";
 import BABird from "./components/BABird";
-import BAAcount from "./components/BAAccountView";
 import BAWelcomeView from "./components/BAWelcomeView";
 import BASignUpView from "./components/BASignUpView";
 import BAPasswordCreationView from "./components/BAPasswordCreationView";
