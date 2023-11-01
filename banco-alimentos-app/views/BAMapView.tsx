@@ -90,22 +90,26 @@ const styles = StyleSheet.create({
       },
       textLabel: {
         textAlign: 'center',
-        fontWeight: "300",
-        fontSize: PixelRatio.get() > 2 ? 24 : 20,
+        fontWeight: "500",
+        fontSize: PixelRatio.get() > 2 ? 18 : 16,
         color: BAPallete.Gray01
       },
       textTitle: {
         textAlign: 'center',
         fontWeight: "500",
+        fontSize: PixelRatio.get() > 2 ? 22 : 20,
         color: BAPallete.Red01
       },
       mapContainer: {
         flex: 1,
-        height: windowHeight/2,  // Half of the window height
+        height: windowHeight * 0.45,  // Half of the window height
+        shadowRadius: 15,
+        shadowColor: BAPallete.StrongBlue,
+        shadowOpacity: 0.15,
       },
       map: {
         width: '100%',
         height: '100%',
-        flex: 1,
+        borderRadius: 10,
       },
 });
