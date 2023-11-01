@@ -312,25 +312,24 @@ const patchPollito = async (req: Request, res: Response, next: NextFunction) => 
     //
     try {
         //Get body from endpoint call
-        const {polloId, level, name, nextStage, nApple} = req.body;
-        const Pollo = Parse.Object.extend('Pollo');
-        const pollito = new Pollo();
+        const polloId = req.params.polloId
+        const {nApple} = req.body;
+        
+        const query = new Parse.Query('Pollo')
+        const pollo = await query.get(polloId)
 
-        //Set id from the database
-        pollito.set('objectId', polloId); 
-
-        //Update the rest of the fields
-        pollito.set('level', level);
-        pollito.set('name', name);
-        pollito.set('nextStage', nextStage);
-        pollito.set('nApple', nApple);
-
-        //Save to database
-        await pollito.save();
-
-        return res.status(200).json({
-            message: 'Pollito changed successfully',
-        });
+        if(pollo){
+            pollo.set('nApple', nApple)
+            const updatedPollo = await pollo.save()
+            return res.status(200).json({
+                message: 'Pollito changed successfully',
+            });
+            
+        } else {
+            return res.status(404).json({
+                message: 'Pollo not found',
+            })
+        }
     } catch (error) {
         return res.status(500).json({
             message: error,
