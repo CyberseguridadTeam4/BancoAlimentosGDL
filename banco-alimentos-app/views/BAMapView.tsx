@@ -1,10 +1,9 @@
-import { StyleSheet, View,  Dimensions, TouchableOpacity, Text, Linking} from "react-native";
+import { StyleSheet, View,  Dimensions, TouchableOpacity, Text, Linking, PixelRatio} from "react-native";
 import React, { useEffect, useState } from "react";
 import BAView from "../components/BAView";
 import BATextInput from "../components/BATextInput";
-import BAButton, { ButtonState } from "../components/BAButton";
-import BAIcons from "../resources/icons/BAIcons";
-import { IconSize } from "../resources/icons/BAIcon";
+import BAPallete from "../resources/BAPallete";
+
 //import Constants from 'expo-constants';
 
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
@@ -36,15 +35,14 @@ export default function BAMapView(){
     return (
         <BAView title="Map" isScrolling={true}  style={styles.body}>
           <View style = {styles.mapContainer}>
-            {/* <BAText> prueba</BAText> */}
             <MapView
             provider={PROVIDER_GOOGLE}
             style={styles.map}
             initialRegion={{
               latitude: 20.671333,
               longitude: -103.357222,
-              latitudeDelta: 0.04,
-              longitudeDelta: 0.04,
+              latitudeDelta: 0.03,
+              longitudeDelta: 0.03,
             }}
             scrollEnabled={true}
             zoomEnabled={true}
@@ -58,19 +56,19 @@ export default function BAMapView(){
               >
               <Callout>
                 <View>
-                      <Text>Banco de alimentos de Guadalajara</Text>
+                      {/* <Text>Banco de alimentos de Guadalajara</Text> */}
                   </View>
               </Callout>    
               </Marker>
             </MapView>
           </View>
-            <View style={styles.textContainer}>
-              {name && <BAText style = {TypeText.label1}>{name}</BAText>}
-              {vicinity && <BAText style = {TypeText.label3}>{vicinity}</BAText>}
+          <View style={styles.textContainer}>
+              {name && <BAText style = {styles.textTitle}>{name}</BAText>}
+              {vicinity && <BAText style = {styles.textLabel}>{vicinity}</BAText>}
               <TouchableOpacity onPress={handlePress}>
-                {phoneNumber && <BAText style = {TypeText.label3}>{phoneNumber}</BAText>}
+                {phoneNumber && <BAText style = {styles.textLabel}>{phoneNumber}</BAText>}
               </TouchableOpacity>
-            </View>  
+          </View>  
         </BAView>
     );
 }
@@ -85,19 +83,29 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
       textContainer: {
-        width: "100%",
-        flexDirection: "column",
-        justifyContent: "space-between",
+        alignItems: "center",
+        justifyContent: "center",
         marginTop: 20,
+        flex: 1,
+      },
+      textLabel: {
+        textAlign: 'center',
+        fontWeight: "300",
+        fontSize: PixelRatio.get() > 2 ? 24 : 20,
+        color: BAPallete.Gray01
+      },
+      textTitle: {
+        textAlign: 'center',
+        fontWeight: "500",
+        color: BAPallete.Red01
       },
       mapContainer: {
         flex: 1,
-        // backgroundColor: "pink",
-        // marginBottom: 40,
         height: windowHeight/2,  // Half of the window height
       },
       map: {
         width: '100%',
         height: '100%',
+        flex: 1,
       },
 });
