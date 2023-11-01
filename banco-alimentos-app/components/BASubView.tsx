@@ -17,7 +17,6 @@ import BAText, { TypeText } from "./BAText";
 import BAPallete from "../resources/BAPallete";
 import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
-import { transform } from "typescript";
 
 type SubViewProps = {
   children: any;
@@ -89,8 +88,8 @@ export default function BASubView({
             style={[
               {
                 transform: [{ translateX: subpagePositionRef }],
+                paddingHorizontal: 20,
               },
-              { paddingHorizontal: 20 },
             ]}
           >
             <View style={styles.header}>
@@ -106,16 +105,14 @@ export default function BASubView({
             <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : undefined}
               keyboardVerticalOffset={Platform.OS === "ios" ? 25 : undefined}
-              style={{ flex: 1 }}
             >
               <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{
-                  paddingHorizontal: 20,
-                  paddingTop: 20,
-                  paddingBottom: 100,
                   flexGrow: 1,
+                  paddingBottom: 275,
                 }}
+                style={{ width: "100%", paddingTop: 20 }}
                 keyboardShouldPersistTaps="handled"
                 refreshControl={onRefresh}
                 scrollEnabled={isScrolling}
