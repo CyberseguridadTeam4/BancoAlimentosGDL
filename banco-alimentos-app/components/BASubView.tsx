@@ -8,6 +8,9 @@ import {
   TouchableOpacity,
   Animated,
   Easing,
+  KeyboardAvoidingView,
+  Platform,
+  RefreshControlProps,
 } from "react-native";
 import React, { useCallback, useEffect, useRef } from "react";
 import BAText, { TypeText } from "./BAText";
@@ -21,7 +24,14 @@ type SubViewProps = {
   title: string;
   style?: StyleProp<ViewStyle>;
   isOpen: boolean;
+  isScrolling?: boolean;
   onReturn: (e: boolean) => void;
+  onRefresh?:
+    | React.ReactElement<
+        RefreshControlProps,
+        string | React.JSXElementConstructor<any>
+      >
+    | undefined;
 };
 
 export default function BASubView({
@@ -29,7 +39,9 @@ export default function BASubView({
   style,
   title,
   isOpen = false,
+  isScrolling = true,
   onReturn,
+  onRefresh,
 }: SubViewProps) {
   const subpagePositionRef = useRef(new Animated.Value(0)).current;
   const OPEN_CLOSE_ANIMATION_TIME = 200;
@@ -72,30 +84,47 @@ export default function BASubView({
   return (
     <>
       {isOpen && (
-        <Animated.View
-          style={[
-            styles.container,
-            {
-              transform: [{ translateX: subpagePositionRef }],
-            },
-          ]}
-        >
-          <ScrollView>
-            <SafeAreaView>
-              <View style={styles.header}>
-                <TouchableOpacity onPress={() => onCloseSubpage()}>
-                  <BAIcon
-                    icon={BAIcons.BackIcon}
-                    color={BAPallete.Red01}
-                    size={IconSize.large}
-                  />
-                </TouchableOpacity>
-                <BAText type={TypeText.label0}>{title}</BAText>
-              </View>
-              <View style={style}>{children}</View>
-            </SafeAreaView>
-          </ScrollView>
-        </Animated.View>
+        <SafeAreaView style={styles.container}>
+          <Animated.View
+            style={[
+              {
+                transform: [{ translateX: subpagePositionRef }],
+              },
+              { paddingHorizontal: 20 },
+            ]}
+          >
+            <View style={styles.header}>
+              <TouchableOpacity onPress={() => onCloseSubpage()}>
+                <BAIcon
+                  icon={BAIcons.BackIcon}
+                  color={BAPallete.Red01}
+                  size={IconSize.large}
+                />
+              </TouchableOpacity>
+              <BAText type={TypeText.label0}>{title}</BAText>
+            </View>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : undefined}
+              keyboardVerticalOffset={Platform.OS === "ios" ? 25 : undefined}
+              style={{ flex: 1 }}
+            >
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: 20,
+                  paddingTop: 20,
+                  paddingBottom: 100,
+                  flexGrow: 1,
+                }}
+                keyboardShouldPersistTaps="handled"
+                refreshControl={onRefresh}
+                scrollEnabled={isScrolling}
+              >
+                <View style={style}>{children}</View>
+              </ScrollView>
+            </KeyboardAvoidingView>
+          </Animated.View>
+        </SafeAreaView>
       )}
     </>
   );
@@ -109,14 +138,22 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     gap: 20,
   },
+  scroll: {
+    flexGrow: 1,
+    marginBottom: 100,
+  },
+  view: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
   container: {
-    transform: [{ translateX: -500 }],
     width: "100%",
+    flex: 1,
     height: "100%",
     flexDirection: "column",
+    alignSelf: "center",
     position: "absolute",
-    left: 0,
-    padding: 20,
+    paddingVertical: 20,
     backgroundColor: BAPallete.Background,
   },
 });

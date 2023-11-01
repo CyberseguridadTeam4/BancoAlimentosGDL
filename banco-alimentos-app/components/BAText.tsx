@@ -25,8 +25,8 @@ export enum TypeText {
 
 type Props = {
   type?: TypeText;
-  style?: StyleProp<ViewStyle>;
-  children: string;
+  style?: StyleProp<any>;
+  children: string | number;
 };
 
 function BAText({

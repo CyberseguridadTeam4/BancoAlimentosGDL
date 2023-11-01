@@ -5,6 +5,9 @@ import {
   StyleProp,
   ViewStyle,
   SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+  RefreshControlProps,
 } from "react-native";
 import React from "react";
 import BAText, { TypeText } from "./BAText";
@@ -14,32 +17,63 @@ type ViewProps = {
   title: string;
   style?: StyleProp<ViewStyle>;
   isScrolling?: boolean;
+  onRefresh?:
+    | React.ReactElement<
+        RefreshControlProps,
+        string | React.JSXElementConstructor<any>
+      >
+    | undefined;
 };
 
 export default function BAView({
   children,
   style,
   title,
-  isScrolling = false,
+  isScrolling = true,
+  onRefresh,
 }: ViewProps) {
   return (
-    <ScrollView scrollEnabled={isScrolling} style={styles.container}>
-      <SafeAreaView>
-        <BAText
-          style={{ marginVertical: 20, width: "100%" }}
-          type={TypeText.label0}
+    <SafeAreaView style={{ flex: 1 }}>
+      <BAText
+        style={{
+          marginTop: 20,
+          marginBottom: 10,
+          width: "100%",
+          paddingHorizontal: 20,
+        }}
+        type={TypeText.label0}
+      >
+        {title}
+      </BAText>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 25 : undefined}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          scrollEnabled={isScrolling}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{
+            paddingHorizontal: 20,
+            paddingTop: 20,
+            paddingBottom: 100,
+            flexGrow: 1,
+          }}
+          refreshControl={onRefresh}
         >
-          {title}
-        </BAText>
-        <View style={style}>{children}</View>
-      </SafeAreaView>
-    </ScrollView>
+          <View style={style}>{children}</View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: "column",
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    paddingBottom: 100,
+    paddingTop: 20,
   },
 });
