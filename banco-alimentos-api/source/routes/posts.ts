@@ -5,7 +5,7 @@ const router = express.Router();
 //User
 
 
-router.get('/user', controller.userLogin);
+router.get('/user', controller.userLogin);//
 router.get('/getPosts', controller.getPost);
 router.get('/getComments/:postId', controller.getComment);
 
@@ -17,5 +17,8 @@ router.patch('/like/:postId', controller.likePost);
 router.patch('/view/:postId', controller.viewPost);
 router.patch('/editPost/:postId',controller.editPost)
 router.patch('/report/:postId',controller.reportPost)
+
+router.get('/getPollito/:polloId', controller.getPollito);
+router.patch('/patchPollito/:polloId', controller.patchPollito);
 
 export = router;

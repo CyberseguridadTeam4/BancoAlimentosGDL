@@ -17,7 +17,6 @@ import BAText, { TypeText } from "./BAText";
 import BAPallete from "../resources/BAPallete";
 import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
-import { transform } from "typescript";
 
 type SubViewProps = {
   children: any;
@@ -83,49 +82,45 @@ export default function BASubView({
 
   return (
     <>
-      {isOpen && (
-        <SafeAreaView style={styles.container}>
-          <Animated.View
-            style={[
-              {
-                transform: [{ translateX: subpagePositionRef }],
-              },
-              { paddingHorizontal: 20 },
-            ]}
+      <SafeAreaView style={styles.container}>
+        <Animated.View
+          style={[
+            {
+              transform: [{ translateX: subpagePositionRef }],
+              paddingHorizontal: 20,
+            },
+          ]}
+        >
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => onCloseSubpage()}>
+              <BAIcon
+                icon={BAIcons.BackIcon}
+                color={BAPallete.Red01}
+                size={IconSize.large}
+              />
+            </TouchableOpacity>
+            <BAText type={TypeText.label0}>{title}</BAText>
+          </View>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 25 : undefined}
           >
-            <View style={styles.header}>
-              <TouchableOpacity onPress={() => onCloseSubpage()}>
-                <BAIcon
-                  icon={BAIcons.BackIcon}
-                  color={BAPallete.Red01}
-                  size={IconSize.large}
-                />
-              </TouchableOpacity>
-              <BAText type={TypeText.label0}>{title}</BAText>
-            </View>
-            <KeyboardAvoidingView
-              behavior={Platform.OS === "ios" ? "padding" : undefined}
-              keyboardVerticalOffset={Platform.OS === "ios" ? 25 : undefined}
-              style={{ flex: 1 }}
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{
+                flexGrow: 1,
+                paddingBottom: 275,
+              }}
+              style={{ paddingTop: 20 }}
+              keyboardShouldPersistTaps="handled"
+              refreshControl={onRefresh}
+              scrollEnabled={isScrolling}
             >
-              <ScrollView
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{
-                  paddingHorizontal: 20,
-                  paddingTop: 20,
-                  paddingBottom: 100,
-                  flexGrow: 1,
-                }}
-                keyboardShouldPersistTaps="handled"
-                refreshControl={onRefresh}
-                scrollEnabled={isScrolling}
-              >
-                <View style={style}>{children}</View>
-              </ScrollView>
-            </KeyboardAvoidingView>
-          </Animated.View>
-        </SafeAreaView>
-      )}
+              <View style={style}>{children}</View>
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </Animated.View>
+      </SafeAreaView>
     </>
   );
 }
