@@ -73,7 +73,7 @@ export default function BAMapView(){
               <View style = {styles.row}>
               <BAIcon icon={BAIcons.PhoneIcon} color={BAPallete.Red01} size={IconSize.small}/>
                 <TouchableOpacity onPress={handlePress}>
-                  {phoneNumber && <BAText style = {styles.textLabel}>{phoneNumber}</BAText>}
+                  {phoneNumber && <BAText style = {styles.phoneLabel}>{phoneNumber}</BAText>}
                 </TouchableOpacity>
               </View>
           </View>  
@@ -97,6 +97,13 @@ const styles = StyleSheet.create({
         flex: 1,
       },
       textLabel: {
+        textAlign: 'left',
+        fontWeight: "500",
+        fontSize: PixelRatio.get() > 2 ? 18 : 16,
+        color: BAPallete.Gray01
+      },
+      phoneLabel:{
+        textDecorationLine: 'underline',
         textAlign: 'left',
         fontWeight: "500",
         fontSize: PixelRatio.get() > 2 ? 18 : 16,
