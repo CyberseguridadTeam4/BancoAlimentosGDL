@@ -434,35 +434,44 @@ export default function BABird() {
   return (
     <>
       {openEgg && <BAEgg onClose={() => setOpenEgg(false)} />}
-      <BAView title={"Cuarto de ???"} style={styles.body}>
-        {heartReaction && (
-          <HeartsReaction setHeartReaction={setHeartReaction} />
-        )}
-
-        <Animated.View
-          style={[
-            styles.birdContainer,
-            { transform: [{ translateY: birdPosition }, { scale: 0.8 }] },
-          ]}
+      <BAView title={"Cuarto de ???"} style={styles.body} isScrolling={false}>
+        <View
+          style={{
+            transform: [{ scale: 0.7 }],
+            marginTop: 25,
+          }}
         >
-          <BirdFeet
-            leftFootRefRotation={leftFootRotation}
-            rightFootRefRotation={rightFootRotation}
-          />
+          {heartReaction && (
+            <HeartsReaction setHeartReaction={setHeartReaction} />
+          )}
+
           <Animated.View
-            style={{
-              transform: [
-                { translateY: BIRD_BODY_ORIGIN },
-                { translateY: birdBodyPosition },
-                { rotate: bodyRotation },
-                { translateY: -BIRD_BODY_ORIGIN },
-              ],
-            }}
+            style={[
+              styles.birdContainer,
+              {
+                transform: [{ translateY: birdPosition }],
+              },
+            ]}
           >
-            <BirdBody eyeClosed={happyEye} eyeWink={winkEye} />
-            <BirdWing scaleWingRef={scaleWingRef} />
+            <BirdFeet
+              leftFootRefRotation={leftFootRotation}
+              rightFootRefRotation={rightFootRotation}
+            />
+            <Animated.View
+              style={{
+                transform: [
+                  { translateY: BIRD_BODY_ORIGIN },
+                  { translateY: birdBodyPosition },
+                  { rotate: bodyRotation },
+                  { translateY: -BIRD_BODY_ORIGIN },
+                ],
+              }}
+            >
+              <BirdBody eyeClosed={happyEye} eyeWink={winkEye} />
+              <BirdWing scaleWingRef={scaleWingRef} />
+            </Animated.View>
           </Animated.View>
-        </Animated.View>
+        </View>
         <View style={styles.debugButtons}>
           <BAButton
             style={styles.birdButtons}
@@ -807,6 +816,7 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     position: "relative",
+    justifyContent: "space-around",
   },
   absolute: {
     width: "100%",
@@ -816,11 +826,11 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   debugButtons: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "space-around",
     gap: 100,
     paddingHorizontal: 50,
+    marginBottom: 30,
   },
   birdContainer: {
     flex: 1,
