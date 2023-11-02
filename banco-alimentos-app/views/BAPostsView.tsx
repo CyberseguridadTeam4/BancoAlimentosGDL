@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   RefreshControl,
+  ScrollView,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import BAView from "../components/BAView";
@@ -11,6 +12,8 @@ import BAPallete from "../resources/BAPallete";
 import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
 import axios from "axios";
+import BASubView from "../components/BASubView";
+import BAButton from "../components/BAButton";
 
 type PostProps = {
   post: {
@@ -53,9 +56,18 @@ export default function BAPostsView() {
     });
   }, []);
 
+  const AddButton = () => {
+    return (
+      <TouchableOpacity style={{ marginRight: 5 }}>
+        <BAIcon icon={BAIcons.AddIcon} color={BAPallete.Red01} />
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <BAView
       title="Posts"
+      rightButtons={AddButton()}
       style={styles.columnPosts}
       onRefresh={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -157,6 +169,12 @@ export const Post = ({ post }: PostProps) => {
 };
 
 const styles = StyleSheet.create({
+  addButton: {
+    position: "absolute",
+    bottom: 100,
+    right: 0,
+    marginRight: 20,
+  },
   postBox: {
     width: "100%",
     minHeight: 100,
@@ -173,7 +191,7 @@ const styles = StyleSheet.create({
   },
   columnPosts: {
     flex: 1,
-    gap: 35,
+    gap: 30,
   },
   header: {
     flexDirection: "row",
