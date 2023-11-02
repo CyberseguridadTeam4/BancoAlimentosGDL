@@ -95,9 +95,7 @@ export default function LogIn({}) {
             <BAText
               type={TypeText.label5}
               isLink={true}
-              onPress={() => {
-                () => setIsInRegisterPage(true);
-              }}
+              onPress={() => setIsInRegisterPage(true)}
             >
               Registrate aqui!
             </BAText>
