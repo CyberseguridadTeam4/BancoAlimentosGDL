@@ -9,6 +9,7 @@ import BASheetController from "./components/Sheet/BASheet";
 import BAToastController from "./components/Toast/BAToast";
 import BAPostsView from "./views/BAPostsView";
 import BABird from "./components/BABird";
+import BAWelcomeView from "./views/BAWelcomeView";
 
 export default function App() {
   const [selectedOption, setSelectedOption] = useState("1");
@@ -17,6 +18,7 @@ export default function App() {
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
+        <BAWelcomeView />
         <BABottomBar />
         <BAModalController />
         <BASheetController />

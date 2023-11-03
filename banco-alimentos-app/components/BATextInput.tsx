@@ -16,6 +16,7 @@ type Props = {
   placeholder?: string;
   value: string;
   onChange: (input: string) => void;
+  isPassword?: boolean;
 };
 
 function BATextInput({
@@ -23,6 +24,7 @@ function BATextInput({
   placeholder,
   value,
   onChange,
+  isPassword = false,
 }: Props): JSX.Element {
   return (
     <View style={styles.wrapper}>
@@ -33,6 +35,7 @@ function BATextInput({
         placeholder={placeholder}
         value={value}
         onChangeText={onChange}
+        secureTextEntry={isPassword}
       />
     </View>
   );
