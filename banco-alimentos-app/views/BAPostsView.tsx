@@ -49,7 +49,7 @@ export default function BAPostsView() {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     getPosts().then(() => {
-      setRefreshing(false);
+      setRefreshing(false)
     });
   }, []);
 
