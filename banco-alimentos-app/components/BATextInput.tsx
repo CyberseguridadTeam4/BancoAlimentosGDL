@@ -19,7 +19,6 @@ type Props = {
   value: string;
   onChange: (input: string) => void;
   isPassword?: boolean; // New prop to indicate if it's a password input
-  isShadowed?: boolean; // New prop to indicate if it's shadowed
 };
 
 function BATextInput({
@@ -27,9 +26,7 @@ function BATextInput({
   placeholder,
   value,
   onChange,
-  isPassword = false, // Default to non-password input
-  isShadowed = false, // Default to non-shadowed input
-  
+  isPassword = false,
 }: Props): JSX.Element {
   
   const [showPassword, setShowPassword] = useState(false);
@@ -45,7 +42,7 @@ function BATextInput({
         placeholder={placeholder}
         value={value}
         onChangeText={onChange}
-        secureTextEntry={isPassword} // Set secureTextEntry based on the prop
+        secureTextEntry={isPassword}
       />
       {isPassword && (
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>

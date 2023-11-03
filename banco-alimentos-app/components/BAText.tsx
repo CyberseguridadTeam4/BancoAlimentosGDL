@@ -11,9 +11,7 @@ import {
   TextStyle,
   PixelRatio,
   StyleProp,
-  ViewStyle,
-  TouchableOpacity, 
-
+  TouchableOpacity,
 } from "react-native";
 import BAPallete from "../resources/BAPallete";
 
@@ -30,29 +28,28 @@ export enum TypeText {
 
 type Props = {
   type?: TypeText;
-  style?: StyleProp<ViewStyle>;
-  children: string;
-  isLink?: boolean;
-  onPress?: () => void; 
-
+  style?: StyleProp<any>;
+  children: string | number;
+  onPress?: () => void;
 };
 
 function BAText({
   type = TypeText.label1,
   children,
   style,
-  isLink = false, 
   onPress,
 }: Props): JSX.Element {
-  if (isLink) {
-    return (
-      <TouchableOpacity onPress={onPress}>
+  return (
+    <>
+      {onPress ? (
+        <TouchableOpacity onPress={onPress}>
+          <Text style={[styleText(type), style]}>{children}</Text>
+        </TouchableOpacity>
+      ) : (
         <Text style={[styleText(type), style]}>{children}</Text>
-      </TouchableOpacity>
-      
-    );
-  }
-  return <Text style={[styleText(type), style]}>{children} </Text>;
+      )}
+    </>
+  );
 }
 
 export const styleText = (type: TypeText): TextStyle => {
@@ -84,25 +81,25 @@ export const styleText = (type: TypeText): TextStyle => {
     case TypeText.label4:
       return {
         fontSize: PixelRatio.get() > 2 ? 61 : 57,
-        color: BAPallete.Red01, 
+        color: BAPallete.Red01,
         fontWeight: "bold",
-      }
+      };
     case TypeText.label5:
       return {
         fontSize: PixelRatio.get() > 2 ? 18 : 14,
-        color: BAPallete.Red01, 
+        color: BAPallete.Red01,
         fontWeight: "500",
         alignContent: "space-around",
-        textDecorationLine: "underline"
-      }
+        textDecorationLine: "underline",
+      };
     case TypeText.label6:
-        return {
-          fontSize: PixelRatio.get() > 2 ? 18 : 14,
-          color: BAPallete.Red01, 
-          fontWeight: "500",
-          alignContent: "space-around",
-          textDecorationLine: "underline"
-        }
+      return {
+        fontSize: PixelRatio.get() > 2 ? 18 : 14,
+        color: BAPallete.Red01,
+        fontWeight: "500",
+        alignContent: "space-around",
+        textDecorationLine: "underline",
+      };
     default:
       return {
         fontSize: 24,

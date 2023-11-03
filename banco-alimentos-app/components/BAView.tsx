@@ -45,20 +45,34 @@ export default function BAView({
         keyboardVerticalOffset={Platform.OS === "ios" ? 25 : undefined}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          scrollEnabled={isScrolling}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{
-            paddingHorizontal: 20,
-            paddingTop: 20,
-            paddingBottom: 100,
-            flexGrow: 1,
-          }}
-          refreshControl={onRefresh}
-        >
-          <View style={style}>{children}</View>
-        </ScrollView>
+        {isScrolling ? (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              flexGrow: 1,
+              paddingBottom: 275,
+            }}
+            style={{ paddingTop: 20 }}
+            keyboardShouldPersistTaps="handled"
+            refreshControl={onRefresh}
+            scrollEnabled={isScrolling}
+          >
+            <View style={[style]}>{children}</View>
+          </ScrollView>
+        ) : (
+          <View
+            style={[
+              style,
+              {
+                flex: 1,
+                height: "100%",
+                flexDirection: "column",
+              },
+            ]}
+          >
+            {children}
+          </View>
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

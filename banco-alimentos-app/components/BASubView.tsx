@@ -42,7 +42,7 @@ export default function BASubView({
   onReturn,
   onRefresh,
 }: SubViewProps) {
-  const subpagePositionRef = useRef(new Animated.Value(0)).current;
+  const subpagePositionRef = useRef(new Animated.Value(500)).current;
   const OPEN_CLOSE_ANIMATION_TIME = 200;
 
   useEffect(() => {
@@ -82,58 +82,64 @@ export default function BASubView({
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
-        <Animated.View
-          style={[
-            {
-              transform: [{ translateX: subpagePositionRef }],
-              paddingHorizontal: 20,
-              flex: 1,
-            },
-          ]}
-        >
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => onCloseSubpage()}>
-              <BAIcon
-                icon={BAIcons.BackIcon}
-                color={BAPallete.Red01}
-                size={IconSize.large}
-              />
-            </TouchableOpacity>
-            <BAText type={TypeText.label0}>{title}</BAText>
-          </View>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 25 : undefined}
-            style={{ flex: 1 }}
+      {isOpen && (
+        <SafeAreaView style={styles.container}>
+          <Animated.View
+            style={[
+              {
+                transform: [{ translateX: subpagePositionRef }],
+                flex: 1,
+                paddingHorizontal: 20,
+              },
+            ]}
           >
-            {isScrolling ? (
-              <ScrollView
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{
-                  flexGrow: 1,
-                  paddingBottom: 275,
-                }}
-                style={{ paddingTop: 20 }}
-                keyboardShouldPersistTaps="handled"
-                refreshControl={onRefresh}
-                scrollEnabled={isScrolling}
-              >
-                <View style={[style]}>{children}</View>
-              </ScrollView>
-            ) : (
-              <View
-                style={[
-                  style,
-                  { flex: 1, height: "100%", flexDirection: "column" },
-                ]}
-              >
-                {children}
-              </View>
-            )}
-          </KeyboardAvoidingView>
-        </Animated.View>
-      </SafeAreaView>
+            <View style={styles.header}>
+              <TouchableOpacity onPress={() => onCloseSubpage()}>
+                <BAIcon
+                  icon={BAIcons.BackIcon}
+                  color={BAPallete.Red01}
+                  size={IconSize.large}
+                />
+              </TouchableOpacity>
+              <BAText type={TypeText.label0}>{title}</BAText>
+            </View>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : undefined}
+              keyboardVerticalOffset={Platform.OS === "ios" ? 25 : undefined}
+              style={{ flex: 1 }}
+            >
+              {isScrolling ? (
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{
+                    flexGrow: 1,
+                    paddingBottom: 275,
+                  }}
+                  style={{ paddingTop: 20 }}
+                  keyboardShouldPersistTaps="handled"
+                  refreshControl={onRefresh}
+                  scrollEnabled={isScrolling}
+                >
+                  <View style={[style]}>{children}</View>
+                </ScrollView>
+              ) : (
+                <View
+                  style={[
+                    style,
+                    {
+                      flex: 1,
+                      height: "100%",
+                      flexDirection: "column",
+                    },
+                  ]}
+                >
+                  {children}
+                </View>
+              )}
+            </KeyboardAvoidingView>
+          </Animated.View>
+        </SafeAreaView>
+      )}
     </>
   );
 }
@@ -156,13 +162,13 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   container: {
-    width: "100%",
     flex: 1,
-    height: "100%",
+    width: "100%",
     flexDirection: "column",
     alignSelf: "center",
     position: "absolute",
     paddingVertical: 20,
+    paddingHorizontal: 200,
     backgroundColor: BAPallete.Background,
   },
 });
