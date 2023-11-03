@@ -24,6 +24,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import BASubView from "./BASubView";
 import BASignUpView from "./BASignUpView";
 import BAPasswordCreationView from "./BAPasswordCreationView";
+import BABirdView from "../views/BABirdView";
 
 // import BAModal from '../components/Modal/BAModal'
 // import BAModalController from '../components/Modal/BAModal'
@@ -44,6 +45,7 @@ import BAPasswordCreationView from "./BAPasswordCreationView";
 export default function LogIn({}) {
   const [isInRegisterPage, setIsInRegisterPage] = useState(false);
   const [isInPasswordPage, setIsInPasswordPage] = useState(false);
+  const [isInBirdPage, setIsInBirdPage] = useState(false);
   const [selectedOption, setSelectedOption] = useState("1");
   const [email, setTextEmail] = useState("");
   const [contraseña, setTextContraseña] = useState("");
@@ -101,13 +103,37 @@ export default function LogIn({}) {
             </BAText>
           </View>
 
+          {/* <View >
+            
+            <BAText
+              isLink={true}
+              onPress={() => setIsInBirdPage(true)}
+            >
+              Log in
+            </BAText>
+          </View> */}
           <BAButton
+          text="Log in"
+          state={ButtonState.alert}
+          // style={styles.centerSiguiente}
+          onPress={() => setIsInBirdPage(true)}
+        />
+
+          {/* <BAButton
             text="Log in"
             state={ButtonState.alert}
             onPress={() => setIsInRegisterPage(true)}
-          />
+          /> */}
         </View>
       </BAView>
+      <BASubView
+        title="Bird!"
+        isOpen={isInBirdPage}
+        isScrolling={false}
+        onReturn={() => setIsInRegisterPage(false)}
+      >
+        <BABirdView setIsInBirdPage={setIsInBirdPage} />
+      </BASubView>
       <BASubView
         title="Registrate aqui!"
         isOpen={isInRegisterPage}
