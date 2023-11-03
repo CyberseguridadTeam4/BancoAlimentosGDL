@@ -58,7 +58,6 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
-// Get user by objectId
 const userLogin = async (req: Request, res: Response, next: NextFunction) => {
     try{
     const{username,password}=req.body

@@ -3,13 +3,11 @@ import express from 'express';
 import controller from '../controllers/posts';
 const router = express.Router();
 //User
-
-
-router.get('/user', controller.userLogin);//
 router.get('/getPosts', controller.getPost);
 router.get('/getComments/:postId', controller.getComment);
 
-router.post('/user', controller.createUser);
+router.post('/userSignUp', controller.createUser);
+router.post('/userLogin', controller.userLogin);
 router.post('/post', controller.createPost);
 router.post('/comment', controller.createComment);
 
