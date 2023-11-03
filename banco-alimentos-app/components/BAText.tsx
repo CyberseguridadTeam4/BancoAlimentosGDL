@@ -12,6 +12,8 @@ import {
   PixelRatio,
   StyleProp,
   ViewStyle,
+  TouchableOpacity, 
+
 } from "react-native";
 import BAPallete from "../resources/BAPallete";
 
@@ -21,19 +23,35 @@ export enum TypeText {
   label1_White,
   label2,
   label3,
+  label4,
+  label5,
+  label6,
 }
 
 type Props = {
   type?: TypeText;
-  style?: StyleProp<any>;
-  children: string | number;
+  style?: StyleProp<ViewStyle>;
+  children: string;
+  isLink?: boolean;
+  onPress?: () => void; 
+
 };
 
 function BAText({
   type = TypeText.label1,
   children,
   style,
+  isLink = false, 
+  onPress,
 }: Props): JSX.Element {
+  if (isLink) {
+    return (
+      <TouchableOpacity onPress={onPress}>
+        <Text style={[styleText(type), style]}>{children}</Text>
+      </TouchableOpacity>
+      
+    );
+  }
   return <Text style={[styleText(type), style]}>{children} </Text>;
 }
 
@@ -63,7 +81,28 @@ export const styleText = (type: TypeText): TextStyle => {
         color: "white",
         fontWeight: "500",
       };
-
+    case TypeText.label4:
+      return {
+        fontSize: PixelRatio.get() > 2 ? 61 : 57,
+        color: BAPallete.Red01, 
+        fontWeight: "bold",
+      }
+    case TypeText.label5:
+      return {
+        fontSize: PixelRatio.get() > 2 ? 18 : 14,
+        color: BAPallete.Red01, 
+        fontWeight: "500",
+        alignContent: "space-around",
+        textDecorationLine: "underline"
+      }
+    case TypeText.label6:
+        return {
+          fontSize: PixelRatio.get() > 2 ? 18 : 14,
+          color: BAPallete.Red01, 
+          fontWeight: "500",
+          alignContent: "space-around",
+          textDecorationLine: "underline"
+        }
     default:
       return {
         fontSize: 24,
