@@ -6,30 +6,66 @@ import BAPallete from "../resources/BAPallete";
 import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
 import BATextInput from "../components/BATextInput";
+import {Post} from "../views/BAPostsView";
+
 
 export default function BACommentsSubView(){
     const [comment, setComment] = useState("");
 
+    const samplePost = {
+        text: "Sample post content",
+        title: "Sample Post",
+        userId: {
+          __type: "User",
+          className: "UserClass",
+          objectId: "12345",
+        },
+        nViews: 100,
+        nLikes: 50,
+        createdAt: "2023-11-01",
+        updatedAt: "2023-11-01",
+        reported: false,
+        objectId: "67890",
+      };
+
+    const sendComment = () => {
+
+    }
+
     return(
-        <BASubView title="Posts" isOpen= {true} onReturn= {() => {true}} style={{flex: 1}} isScrolling= {false}>
-            <BAText type={TypeText.label1}>Comments</BAText>
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                style={{ height: "10%", width: "100%"}}
-                contentContainerStyle={{
-                flexGrow: 1,
-                gap: 35,
-                }}
-            >
-                <View style = {styles.columnComments}>
-                    {Array.from({ length: 5 }).map(() => {
-                        return   <Comments/>;
-                    })}   
-                </View>  
-            </ScrollView>
-            <View style = {styles.input}>
-                <BATextInput placeholder="Type your comment" value ={comment} onChange={setComment} ></BATextInput>
+        <BASubView title={samplePost.title} isOpen= {true} onReturn= {() => {true}} style={{flex: 1}} isScrolling= {false}>
+            <Post post = {samplePost}/>
+            <BAText type={TypeText.label1} style= {{marginTop: 10}}>Comments</BAText>
+            <View style={{ flex: 1}}>
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    style={{ flex: 1 }}
+                    contentContainerStyle={{
+                        flexGrow: 1,
+                        gap: 35,
+                        marginTop: 5,
+                    }}
+                >
+                    <View style = {styles.columnComments}>
+                        {Array.from({ length: 2 }).map(() => {
+                            return   <Comments/>;
+                        })}   
+                    </View>  
+                </ScrollView>
             </View>
+            <View style = {styles.input}>
+                <View style ={{width: '88%', marginRight: 10}}>
+                    <BATextInput placeholder="Type your comment" value ={comment} onChange={setComment} />
+                </View>
+                
+                <TouchableOpacity onPress={() => {sendComment()}}>
+                    <BAIcon 
+                        icon={BAIcons.SendIcon}
+                        color={BAPallete.Red01}
+                        size={IconSize.large}
+                        />
+                </TouchableOpacity>  
+          </View>
         </BASubView>
     );
 }
@@ -42,17 +78,17 @@ const Comments = () => {
             <View style={styles.header}>
                 <View style={styles.row}>
                     <View style={styles.profilePic} />
-                    <BAText>Name</BAText>
+                    <BAText type={TypeText.label3} style={{ fontSize: 20 }}>Name</BAText>
                 </View>
                 <View style={[styles.row, { gap: 20 }]}> 
                     <TouchableOpacity>
                         <BAIcon
                         icon={BAIcons.FlagIcon}
                         color={BAPallete.Red01}
-                        size={IconSize.large}
+                        size={IconSize.medium}
                         />
                     </TouchableOpacity>
-                    <BAText type={TypeText.label3}>10m</BAText>
+                    <BAText type={TypeText.label3} style={{ fontSize: 14 }}>10m</BAText>
                 </View>
             </View>
             <BAText style={{ marginVertical: 20 }}>Hello World</BAText>
@@ -60,9 +96,11 @@ const Comments = () => {
                 <View style= {[styles.row, {gap: 20}]}>
                     <TouchableOpacity onPress={() => setLiketPost(!likedPost)}>
                         <BAIcon
-                        icon={likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon}
+                        icon={
+                            likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
+                        }
                         color={BAPallete.Red01}
-                        size={IconSize.large}
+                        size={IconSize.medium}
                         />
                     </TouchableOpacity>
                 </View>
@@ -75,6 +113,7 @@ const styles = StyleSheet.create({
     body: {
         flex: 1,
         alignItems: "center",
+        justifyContent: "center", 
     },
     commentsBox: {
         width: "100%",
@@ -109,18 +148,19 @@ const styles = StyleSheet.create({
         marginRight: 15,
     },
     footer: {
-
+        flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     },
     input: {
         borderRadius: 10,
         shadowRadius: 15,
         shadowColor: BAPallete.StrongBlue,
-        shadowOpacity: 0.15,
-        // marginTop: 20,
-   
-        // bottom: 600,
-        //  left: 0,
-        
+        shadowOpacity: 0.15, 
+        position: 'absolute',
+        bottom: 0,
+        flexDirection: 'row',
+        alignItems: "center"
     },
     scrollView: {
         flex: 1,

@@ -64,4 +64,10 @@ export default {
   get ShareIcon(): ImageSourcePropType {
     return require("./ShareIcon.png");
   },
+  get SendIcon(): ImageSourcePropType {
+    return require("./SendIcon.png");
+  },
+  get SendIconActivated(): ImageSourcePropType {
+    return require("./SendIconActivated.png");
+  },
 };
