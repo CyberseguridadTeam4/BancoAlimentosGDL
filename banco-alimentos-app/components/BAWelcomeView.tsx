@@ -8,9 +8,10 @@ import { useState } from "react";
 import BABottomBar from "./BABottomBar";
 import BAView from "./BAView";
 import userLogin from "../../banco-alimentos-api/source/controllers/posts";
-import axios from 'axios';
 import React from "react";
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import axios from '../axios';
+
 // import BAModal from '../components/Modal/BAModal'
 // import BAModalController from '../components/Modal/BAModal'
 // import { useModal } from '../components/Modal/BAModalContext'
@@ -35,8 +36,6 @@ export default function LogIn({}) {
     Alert.alert('Button Pressed');
   };
 
-    // State variable to hold the password 
-    const [password, setPassword] = useState(''); 
 
     // State variable to track password visibility 
     const [showPassword, setShowPassword] = useState(false); 
@@ -45,12 +44,29 @@ export default function LogIn({}) {
     const toggleShowPassword = () => { 
         setShowPassword(!showPassword); 
     }; 
-
+    const userLogin = async () => {
+        axios.post('/userLogin', {
+          username: email,
+          password:contraseña,
+        })
+        .then(function (response) {
+          console.log(response);
+          if (response.status == 200) {
+            console.log("Usuario logeado");
+          } else {
+            console.log("Usuario no logeado");
+            // Make loginStatus opacity 1
+                        
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle={"dark-content"} />
-
       <BAText type={TypeText.label3}>Bienvenido! </BAText>
       <BAText type={TypeText.label4}>PioPio</BAText>
       <BAText type={TypeText.label1}style={styles.centerEmail}>Email:</BAText>
@@ -70,7 +86,9 @@ export default function LogIn({}) {
         isPassword={true}
         isShadowed={true}
         />
-
+        <View style = {styles.loginStatus}>
+          <BAText type={TypeText.label6} >Usuario o contraseña incorrecta</BAText>
+        </View>
         <View style = {styles.containerInline}>
             <BAText type={TypeText.label3}>Aun no tienes cuenta?</BAText>
             <BAText 
@@ -88,20 +106,9 @@ export default function LogIn({}) {
         text="Log in"
         onPress={async () => {
           const obj = {email, contraseña}
-          const res = await axios.get("https://parse-dashboard.back4app.com/apps/bc56963c-a392-4f24-ac57-f7e4e54ed418/browser/_Session/user");
-          console.log(res)
-          // Check the response for a successful login
-        if (res.status === 200) {
-          // Login was successful
-          console.log("Login successful");
-        //   navigation.navigate('BABird');
-          // You can update your app's state here or navigate to another screen.
-        } else {
-          // Login failed
-          console.log("Login failed");
-        }
-          // You can show an error message to the user.
-            }}
+          const res = await userLogin();
+          console.log(res);
+        }}
         state={ButtonState.alert}
       />
     </View>
@@ -133,6 +140,8 @@ const styles = StyleSheet.create({
   },
   icon: { 
     marginLeft: 10, 
-    },
-
+    },  
+  loginStatus: {
+    opacity: 0,
+  },
 });

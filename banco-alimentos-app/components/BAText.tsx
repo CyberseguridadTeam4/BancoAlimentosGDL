@@ -25,6 +25,7 @@ export enum TypeText {
   label3,
   label4,
   label5,
+  label6,
 }
 
 type Props = {
@@ -33,6 +34,7 @@ type Props = {
   children: string;
   isLink?: boolean;
   onPress?: () => void; 
+
 };
 
 function BAText({
@@ -93,7 +95,14 @@ export const styleText = (type: TypeText): TextStyle => {
         alignContent: "space-around",
         textDecorationLine: "underline"
       }
-
+    case TypeText.label6:
+        return {
+          fontSize: PixelRatio.get() > 2 ? 18 : 14,
+          color: BAPallete.Red01, 
+          fontWeight: "500",
+          alignContent: "space-around",
+          textDecorationLine: "underline"
+        }
     default:
       return {
         fontSize: 24,

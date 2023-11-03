@@ -9,7 +9,8 @@ import BASheetController from "./components/Sheet/BASheet";
 import BAToastController from "./components/Toast/BAToast";
 import BAPostsView from "./views/BAPostsView";
 import BABird from "./components/BABird";
-import BAAcount from "./components/BAAccountView";
+
+import BAAcount from "./views/BAAccountView";
 import BAWelcomeView from "./components/BAWelcomeView";
 import BASignUpView from "./components/BASignUpView";
 import BAPasswordCreationView from "./components/BAPasswordCreation";
@@ -21,22 +22,10 @@ export default function App() {
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
-        <BABottomBar />
-        <BAPasswordCreationView 
-          username="javs"
-          email="javiereric1309@gmail.com"
-          name="bebecita"
-          nextStage={0}
-        />
-        {/* <BASignUpView /> */}
-        {/* <BAPostsView /> */}
-        {/* <BABirdView /> */}
-        {/* <BAAcount /> */}
-        {/* <BABird /> */}
-        {/* <BAWelcomeView />
+        <BAWelcomeView/>
         <BAModalController />
         <BASheetController />
-        <BAToastController /> */}
+        <BAToastController />
       </BAContextProviderWrapper>
     </View>
   );
