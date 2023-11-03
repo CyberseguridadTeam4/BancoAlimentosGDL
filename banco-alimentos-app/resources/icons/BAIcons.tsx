@@ -64,6 +64,11 @@ export default {
   get ShareIcon(): ImageSourcePropType {
     return require("./ShareIcon.png");
   },
+    
+  get PhoneIcon(): ImageSourcePropType{
+    return require("./PhoneIcon.png");
+  }
+
 
   get SendIcon(): ImageSourcePropType {
     return require("./SendIcon.png");
@@ -77,4 +82,5 @@ export default {
   get EyeIcon(): ImageSourcePropType {
     return require("./EyeIcon.png");
   },
+
 };
