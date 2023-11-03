@@ -103,15 +103,6 @@ export default function LogIn({}) {
             </BAText>
           </View>
 
-          {/* <View >
-            
-            <BAText
-              isLink={true}
-              onPress={() => setIsInBirdPage(true)}
-            >
-              Log in
-            </BAText>
-          </View> */}
           <BAButton
           text="Log in"
           state={ButtonState.alert}
@@ -130,9 +121,9 @@ export default function LogIn({}) {
         title="Bird!"
         isOpen={isInBirdPage}
         isScrolling={false}
-        onReturn={() => setIsInRegisterPage(false)}
+        onReturn={() => setIsInBirdPage(false)}
       >
-        <BABirdView setIsInBirdPage={setIsInBirdPage} />
+        <BABirdView />
       </BASubView>
       <BASubView
         title="Registrate aqui!"
@@ -148,8 +139,9 @@ export default function LogIn({}) {
         isScrolling={false}
         onReturn={() => setIsInPasswordPage(false)}
       >
-        <BAPasswordCreationView />
+        <BAPasswordCreationView setIsInBirdPage={setIsInBirdPage}/>
       </BASubView>
+      
     </>
   );
 }

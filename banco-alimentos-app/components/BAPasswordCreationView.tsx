@@ -18,11 +18,14 @@ import BAView from "./BAView";
 import React from "react";
 import BABird from "./BABird";
 import BASubView from "./BASubView";
+import BABirdView from "../views/BABirdView";
 // import PassMeter from "react-native-passmeter";
 // import zxcvbn from 'zxcvbn';
 
-export default function SignUp() {
+export default function SignUp({ setIsInBirdPage }: any) {
   const [nextPage, setNextPage] = useState(false);
+  // const [isInBirdPage, setIsInBirdPage] = useState(false);
+  const [isInPasswordPage, setIsInPasswordPage] = useState(false);
   const [selectedOption, setSelectedOption] = useState("1");
   const [text, setText] = useState("");
   const [text2, setText2] = useState("");
@@ -51,13 +54,32 @@ export default function SignUp() {
           isShadowed={true}
           isPassword={true}
         />
-        <BAButton
+        {/* <BAButton
           text="Confirmar"
           state={ButtonState.alert}
           style={styles.centerConfirmar}
           onPress={() => setNextPage(true)}
+        /> */}
+
+        <BAButton
+          text="Confirmar"
+          state={ButtonState.alert}
+          style={styles.centerConfirmar}
+          onPress={() => setIsInBirdPage(true)}
+          
         />
+
       </View>
+
+      {/* <BASubView
+        title="Bird!"
+        isOpen={isInBirdPage}
+        isScrolling={false}
+        onReturn={() => isInPasswordPage(false)}
+      >
+        <BABirdView setIsInPasswordPage={setIsInPasswordPage} />
+      </BASubView> */}
+      
       {/* <BASubView
         title="Regresa"
         isOpen={nextPage}

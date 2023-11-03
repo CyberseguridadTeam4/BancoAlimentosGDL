@@ -24,8 +24,6 @@ export default function App() {
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
-        {/* <BASignUpView /> */}
-        {/* <BABottomBar /> */}
         <BAWelcomeView />
         <BAModalController />
         <BASheetController />
@@ -34,36 +32,6 @@ export default function App() {
     </View>
   );
 }
-
-// export default function App() {
-//   const [nextPage, setNextPage] = useState(false);
-
-//   return (
-//     <>
-//       <BAView title=" View">
-//           <BAButton
-//           text="Siguiente"
-//           state={ButtonState.alert}
-//           onPress={() => setNextPage(true)}
-//           />
-//       </BAView>
-//       <BASubView
-//         title="Regresa"
-//         isOpen={nextPage}
-//         onReturn={() => setNextPage(false)}
-//         >
-//         <BABird />
-//       </BASubView>
-//       <BASubView
-//         title="Regresa"
-//         isOpen={nextPage}
-//         onReturn={() => setNextPage(false)}
-//         >
-//         <BABird />
-//       </BASubView>
-//     </>
-//   );
-// }
 
 const styles = StyleSheet.create({
   container: {

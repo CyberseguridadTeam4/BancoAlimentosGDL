@@ -29,7 +29,7 @@ type HeartReactionProps = {
   setHeartReaction: (v: boolean) => void;
 };
 
-export default function BABird({ setIsInBirdPage }: any) {
+export default function BABird() {
   const [animIsPlaying, setAnimIsPlaying] = useState(false);
   const [happyEye, setHappyEye] = useState(false);
   const [winkEye, setWinkEye] = useState(false);
