@@ -34,7 +34,7 @@ export default function BACommentsSubView() {
   };
 
   const sendComment = () => {
-    console.log(windowHeight);
+    
   };
 
   return (
@@ -104,11 +104,11 @@ const Comments = () => {
       <View style={styles.header}>
         <View style={styles.row}>
           <View style={styles.profilePic} />
-          <BAText type={TypeText.label3} style={{ fontSize: 20 }}>
+          <BAText type={TypeText.label3} style={{ fontSize: 18 }}>
             Name
           </BAText>
         </View>
-        <View style={[styles.row, { gap: 20 }]}>
+        <View style={[styles.row, { gap: 15 }]}>
           <TouchableOpacity>
             <BAIcon
               icon={BAIcons.FlagIcon}
@@ -116,23 +116,27 @@ const Comments = () => {
               size={IconSize.medium}
             />
           </TouchableOpacity>
-          <BAText type={TypeText.label3} style={{ fontSize: 14 }}>
+          <BAText type={TypeText.label3} style={{ fontSize: 12 }}>
             10m
           </BAText>
         </View>
       </View>
-      <BAText style={{ marginVertical: 20 }}>Hello World</BAText>
+      <BAText
+        style={{ marginVertical: 20, fontSize: 16  }}
+      >
+        Hello World
+      </BAText>
       <View style={styles.footer}>
-        <View style={[styles.row, { gap: 20 }]}>
+        <View style={[styles.row, { gap: 15 }]}>
           <TouchableOpacity
             onPress={() => {
-              console.log(windowHeight);
+              
             }}
           >
             <BAIcon
               icon={likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon}
               color={BAPallete.Red01}
-              size={IconSize.medium}
+              size={IconSize.small}
             />
           </TouchableOpacity>
         </View>
@@ -151,7 +155,7 @@ const styles = StyleSheet.create({
   },
   commentsBox: {
     // width: "100%",
-    height: 170,
+    minheight: 100,
     backgroundColor: "white",
     borderRadius: 10,
     padding: 15,
@@ -174,7 +178,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profilePic: {
-    width: 50,
+    width: 40,
     aspectRatio: 1 / 1,
     borderRadius: 10,
     backgroundColor: "white",
