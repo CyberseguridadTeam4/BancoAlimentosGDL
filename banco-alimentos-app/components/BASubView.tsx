@@ -88,6 +88,7 @@ export default function BASubView({
             {
               transform: [{ translateX: subpagePositionRef }],
               paddingHorizontal: 20,
+              flex: 1,
             },
           ]}
         >
@@ -104,20 +105,32 @@ export default function BASubView({
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : undefined}
             keyboardVerticalOffset={Platform.OS === "ios" ? 25 : undefined}
+            style={{ flex: 1 }}
           >
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{
-                flexGrow: 1,
-                paddingBottom: 275,
-              }}
-              style={{ paddingTop: 20 }}
-              keyboardShouldPersistTaps="handled"
-              refreshControl={onRefresh}
-              scrollEnabled={isScrolling}
-            >
-              <View style={style}>{children}</View>
-            </ScrollView>
+            {isScrolling ? (
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                  flexGrow: 1,
+                  paddingBottom: 275,
+                }}
+                style={{ paddingTop: 20 }}
+                keyboardShouldPersistTaps="handled"
+                refreshControl={onRefresh}
+                scrollEnabled={isScrolling}
+              >
+                <View style={[style]}>{children}</View>
+              </ScrollView>
+            ) : (
+              <View
+                style={[
+                  style,
+                  { flex: 1, height: "100%", flexDirection: "column" },
+                ]}
+              >
+                {children}
+              </View>
+            )}
           </KeyboardAvoidingView>
         </Animated.View>
       </SafeAreaView>
@@ -127,6 +140,7 @@ export default function BASubView({
 
 const styles = StyleSheet.create({
   header: {
+    marginBottom: 25,
     marginVertical: 20,
     flexDirection: "row",
     alignContent: "center",
