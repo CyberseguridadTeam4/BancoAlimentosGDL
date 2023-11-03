@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, ScrollView} from "react-native";
+import { View, StyleSheet, TouchableOpacity, ScrollView, Dimensions} from "react-native";
 import BASubView from "../components/BASubView";
 import BAText, { TypeText }from "../components/BAText";
 import BAPallete from "../resources/BAPallete";
@@ -29,14 +29,13 @@ export default function BACommentsSubView(){
       };
 
     const sendComment = () => {
-
+        console.log(windowHeight);
     }
 
     return(
         <BASubView title={samplePost.title} isOpen= {true} onReturn= {() => {true}} style={{flex: 1}} isScrolling= {false}>
             <Post post = {samplePost}/>
             <BAText type={TypeText.label1} style= {{marginTop: 10}}>Comments</BAText>
-            <View style={{ flex: 1}}>
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     style={{ flex: 1 }}
@@ -47,17 +46,16 @@ export default function BACommentsSubView(){
                     }}
                 >
                     <View style = {styles.columnComments}>
-                        {Array.from({ length: 2 }).map(() => {
+                        {Array.from({ length: 1 }).map(() => {
                             return   <Comments/>;
                         })}   
                     </View>  
                 </ScrollView>
-            </View>
             <View style = {styles.input}>
                 <View style ={{width: '88%', marginRight: 10}}>
                     <BATextInput placeholder="Type your comment" value ={comment} onChange={setComment} />
+                    
                 </View>
-                
                 <TouchableOpacity onPress={() => {sendComment()}}>
                     <BAIcon 
                         icon={BAIcons.SendIcon}
@@ -94,7 +92,7 @@ const Comments = () => {
             <BAText style={{ marginVertical: 20 }}>Hello World</BAText>
             <View style = {styles.footer}>
                 <View style= {[styles.row, {gap: 20}]}>
-                    <TouchableOpacity onPress={() => setLiketPost(!likedPost)}>
+                    <TouchableOpacity onPress={() => { console.log(windowHeight)}}>
                         <BAIcon
                         icon={
                             likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
@@ -108,6 +106,8 @@ const Comments = () => {
         </View>
     );
 };
+
+const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
     body: {
@@ -157,10 +157,10 @@ const styles = StyleSheet.create({
         shadowRadius: 15,
         shadowColor: BAPallete.StrongBlue,
         shadowOpacity: 0.15, 
-        position: 'absolute',
-        bottom: 0,
+        top:0,
+        marginTop: 20,
         flexDirection: 'row',
-        alignItems: "center"
+        alignItems: "center",
     },
     scrollView: {
         flex: 1,
