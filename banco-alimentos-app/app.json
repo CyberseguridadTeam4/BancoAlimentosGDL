@@ -14,12 +14,15 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.iker8av.piopio"
+      "bundleIdentifier": "com.iker8av.piopio",
+      " ios.config.googleMapsApiKey": "AIzaSyBZ-L6y4RM_Adga1qdKEj8ZTMCBkMHE_3o"
+      
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "android.config.googleMaps.apiKey": "AIzaSyBZ-L6y4RM_Adga1qdKEj8ZTMCBkMHE_3o"
       }
     },
     "web": {
