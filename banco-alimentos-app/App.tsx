@@ -12,14 +12,21 @@ import BABird from "./components/BABird";
 import BAWelcomeView from "./views/BAWelcomeView";
 
 export default function App() {
-  const [selectedOption, setSelectedOption] = useState("1");
-  const [text, setText] = useState("Hello");
+  const [loggedUser, setLoggedUser] = useState(false);
+  const [viewIndex, setViewIndex] = useState(1);
+
   return (
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
-        <BAWelcomeView />
-        <BABottomBar />
+        {loggedUser ? (
+          <>
+            <ViewSwitch viewIndex={viewIndex} />
+            <BABottomBar />
+          </>
+        ) : (
+          <BAWelcomeView setLoggedUser={setLoggedUser} />
+        )}
         <BAModalController />
         <BASheetController />
         <BAToastController />
@@ -27,6 +34,17 @@ export default function App() {
     </View>
   );
 }
+
+const ViewSwitch = ({ viewIndex }) => {
+  switch (viewIndex) {
+    case 1:
+      return <BAPostsView />;
+    case 3:
+      return <BABirdView />;
+    default:
+      return <BABirdView />;
+  }
+};
 
 const styles = StyleSheet.create({
   container: {

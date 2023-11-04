@@ -5,14 +5,44 @@ import BATextInput from "../components/BATextInput";
 import BAIcons from "../resources/icons/BAIcons";
 import { useState } from "react";
 import React from "react";
+import axios from "axios";
 
-export default function SignUp({ setIsInBirdPage }: any) {
+export default function SignUp({
+  username,
+  email,
+  name,
+  nextStage,
+  setLoggedUser,
+}: any) {
   const [nextPage, setNextPage] = useState(false);
   const [isInPasswordPage, setIsInPasswordPage] = useState(false);
   const [selectedOption, setSelectedOption] = useState("1");
   const [text, setText] = useState("");
   const [text2, setText2] = useState("");
   const [text3, setText3] = useState("");
+
+  function createUser() {
+    if (text != text2) {
+      console.log("Las contraseñas no coinciden");
+    } else {
+      console.log("Crear usuario");
+      axios
+        .post("/user", {
+          username: username,
+          password: text,
+          email: email,
+          name: name,
+          nextStage: nextStage,
+        })
+        .then(function (response) {
+          console.log(response);
+          setLoggedUser(true);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  }
 
   return (
     <>
@@ -40,7 +70,7 @@ export default function SignUp({ setIsInBirdPage }: any) {
           text="Confirmar"
           state={ButtonState.alert}
           style={styles.centerConfirmar}
-          onPress={() => setIsInBirdPage(true)}
+          onPress={() => createUser()}
         />
       </View>
     </>

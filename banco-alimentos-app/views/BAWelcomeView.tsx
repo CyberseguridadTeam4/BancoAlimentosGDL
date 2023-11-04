@@ -11,7 +11,7 @@ import BASubView from "../components/BASubView";
 import BASignUpView from "./BASignUpView";
 import BAPasswordCreationView from "./BAPasswordCreationView";
 
-export default function LogIn({}) {
+export default function LogIn({ setLoggedUser }) {
   const [isInRegisterPage, setIsInRegisterPage] = useState(false);
   const [isInPasswordPage, setIsInPasswordPage] = useState(false);
   const [email, setTextEmail] = useState("");
@@ -21,8 +21,25 @@ export default function LogIn({}) {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
+  const userLogin = async () => {
+    axios
+      .post("/userLogin", {
+        username: email,
+        password: contraseña,
+      })
+      .then(function (response) {
+        console.log(response);
+        if (response.status == 200) {
+          setLoggedUser(true);
+          console.log("Usuario logeado");
+        } else {
+          console.log("Usuario no logeado");
+          // Make loginStatus opacity 1
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   return (
@@ -58,7 +75,11 @@ export default function LogIn({}) {
           </BAText>
         </View>
 
-        <BAButton text="Log in" state={ButtonState.alert} onPress={() => {}} />
+        <BAButton
+          text="Log in"
+          state={ButtonState.alert}
+          onPress={() => userLogin()}
+        />
       </BAView>
       <BASubView
         title="Registrate aqui!"
@@ -74,7 +95,10 @@ export default function LogIn({}) {
         isScrolling={false}
         onReturn={() => setIsInPasswordPage(false)}
       >
-        <BAPasswordCreationView setIsInBirdPage={() => {}} />
+        <BAPasswordCreationView
+          setIsInBirdPage={() => {}}
+          setLoggedUser={setLoggedUser}
+        />
       </BASubView>
     </>
   );

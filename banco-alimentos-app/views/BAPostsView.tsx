@@ -39,7 +39,7 @@ export default function BAPostsView() {
 
   const getPosts = async () => {
     await axios
-      .get("https://banco-alimentos-cseo1rmbe-bojavs-svg.vercel.app/getPosts")
+      .get("https://banco-alimentos-api.vercel.app/getPosts")
       .then((res: any) => {
         setPosts(res.data.posts);
       });
@@ -192,6 +192,7 @@ const styles = StyleSheet.create({
   columnPosts: {
     flex: 1,
     gap: 30,
+    paddingHorizontal: 20,
   },
   header: {
     flexDirection: "row",
