@@ -8,16 +8,10 @@ import BASubView from "../components/BASubView";
 import BAPallete from "../resources/BAPallete";
 import { useModal } from "../components/Modal/BAModalContext";
 import BAIcons from "../resources/icons/BAIcons";
-import { BAModal } from "../components/Modal/BAModal";
 import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 
-type ColorButtonProps = {
-  color: string;
-  colorSelected: string;
-  onClick: () => void;
-};
 
-export default function BABirdView() {
+export default function BACreatePostView() {
   const birdData = null;
 
   return <BABirdName />;
@@ -83,7 +77,7 @@ function BABirdColor() {
 
   const { openModal } = useModal();
 
-  const adoptButtonHadler = () => {
+  const postButtonHadler = () => {
     openModal(
       <View style={styles.modalConfirmText}>
         <BAText>
@@ -92,7 +86,7 @@ function BABirdColor() {
         <BAButton
           text="Confirmar"
           state={ButtonState.alert}
-          onPress={() => {}}
+          onPress={() => {}} //Endpoint call
         />
       </View>,
       "Confirmar Datos"
@@ -101,45 +95,17 @@ function BABirdColor() {
 
   return (
     <>
-        <BAView
-            title=""
-            style={styles.columnPosts}
-        >
-            <BAIcon
-                icon={BAIcons.CrossIcon}
-                color={BAPallete.Red01}
-                size={IconSize.large}
-            />
-            <BAText>
-                Alooo
-            </BAText>
-        </BAView>
         <BAButton
             icon={BAIcons.LockIcon} // SendIcon
-            text="Semd"
+            text="Send"
             state={ButtonState.alert}
-            onPress={() => adoptButtonHadler()}
+            onPress={() => postButtonHadler()}
         />
     </>
   );
 }
 
-const ColorButton = ({ color, colorSelected, onClick }: ColorButtonProps) => {
-  return (
-    <View style={{ aspectRatio: 1 / 1, width: 65 }}>
-      <BAButton
-        key={color}
-        onPress={onClick}
-        style={{
-          backgroundColor: color,
-          width: "100%",
-          height: "100%",
-        }}
-      />
-      {colorSelected == color && <View style={styles.buttonSelect} />}
-    </View>
-  );
-};
+
 
 const styles = StyleSheet.create({
   nameViewContainer: {
@@ -153,22 +119,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   },
-  colorsView: {
-    height: "100%",
-    flexDirection: "column",
-    justifyContent: "center",
-    gap: 10,
-    marginTop: 20,
-  },
-  colorRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  colorColumn: {
-    flexDirection: "column",
-    gap: 30,
-    marginVertical: 50,
-  },
+
   buttonSelect: {
     position: "absolute",
     borderColor: BAPallete.Blue01,
