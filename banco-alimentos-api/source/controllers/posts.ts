@@ -37,7 +37,6 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
         user.set('password', password);
         user.set('email', email);
 
-
         user.set('badges', []); // Initialize badges as an empty array
         user.set('idProfilePicture', 0); // Initialize profile picture ID 0 is starting picture for everyone
         user.set('visBadge', -1); // Initialize visibility badge. -1 means no badges
@@ -159,12 +158,18 @@ const createComment = async (req: Request, res: Response, next: NextFunction) =>
 
 const getComment = async (req: Request, res: Response, next: NextFunction) => {
     try{
-        const query  = new Parse.Query('Comment');
-
-        let comments: Parse.Object[] = await query.find();
+        const postId = req.params.postId;
+        const Comment = Parse.Object.extend("Comment")
+        const query  = new Parse.Query(Comment);
+        const queryPost = new Parse.Query('Post');
+        const Post = await queryPost.get(postId);
+   
+        query.equalTo("postId", Post);
+        const comments = await query.find();
         return res.status(200).json({
             message: 'Comments retrieved',
             comments: comments,
+            postId: postId,
         });
 
     } catch (error){
@@ -290,4 +295,52 @@ const reportPost = async (req: Request, res: Response, next: NextFunction) => {
         });
     }
 }
-export default { createUser ,userLogin, createPost, getPost, createComment, getComment,likePost,viewPost,editPost,reportPost};
+
+const getPollito = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const polloId = req.params.polloId;//
+        
+        const query = new Parse.Query('Pollo'); //Pollo
+        const pollito = await query.get(polloId);
+        return res.status(200).json({
+            message: 'Pollo received',
+            pollo: pollito,
+        })
+        
+    } catch (error) {
+        return res.status(500).json({
+            message: error,
+
+        });
+    }
+}
+
+const patchPollito = async (req: Request, res: Response, next: NextFunction) => {
+    //
+    try {
+        //Get body from endpoint call
+        const polloId = req.params.polloId;
+        const {nApple} = req.body;
+        const query = new Parse.Query('Pollo')
+        console.log('Get')
+        const pollo = await query.get(polloId);
+        if(pollo){
+            pollo.set('nApple', nApple)
+            const updatedPollo = await pollo.save()
+            return res.status(200).json({
+                message: 'Pollito changed successfully',
+            });
+            
+        } else {
+            return res.status(404).json({
+                message: 'Pollo not found',
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            message: error,
+        });
+    }
+}
+export default { createUser ,userLogin, createPost, getPost, createComment, getComment,likePost,viewPost,editPost,reportPost, getPollito, patchPollito};
+

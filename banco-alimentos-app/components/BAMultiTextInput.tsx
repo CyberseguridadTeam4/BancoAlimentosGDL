@@ -11,11 +11,14 @@ import BAIcon from "../resources/icons/BAIcon";
 import BAPallete from "../resources/BAPallete";
 import { styleText, TypeText } from "./BAText";
 
+
 type Props = {
   icon?: ImageSourcePropType;
   placeholder?: string;
   value: string;
   onChange: (input: string) => void;
+  isShadowed?: boolean;
+
 };
 
 function BATextInput({
@@ -23,14 +26,19 @@ function BATextInput({
   placeholder,
   value,
   onChange,
+  isShadowed = false
 }: Props): JSX.Element {
+  const containerStyle = isShadowed
+    ? [styles.wrapper, styles.shadow]
+    : styles.wrapper;
   return (
     <View style={styles.wrapper}>
       {icon && <BAIcon icon={icon} color={BAPallete.Black} />}
       <TextInput
+        multiline = {true}
         placeholderTextColor={BAPallete.Gray03}
-        style={[styles.textInput, styleText(TypeText.label1)]}
-        placeholder={placeholder}
+        style={[styles.textInput, styleText(TypeText.label3)]}
+        placeholder={"Type something..."}
         value={value}
         onChangeText={onChange}
       />
@@ -41,15 +49,18 @@ function BATextInput({
 const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: BAPallete.White,
-    width: "100%",
+    width: "90%",
+    height: 238,
     flexDirection: "row",
     alignItems: "center",
+    alignSelf: "center",
     gap: 10,
     borderRadius: 10,
     shadowRadius: 15,
     shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.15,
     padding: 10,
+    justifyContent: "flex-start"
   },
   textInput: {
     width: "100%",
@@ -57,6 +68,16 @@ const styles = StyleSheet.create({
     borderColor: "transparent", // Set to your background color
     borderWidth: 1,
   },
+  shadow: {
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  }
 });
 
 export default BATextInput;
