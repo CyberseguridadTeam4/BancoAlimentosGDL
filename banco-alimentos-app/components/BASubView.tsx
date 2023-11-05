@@ -90,6 +90,7 @@ export default function BASubView({
                 transform: [{ translateX: subpagePositionRef }],
                 flex: 1,
                 paddingHorizontal: 20,
+                backgroundColor: BAPallete.Background,
               },
             ]}
           >
