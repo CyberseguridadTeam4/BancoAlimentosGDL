@@ -107,7 +107,7 @@ const MiddleButton = ({ index, optionSelected, setOptionSelected }: any) => {
 
   useEffect(() => {
     setPlayAnimation(!showToast);
-    if (playAnimation) {
+    if (showToast && playAnimation) {
       Animated.sequence([
         Animated.timing(buttonScale, {
           toValue: { x: 1, y: 1 },
