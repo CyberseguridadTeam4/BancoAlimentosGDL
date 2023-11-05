@@ -43,7 +43,9 @@ export default function BAPostsView({ userData }) {
     await axios
       .get("https://banco-alimentos-api.vercel.app/getPosts")
       .then((res: any) => {
-        setPosts(res.data.posts);
+        const postsData = res.data.posts;
+        postsData.reverse();
+        setPosts(postsData);
       });
   };
 
@@ -55,9 +57,13 @@ export default function BAPostsView({ userData }) {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    getPosts().then(() => {
-      setRefreshing(false);
-    });
+    getPosts()
+      .then(() => {
+        setRefreshing(false);
+      })
+      .catch((error) => {
+        setRefreshing(false);
+      });
   }, []);
 
   const AddButton = () => {
@@ -86,7 +92,7 @@ export default function BAPostsView({ userData }) {
       }
     >
       {posts.length > 0 &&
-        posts.reverse().map((item) => {
+        posts.map((item) => {
           return <Post post={item} key={item.objectId} />;
         })}
     </BAView>
