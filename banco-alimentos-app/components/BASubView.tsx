@@ -169,6 +169,5 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     position: "absolute",
     paddingVertical: 20,
-    backgroundColor: BAPallete.Background,
   },
 });
