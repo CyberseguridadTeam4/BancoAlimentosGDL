@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignContent: "center",
     justifyContent: "center",
+    paddingHorizontal: 20,
   },
   button: {
     width: "100%",

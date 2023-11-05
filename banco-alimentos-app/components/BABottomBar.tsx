@@ -25,7 +25,7 @@ const BUTTONS_STYLES: ImageSourcePropType[][] = [
   [BAIcons.SettingIcon, BAIcons.SettingActivatedIcon],
 ];
 
-export default function BABottomBar() {
+export default function BABottomBar({ setViewIndex }) {
   const [optionSelected, setOptionSelected] = useState(0);
   const [isKeyboardOnScreen, setIsKeyboardOnScreen] = useState(false);
 
@@ -68,12 +68,16 @@ export default function BABottomBar() {
               key={index}
               index={index}
               optionSelected={optionSelected}
-              setOptionSelected={setOptionSelected}
+              setOptionSelected={(index) => {
+                setOptionSelected(index);
+                setViewIndex(index);
+              }}
             />
           ) : (
             <BAButton
               key={index}
               onPress={() => {
+                setViewIndex(index);
                 setOptionSelected(index);
               }}
               icon={optionSelected == index ? item[1] : item[0]}

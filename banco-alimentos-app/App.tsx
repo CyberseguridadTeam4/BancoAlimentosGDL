@@ -8,7 +8,8 @@ import BAModalController from "./components/Modal/BAModal";
 import BASheetController from "./components/Sheet/BASheet";
 import BAToastController from "./components/Toast/BAToast";
 import BAPostsView from "./views/BAPostsView";
-import BABird from "./components/BABird";
+import BAMapView from "./views/BAMapView";
+import BAAccountView from "./views/BAAccountView";
 import BAWelcomeView from "./views/BAWelcomeView";
 
 export default function App() {
@@ -22,7 +23,7 @@ export default function App() {
         {loggedUser ? (
           <>
             <ViewSwitch viewIndex={viewIndex} loggedUser={loggedUser} />
-            <BABottomBar />
+            <BABottomBar setViewIndex={setViewIndex} />
           </>
         ) : (
           <BAWelcomeView setLoggedUser={setLoggedUser} />
@@ -37,10 +38,14 @@ export default function App() {
 
 const ViewSwitch = ({ viewIndex, loggedUser }) => {
   switch (viewIndex) {
-    case 1:
+    case 0:
       return <BAPostsView userData={loggedUser} />;
-    case 3:
+    case 1:
+      return <BAMapView />;
+    case 2:
       return <BABirdView />;
+    case 3:
+      return <BAAccountView />;
     default:
       return <BABirdView />;
   }
