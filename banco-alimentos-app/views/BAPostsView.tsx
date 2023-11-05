@@ -13,7 +13,9 @@ import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
 import axios from "axios";
 import BASubView from "../components/BASubView";
-import BAButton from "../components/BAButton";
+import BAButton, { ButtonState } from "../components/BAButton";
+import { useSheet } from "../components/Sheet/BASheetContext";
+import BAMultiTextInput from "../components/BAMultiTextInput";
 
 type PostProps = {
   post: {
@@ -33,7 +35,7 @@ type PostProps = {
   };
 };
 
-export default function BAPostsView() {
+export default function BAPostsView({ userData }) {
   const [posts, setPosts] = useState<any[]>([]);
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -44,6 +46,8 @@ export default function BAPostsView() {
         setPosts(res.data.posts);
       });
   };
+
+  const { openSheet, closeSheet } = useSheet();
 
   useEffect(() => {
     getPosts();
@@ -58,7 +62,15 @@ export default function BAPostsView() {
 
   const AddButton = () => {
     return (
-      <TouchableOpacity style={{ marginRight: 5 }}>
+      <TouchableOpacity
+        style={{ marginRight: 5 }}
+        onPress={() =>
+          openSheet(
+            <CreatePostView userData={userData} closeSheet={closeSheet} />,
+            "Create Post"
+          )
+        }
+      >
         <BAIcon icon={BAIcons.AddIcon} color={BAPallete.Red01} />
       </TouchableOpacity>
     );
@@ -74,7 +86,7 @@ export default function BAPostsView() {
       }
     >
       {posts.length > 0 &&
-        posts.map((item) => {
+        posts.reverse().map((item) => {
           return <Post post={item} key={item.objectId} />;
         })}
     </BAView>
@@ -165,6 +177,40 @@ export const Post = ({ post }: PostProps) => {
         </View>
       </View>
     </TouchableOpacity>
+  );
+};
+
+const CreatePostView = ({ userData, closeSheet }) => {
+  const [text, setText] = useState("");
+
+  const publishPost = useCallback(async (textPost: string) => {
+    await axios
+      .post(`https://banco-alimentos-api.vercel.app/post`, {
+        text: textPost,
+        title: userData.username,
+        userId: userData,
+      })
+      .then((res) => {
+        console.log(res);
+        closeSheet();
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  return (
+    <View style={{ flex: 1, gap: 40, marginTop: 10 }}>
+      <BAMultiTextInput
+        value={text}
+        onChange={(e) => {
+          setText(e);
+        }}
+      />
+      <BAButton
+        state={ButtonState.alert}
+        onPress={() => publishPost(text)}
+        text="Send"
+      />
+    </View>
   );
 };
 

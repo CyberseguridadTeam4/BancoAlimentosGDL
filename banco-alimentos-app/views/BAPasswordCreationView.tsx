@@ -21,28 +21,27 @@ export default function SignUp({
   const [text2, setText2] = useState("");
   const [text3, setText3] = useState("");
 
-  function createUser() {
+  const createUser = async () => {
     if (text != text2) {
       console.log("Las contraseñas no coinciden");
     } else {
       console.log("Crear usuario");
       axios
-        .post("/user", {
+        .post("https://banco-alimentos-api.vercel.app/userSignUp", {
           username: username,
           password: text,
           email: email,
           name: name,
-          nextStage: nextStage,
         })
         .then(function (response) {
           console.log(response);
-          setLoggedUser(true);
+          setLoggedUser(response.data);
         })
         .catch(function (error) {
           console.log(error);
         });
     }
-  }
+  };
 
   return (
     <>

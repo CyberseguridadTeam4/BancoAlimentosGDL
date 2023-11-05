@@ -12,7 +12,7 @@ import BABird from "./components/BABird";
 import BAWelcomeView from "./views/BAWelcomeView";
 
 export default function App() {
-  const [loggedUser, setLoggedUser] = useState(false);
+  const [loggedUser, setLoggedUser] = useState(null);
   const [viewIndex, setViewIndex] = useState(1);
 
   return (
@@ -21,7 +21,7 @@ export default function App() {
         <StatusBar barStyle={"dark-content"} />
         {loggedUser ? (
           <>
-            <ViewSwitch viewIndex={viewIndex} />
+            <ViewSwitch viewIndex={viewIndex} loggedUser={loggedUser} />
             <BABottomBar />
           </>
         ) : (
@@ -35,10 +35,10 @@ export default function App() {
   );
 }
 
-const ViewSwitch = ({ viewIndex }) => {
+const ViewSwitch = ({ viewIndex, loggedUser }) => {
   switch (viewIndex) {
     case 1:
-      return <BAPostsView />;
+      return <BAPostsView userData={loggedUser} />;
     case 3:
       return <BABirdView />;
     default:

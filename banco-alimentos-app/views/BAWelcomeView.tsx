@@ -17,20 +17,19 @@ export default function LogIn({ setLoggedUser }) {
   const [email, setTextEmail] = useState("");
   const [contraseña, setTextContraseña] = useState("");
 
-  const [password, setPassword] = useState("");
-
-  const [showPassword, setShowPassword] = useState(false);
+  const [user, setUser] = useState("");
+  const [birthday, setBirthday] = useState("");
 
   const userLogin = async () => {
     axios
-      .post("/userLogin", {
+      .post("https://banco-alimentos-api.vercel.app/userLogin", {
         username: email,
         password: contraseña,
       })
       .then(function (response) {
         console.log(response);
         if (response.status == 200) {
-          setLoggedUser(true);
+          setLoggedUser(response.data);
           console.log("Usuario logeado");
         } else {
           console.log("Usuario no logeado");
@@ -87,7 +86,12 @@ export default function LogIn({ setLoggedUser }) {
         isScrolling={false}
         onReturn={() => setIsInRegisterPage(false)}
       >
-        <BASignUpView setIsInPasswordPage={setIsInPasswordPage} />
+        <BASignUpView
+          setIsInPasswordPage={setIsInPasswordPage}
+          setUserRoot={setUser}
+          serEmailRoot={setTextEmail}
+          setBirthDateRoot={setBirthday}
+        />
       </BASubView>
       <BASubView
         title="Contraseña"
@@ -96,6 +100,9 @@ export default function LogIn({ setLoggedUser }) {
         onReturn={() => setIsInPasswordPage(false)}
       >
         <BAPasswordCreationView
+          username={user}
+          email={email}
+          name={user}
           setIsInBirdPage={() => {}}
           setLoggedUser={setLoggedUser}
         />

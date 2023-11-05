@@ -6,10 +6,15 @@ import BAIcons from "../resources/icons/BAIcons";
 import { useState } from "react";
 import React from "react";
 
-export default function SignUp({ setIsInPasswordPage }: any) {
-  const [text, setText] = useState("");
-  const [text2, setText2] = useState("");
-  const [text3, setText3] = useState("");
+export default function SignUp({
+  setIsInPasswordPage,
+  setUserRoot,
+  serEmailRoot,
+  setBirthDateRoot,
+}: any) {
+  const [user, setUser] = useState("");
+  const [email, setEmail] = useState("");
+  const [birthDate, setBirthDate] = useState("");
 
   return (
     <>
@@ -18,8 +23,8 @@ export default function SignUp({ setIsInPasswordPage }: any) {
         <BATextInput
           placeholder="Usuario"
           icon={BAIcons.PersonIcon}
-          value={text}
-          onChange={setText}
+          value={user}
+          onChange={setUser}
         />
         <BAText type={TypeText.label1} style={styles.center}>
           Email:
@@ -27,21 +32,24 @@ export default function SignUp({ setIsInPasswordPage }: any) {
         <BATextInput
           placeholder="Email"
           icon={BAIcons.SMSIcon}
-          value={text2}
-          onChange={setText2}
+          value={email}
+          onChange={setEmail}
         />
         <BAText style={styles.center}>Fecha de nacimimento:</BAText>
         <BATextInput
           placeholder="00/00/0000"
           icon={BAIcons.BirdIcon}
-          value={text3}
-          onChange={setText3}
+          value={birthDate}
+          onChange={setBirthDate}
         />
         <BAButton
           text="Siguiente"
           state={ButtonState.alert}
           style={styles.centerSiguiente}
           onPress={() => {
+            setUserRoot(user);
+            serEmailRoot(email);
+            setBirthDateRoot(birthDate);
             setIsInPasswordPage(true);
           }}
         />
