@@ -42,7 +42,7 @@ export default function BASubView({
   onReturn,
   onRefresh,
 }: SubViewProps) {
-  const subpagePositionRef = useRef(new Animated.Value(500)).current;
+  const subpagePositionRef = useRef(new Animated.Value(0)).current;
   const OPEN_CLOSE_ANIMATION_TIME = 200;
 
   useEffect(() => {
@@ -164,11 +164,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: "100%",
+    height: "100%",
     flexDirection: "column",
     alignSelf: "center",
     position: "absolute",
     paddingVertical: 20,
-    paddingHorizontal: 200,
     backgroundColor: BAPallete.Background,
   },
 });
