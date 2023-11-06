@@ -206,8 +206,8 @@ const CreatePostView = ({ userData, closeSheet }) => {
     await axios
       .post(`https://banco-alimentos-api.vercel.app/post`, {
         text: textPost,
-        title: userData.username,
-        userId: userData,
+        title: userData.user.username,
+        userId: userData.user,
       })
       .then((res) => {
         console.log(res);
