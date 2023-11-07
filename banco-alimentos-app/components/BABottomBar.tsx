@@ -25,7 +25,15 @@ const BUTTONS_STYLES: ImageSourcePropType[][] = [
   [BAIcons.SettingIcon, BAIcons.SettingActivatedIcon],
 ];
 
-export default function BABottomBar({ viewIndex, setViewIndex }) {
+type BottomBarProps = {
+  viewIndex: number;
+  setViewIndex: (index: number) => void;
+};
+
+export default function BABottomBar({
+  viewIndex,
+  setViewIndex,
+}: BottomBarProps) {
   const [isKeyboardOnScreen, setIsKeyboardOnScreen] = useState(false);
 
   useEffect(() => {

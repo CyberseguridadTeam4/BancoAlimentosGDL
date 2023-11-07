@@ -36,7 +36,12 @@ export default function App() {
   );
 }
 
-const ViewSwitch = ({ viewIndex, loggedUser }) => {
+type ViewSwitchProps = {
+  viewIndex: number;
+  loggedUser: (index: {}) => void;
+};
+
+const ViewSwitch = ({ viewIndex, loggedUser }: ViewSwitchProps) => {
   switch (viewIndex) {
     case 0:
       return <BAPostsView userData={loggedUser} />;
