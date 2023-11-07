@@ -26,7 +26,7 @@ export default function SignUp() {
         icon={BAIcons.PersonIcon}
         value={text}
         onChange={setText}
-        isShadowed={true}
+        // isShadowed={true}
         />
       <BAText type={TypeText.label1}style={styles.center}>Email:</BAText>
       <BATextInput
@@ -34,15 +34,15 @@ export default function SignUp() {
         icon={BAIcons.SMSIcon}
         value={text2}
         onChange={setText2}
-        isShadowed={true}
+        // isShadowed={true}
         />
       <BAText style={styles.center}>Fecha de nacimimento:</BAText>
       <BATextInput
-        placeholder="00/00/0000"
+        placeholder="mm/dd/yyyy"
         icon={BAIcons.BirdIcon}
         value={text3}
         onChange={setText3}
-        isShadowed={true}
+        // isShadowed={true}
         />
       <BAButton
         text="Siguiente"

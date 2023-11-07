@@ -14,6 +14,7 @@ import BAWelcomeView from "./views/BAWelcomeView";
 export default function App() {
   const [loggedUser, setLoggedUser] = useState(null);
   const [viewIndex, setViewIndex] = useState(1);
+    // Define the 'text' state and its updater function
 
   return (
     <View style={styles.container}>
