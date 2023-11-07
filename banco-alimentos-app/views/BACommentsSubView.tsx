@@ -13,25 +13,31 @@ import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
 import BATextInput from "../components/BATextInput";
 import { Post } from "../views/BAPostsView";
+import axios from "axios";
 
-export default function BACommentsSubView() {
-  const [comment, setComment] = useState("");
-
-  const samplePost = {
-    text: "Sample post content",
-    title: "Sample Post",
+type CommentProps = {
+  comment: {
+    text: string,
     userId: {
-      __type: "User",
-      className: "UserClass",
-      objectId: "12345",
-    },
-    nViews: 100,
-    nLikes: 50,
-    createdAt: "2023-11-01",
-    updatedAt: "2023-11-01",
-    reported: false,
-    objectId: "67890",
-  };
+      __type: string;
+      className: string;
+      objectId: string;
+    };
+    postId: {
+      __type: string;
+      className: string;
+      objectId: string;
+    };
+    nLikes: number;
+    reported: boolean;
+    createdAt: string;
+    updatedAt: string;
+    objectId: string;
+  }
+}
+
+export default function BACommentsSubView({userData, post}) {
+  const [comment, setComment] = useState("");
 
   const sendComment = () => {
     
@@ -39,7 +45,7 @@ export default function BACommentsSubView() {
 
   return (
     <BASubView
-      title={samplePost.title}
+      title={post.title}
       isOpen={true}
       onReturn={() => {
         true;
@@ -51,7 +57,7 @@ export default function BACommentsSubView() {
       }}
       isScrolling={false}
     >
-      <Post post={samplePost} />
+      <Post post={post} />
       <BAText type={TypeText.label1} style={{ marginTop: 20, height: 40 }}>
         Comments
       </BAText>
@@ -67,7 +73,7 @@ export default function BACommentsSubView() {
         >
           <View style={styles.columnComments}>
             {Array.from({ length: 2 }).map(() => {
-              return <Comments />;
+              return <Comment />;
             })}
           </View>
         </ScrollView>
@@ -96,7 +102,7 @@ export default function BACommentsSubView() {
   );
 }
 
-const Comments = () => {
+const Comment = () => {
   const [likedPost, setLiketPost] = useState(false);
 
   return (
@@ -128,11 +134,7 @@ const Comments = () => {
       </BAText>
       <View style={styles.footer}>
         <View style={[styles.row, { gap: 15 }]}>
-          <TouchableOpacity
-            onPress={() => {
-              
-            }}
-          >
+          <TouchableOpacity>
             <BAIcon
               icon={likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon}
               color={BAPallete.Red01}

@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   RefreshControl,
   ScrollView,
+  TurboModuleRegistry,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import BAView from "../components/BAView";
@@ -16,6 +17,7 @@ import BASubView from "../components/BASubView";
 import BAButton, { ButtonState } from "../components/BAButton";
 import { useSheet } from "../components/Sheet/BASheetContext";
 import BAMultiTextInput from "../components/BAMultiTextInput";
+import BACommentsSubView from "./BACommentsSubView";
 
 type PostProps = {
   post: {
@@ -35,9 +37,17 @@ type PostProps = {
   };
 };
 
+interface OtherProps {
+  setShowComment: React.Dispatch<React.SetStateAction<boolean>>;
+  setChosenPost: React.Dispatch<React.SetStateAction<any>>;
+
+}
+
 export default function BAPostsView({ userData }) {
   const [posts, setPosts] = useState<any[]>([]);
   const [refreshing, setRefreshing] = React.useState(false);
+  const [showComment, setShowComment] = useState<boolean>(false);
+  const [chosenPost, setChosenPost] = useState<any>(null);
 
   const getPosts = async () => {
     await axios
@@ -83,6 +93,7 @@ export default function BAPostsView({ userData }) {
   };
 
   return (
+    <>
     <BAView
       title="Posts"
       rightButtons={AddButton()}
@@ -93,13 +104,15 @@ export default function BAPostsView({ userData }) {
     >
       {posts.length > 0 &&
         posts.map((item) => {
-          return <Post post={item} key={item.objectId} />;
+          return <Post post={item} key={item.objectId} setShowComment = {setShowComment} setChosenPost = {setChosenPost}/>;
         })}
     </BAView>
+     {showComment && <BACommentsSubView userData = {userData} post = {chosenPost}/>}
+    </>
   );
 }
 
-export const Post = ({ post }: PostProps) => {
+export const Post = ({ post, setShowComment, setChosenPost }: PostProps  & OtherProps) => {
   const [likedPost, setLiketPost] = useState(false);
   const [postData, setPostData] = useState(post);
 
@@ -120,7 +133,7 @@ export const Post = ({ post }: PostProps) => {
   }, []);
 
   return (
-    <TouchableOpacity style={styles.postBox}>
+    <TouchableOpacity style={styles.postBox} onPress = {() => {setShowComment(true); setChosenPost(post)}}>
       <View style={styles.header}>
         <View style={styles.row}>
           <View style={styles.profilePic} />
