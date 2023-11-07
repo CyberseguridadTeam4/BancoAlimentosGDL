@@ -107,6 +107,7 @@ const PasswordMeter: React.FC<PasswordMeterProps> = ({
     if (hasUpperCaseLowerCase()) count++;
     if (hasNumbers()) count++;
     if (hasSpecialChar()) count++;
+    // if (count < 4) console.log("Insegura");
     return count;
   };
 

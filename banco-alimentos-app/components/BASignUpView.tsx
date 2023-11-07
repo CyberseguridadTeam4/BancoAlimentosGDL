@@ -10,7 +10,7 @@ import BAView from "./BAView";
 import React from "react";
 
 export default function SignUp() {
-  const [selectedOption, setSelectedOption] = useState("1");
+  // const [selectedOption, setSelectedOption] = useState("1");
   const [text, setText] = useState("");
   const [text2, setText2] = useState("");
   const [text3, setText3] = useState("");

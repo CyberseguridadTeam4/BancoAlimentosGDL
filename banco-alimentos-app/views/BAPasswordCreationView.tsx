@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { StyleSheet, Text, View, Dimensions, PixelRatio } from "react-native";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
@@ -6,6 +6,7 @@ import BATextInput from "../components/BATextInput";
 import BAIcons from "../resources/icons/BAIcons";
 import axios from "axios";
 import PasswordMeter from "../components/BAPasswordMeter";
+import { useModal } from "../components/Modal/BAModalContext";
 
 export default function SignUp({
   username,
@@ -14,18 +15,23 @@ export default function SignUp({
   nextStage,
   setLoggedUser,
 }: any) {
-  const [text, setText] = useState("");
-  const [text2, setText2] = useState("");
-
+  const [password, setPassword] = useState("");
+  const [passwordConf, setPasswordConf] = useState("");
+  const { openModal } = useModal();
   const createUser = async () => {
-    if (text !== text2) {
+    if (password !== passwordConf) {
+      openModal(
+        <BAText>Asegurate de que las contraseñas coincidan</BAText>,
+        "Contraseñas no coinciden"
+      )
       console.log("Las contraseñas no coinciden");
+
     } else {
       console.log("Crear usuario");
       axios
         .post("https://banco-alimentos-api.vercel.app/userSignUp", {
           username: username,
-          password: text,
+          password: password,
           email: email,
           name: name,
         })
@@ -35,6 +41,7 @@ export default function SignUp({
         })
         .catch(function (error) {
           console.log(error);
+          // Contraseña insegura
         });
     }
   };
@@ -45,8 +52,8 @@ export default function SignUp({
       { <BATextInput
         placeholder="Contraseña"
         icon={BAIcons.PersonIcon}
-        value={text}
-        onChange={setText}
+        value={password}
+        onChange={setPassword}
         isPassword={true} // Use secureTextEntry for password input
       /> }
       { <BAText type={TypeText.label1} style={styles.center}>
@@ -55,11 +62,11 @@ export default function SignUp({
       { <BATextInput
         placeholder="Contraseña"
         icon={BAIcons.SMSIcon}
-        value={text2}
-        onChange={setText2}
+        value={passwordConf}
+        onChange={setPasswordConf}
         isPassword={true} // Use secureTextEntry for password input
       /> }
-      <PasswordMeter password={text} confidence={0} updatePassword={function (text: string): void {
+      <PasswordMeter password={password} confidence={0} updatePassword={function (text: string): void {
         throw new Error("Function not implemented.");
       } } />
       <BAButton
@@ -71,6 +78,7 @@ export default function SignUp({
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -90,3 +98,7 @@ const styles = StyleSheet.create({
     marginTop: 60,
   },
 });
+function openSheet(arg0: React.JSX.Element, arg1: string) {
+  throw new Error("Function not implemented.");
+}
+
