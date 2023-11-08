@@ -43,7 +43,7 @@ export default function SignUp({
         />
         <BAText style={styles.center}>Fecha de nacimimento:</BAText>
         <BATextInput
-          placeholder="mm/dd/yyyy"
+          placeholder="dd/mm/yyyy"
           icon={BAIcons.BirdIcon}
           value={birthDate}
           onChange={setBirthDate}

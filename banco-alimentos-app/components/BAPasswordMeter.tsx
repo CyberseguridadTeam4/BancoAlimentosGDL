@@ -6,6 +6,7 @@ import BAText, { TypeText } from './BAText';
 
 interface PasswordMeterProps {
   password: string;
+  setSeguridad: Function;
   confidence: number;
   updatePassword: (text: string) => void;
   updateValidPassword?: (valid: boolean) => void;
@@ -77,10 +78,7 @@ const styles = StyleSheet.create({
 
   });
 
-const PasswordMeter: React.FC<PasswordMeterProps> = ({
-  password,
-
-}) => {
+const PasswordMeter: React.FC<PasswordMeterProps> = ({ password, setSeguridad }) => {
 
   function validateLength () {
     return password.length > 8
@@ -107,9 +105,12 @@ const PasswordMeter: React.FC<PasswordMeterProps> = ({
     if (hasUpperCaseLowerCase()) count++;
     if (hasNumbers()) count++;
     if (hasSpecialChar()) count++;
-    // if (count < 4) console.log("Insegura");
+    // console.log(seguridad);
     return count;
   };
+
+  if (acceptedCriteriaCount() == 4) setSeguridad(true);
+  
 
   function low () {
     let low = false;
@@ -128,7 +129,7 @@ const PasswordMeter: React.FC<PasswordMeterProps> = ({
     if(acceptedCriteriaCount() == 4) high = true;
     return high
   }
-
+  
   return (
     <View style={styles.container}>
         <View style={styles.containerInline}>
@@ -166,4 +167,4 @@ const PasswordMeter: React.FC<PasswordMeterProps> = ({
   );
 };
 
-export default PasswordMeter;
+export default PasswordMeter ;

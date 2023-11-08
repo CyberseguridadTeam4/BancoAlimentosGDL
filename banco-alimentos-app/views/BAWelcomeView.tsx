@@ -1,4 +1,4 @@
-import { StyleSheet, View, StatusBar, Alert, Dimensions } from "react-native";
+import { StyleSheet, View, StatusBar, Alert, Dimensions, Image } from "react-native";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
@@ -33,7 +33,6 @@ export default function LogIn({ setLoggedUser }) {
           console.log("Usuario logeado");
         } else {
           console.log("Usuario no logeado");
-          // Make loginStatus opacity 1
         }
       })
       .catch(function (error) {
@@ -79,6 +78,10 @@ export default function LogIn({ setLoggedUser }) {
           state={ButtonState.alert}
           onPress={() => userLogin()}
         />
+
+        <Image source={require('../resources/icons/BAMXLogo.png')} style={styles.image} />
+
+        
       </BAView>
       <BASubView
         title="Registrate aqui!"
@@ -111,14 +114,14 @@ export default function LogIn({ setLoggedUser }) {
   );
 }
 
+// const tamaño = window.Dimensions.height
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F4F5FF",
     alignItems: "center",
-    height: Dimensions.get("window").height,
-    paddingVertical: 60,
-    gap: 20,
+    // height: Dimensions.get("window").height,
+    gap: 19,
     paddingHorizontal: 20,
   },
   containerInline: {
@@ -130,9 +133,15 @@ const styles = StyleSheet.create({
   },
   centerEmail: {
     width: "100%",
-    marginTop: 30,
+    marginTop: 10,
   },
   icon: {
     marginLeft: 10,
+  },
+  image: {
+    width:  Dimensions.get("window").width * 0.550,
+    // Dimensions.get("window").height * 100,
+    height: Dimensions.get("window").height * 0.106,
+    marginTop: 10,
   },
 });

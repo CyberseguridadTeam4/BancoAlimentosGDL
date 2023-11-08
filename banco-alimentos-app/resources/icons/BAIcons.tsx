@@ -76,4 +76,7 @@ export default {
   get EyeIcon(): ImageSourcePropType {
     return require("./EyeIcon.png");
   },
+  get BAMXLogo(): ImageSourcePropType {
+    return require("./BAMXLogo.png");
+  },
 };

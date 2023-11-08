@@ -17,6 +17,8 @@ export default function SignUp({
 }: any) {
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
+  const [seguridad, setSeguridad] = useState(false)
+
   const { openModal } = useModal();
   const createUser = async () => {
     if (password !== passwordConf) {
@@ -25,7 +27,6 @@ export default function SignUp({
         "Contraseñas no coinciden"
       )
       console.log("Las contraseñas no coinciden");
-
     } else {
       console.log("Crear usuario");
       axios
@@ -41,10 +42,17 @@ export default function SignUp({
         })
         .catch(function (error) {
           console.log(error);
-          // Contraseña insegura
         });
     }
   };
+
+
+  if(seguridad){
+    console.log('bien')
+  } 
+  else{
+    console.log("fake")
+  }
 
   return (
     <View style={styles.container}>
@@ -66,15 +74,27 @@ export default function SignUp({
         onChange={setPasswordConf}
         isPassword={true} // Use secureTextEntry for password input
       /> }
-      <PasswordMeter password={password} confidence={0} updatePassword={function (text: string): void {
+      <PasswordMeter password={password} confidence={0} setSeguridad={setSeguridad} updatePassword={function (text: string): void {
         throw new Error("Function not implemented.");
       } } />
-      <BAButton
-        text="Confirmar"
+
+      {seguridad ? <BAButton
+          text="Confirmar"
+          state={ButtonState.alert}
+          style={styles.centerConfirmar}
+          onPress={() => createUser()}
+        /> : <BAButton
+        text="Siguiente"
         state={ButtonState.alert}
-        style={styles.centerConfirmar}
-        onPress={() => createUser()}
-      />
+        style={styles.centerSiguiente}
+        onPress={() => {
+          openModal(
+              <BAText>Asegurate de que tu contraseña cumpla con los puntos de seguridad</BAText>,
+              "Contraseña insegura"
+            )
+        }}
+      />}
+
     </View>
   );
 }
@@ -96,6 +116,9 @@ const styles = StyleSheet.create({
   },
   centerConfirmar: {
     marginTop: 60,
+  },
+  centerSiguiente: {
+    marginTop: 150,
   },
 });
 function openSheet(arg0: React.JSX.Element, arg1: string) {
