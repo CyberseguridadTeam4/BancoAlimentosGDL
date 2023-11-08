@@ -12,7 +12,7 @@ import BAPallete from "../resources/BAPallete";
 import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
 import BATextInput from "../components/BATextInput";
-import axios from "axios";
+import axios from "../axios";
 
 type CommentProps = {
   comment: {
@@ -98,15 +98,13 @@ export default function BACommentsSubView({
 
   const publishComment = useCallback(async (textComment: string) => {
     await axios
-      .post(`https://banco-alimentos-api.vercel.app/comment`, {
+      .post(`/comment`, {
         text: textComment,
         userId: userData.user.objectId,
         postId: post.objectId,
       })
       .then((res) => {
         console.log(res);
-        console.log(post.objectId);
-        console.log(post);
         setText("");
       })
       .catch((error) => console.log(error));
@@ -115,9 +113,10 @@ export default function BACommentsSubView({
   const getComments = async () => {
     await axios
       .get(
-        "https://banco-alimentos-api.vercel.app/getComments/" + post.objectId
+        '/getComments'
       )
       .then((res: any) => {
+        console.log(res);
         const commentData = res.data.comments;
         commentData.reverse();
         setComments(commentData);
@@ -248,7 +247,7 @@ export const Post = ({ post }: any) => {
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
     await axios.patch(
-      `https://banco-alimentos-api.vercel.app/like/${post.objectId}/${
+      `/like/${post.objectId}/${
         isLike ? 1 : -1
       }`,
       post
