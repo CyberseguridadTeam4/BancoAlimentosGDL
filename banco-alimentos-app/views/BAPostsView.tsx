@@ -12,7 +12,7 @@ import BAText, { TypeText } from "../components/BAText";
 import BAPallete from "../resources/BAPallete";
 import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
-import axios from "axios";
+import axios from "../axios";
 import BASubView from "../components/BASubView";
 import BAButton, { ButtonState } from "../components/BAButton";
 import { useSheet } from "../components/Sheet/BASheetContext";
@@ -50,7 +50,7 @@ export default function BAPostsView({ userData }) {
 
   const getPosts = async () => {
     await axios
-      .get("https://banco-alimentos-api.vercel.app/getPosts")
+      .get("/getPosts")
       .then((res: any) => {
         const postsData = res.data.posts;
         postsData.reverse();
@@ -139,7 +139,7 @@ export const Post = ({
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
     await axios.patch(
-      `https://banco-alimentos-api.vercel.app/like/${post.objectId}/${
+      `/like/${post.objectId}/${
         isLike ? 1 : -1
       }`,
       post
@@ -254,7 +254,7 @@ const CreatePostView = ({ userData, closeSheet }) => {
 
   const publishPost = useCallback(async (textPost: string) => {
     await axios
-      .post(`https://banco-alimentos-api.vercel.app/post`, {
+      .post(`/post`, {
         text: textPost,
         title: userData.user.username,
         userId: userData.user.objectId,
