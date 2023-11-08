@@ -10,8 +10,13 @@ import React from "react";
 import BASubView from "../components/BASubView";
 import BASignUpView from "./BASignUpView";
 import BAPasswordCreationView from "./BAPasswordCreationView";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function LogIn({ setLoggedUser }) {
+type WelcomeProps = {
+  setLoggedUser: (obj: {}) => void;
+};
+
+export default function LogIn({ setLoggedUser }: WelcomeProps) {
   const [isInRegisterPage, setIsInRegisterPage] = useState(false);
   const [isInPasswordPage, setIsInPasswordPage] = useState(false);
   const [email, setTextEmail] = useState("");
@@ -27,13 +32,13 @@ export default function LogIn({ setLoggedUser }) {
         password: contraseña,
       })
       .then(function (response) {
-        console.log(response);
+        console.log(response.data);
         if (response.status == 200) {
           setLoggedUser(response.data);
+          AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
           console.log("Usuario logeado");
         } else {
           console.log("Usuario no logeado");
-          // Make loginStatus opacity 1
         }
       })
       .catch(function (error) {

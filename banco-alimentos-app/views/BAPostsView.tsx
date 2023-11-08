@@ -3,7 +3,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   RefreshControl,
-  ScrollView,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import BAView from "../components/BAView";
@@ -37,7 +36,11 @@ type PostProps = {
   onClickPost: () => void;
 };
 
-export default function BAPostsView({ userData }) {
+type PostsProps = {
+  userData: any;
+};
+
+export default function BAPostsView({ userData }: PostsProps) {
   const [posts, setPosts] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -199,7 +202,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
   );
 };
 
-const CreatePostView = ({ userData, closeSheet }) => {
+const CreatePostView = ({ userData, closeSheet }: any) => {
   const [text, setText] = useState("");
 
   const publishPost = useCallback(async (textPost: string) => {

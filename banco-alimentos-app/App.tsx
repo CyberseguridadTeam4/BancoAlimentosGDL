@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, StatusBar } from "react-native";
-import { useState } from "react";
+import { StyleSheet, View, StatusBar } from "react-native";
+import { useEffect, useState } from "react";
 import BABottomBar from "./components/BABottomBar";
 import React from "react";
 import BABirdView from "./views/BABirdView";
@@ -11,16 +11,27 @@ import BAPostsView from "./views/BAPostsView";
 import BAMapView from "./views/BAMapView";
 import BAAccountView from "./views/BAAccountView";
 import BAWelcomeView from "./views/BAWelcomeView";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
-  const [loggedUser, setLoggedUser] = useState(null);
+  const [loggedUser, setLoggedUser] = useState({});
   const [viewIndex, setViewIndex] = useState(2);
+
+  useEffect(() => {
+    (async () => {
+      const sessionToken = await AsyncStorage.getItem("sessionToken");
+
+      if (sessionToken) {
+        // TODO: Llamar endpoint
+      }
+    })();
+  }, []);
 
   return (
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
-        {loggedUser ? (
+        {Object.keys(loggedUser).length > 0 ? (
           <>
             <ViewSwitch viewIndex={viewIndex} loggedUser={loggedUser} />
             <BABottomBar viewIndex={viewIndex} setViewIndex={setViewIndex} />
@@ -38,7 +49,7 @@ export default function App() {
 
 type ViewSwitchProps = {
   viewIndex: number;
-  loggedUser: (index: {}) => void;
+  loggedUser: {};
 };
 
 const ViewSwitch = ({ viewIndex, loggedUser }: ViewSwitchProps) => {
