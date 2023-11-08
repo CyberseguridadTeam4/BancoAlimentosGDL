@@ -8,13 +8,15 @@ import BAModalController from "./components/Modal/BAModal";
 import BASheetController from "./components/Sheet/BASheet";
 import BAToastController from "./components/Toast/BAToast";
 import BAPostsView from "./views/BAPostsView";
-import BABird from "./components/BABird";
+import BAMapView from "./views/BAMapView";
+import BAAccountView from "./views/BAAccountView";
 import BAWelcomeView from "./views/BAWelcomeView";
 
 export default function App() {
   const [loggedUser, setLoggedUser] = useState(null);
-  const [viewIndex, setViewIndex] = useState(1);
-    // Define the 'text' state and its updater function
+
+  const [viewIndex, setViewIndex] = useState(2);
+
 
   return (
     <View style={styles.container}>
@@ -23,7 +25,7 @@ export default function App() {
         {loggedUser ? (
           <>
             <ViewSwitch viewIndex={viewIndex} loggedUser={loggedUser} />
-            <BABottomBar />
+            <BABottomBar viewIndex={viewIndex} setViewIndex={setViewIndex} />
           </>
         ) : (
           <BAWelcomeView setLoggedUser={setLoggedUser} />
@@ -36,12 +38,21 @@ export default function App() {
   );
 }
 
-const ViewSwitch = ({ viewIndex, loggedUser }) => {
+type ViewSwitchProps = {
+  viewIndex: number;
+  loggedUser: (index: {}) => void;
+};
+
+const ViewSwitch = ({ viewIndex, loggedUser }: ViewSwitchProps) => {
   switch (viewIndex) {
-    case 1:
+    case 0:
       return <BAPostsView userData={loggedUser} />;
-    case 3:
+    case 1:
+      return <BAMapView />;
+    case 2:
       return <BABirdView />;
+    case 3:
+      return <BAAccountView />;
     default:
       return <BABirdView />;
   }

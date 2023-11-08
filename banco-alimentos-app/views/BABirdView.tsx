@@ -151,6 +151,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flex: 1,
     gap: 75,
+    paddingHorizontal: 20,
+    paddingTop: 50,
   },
   titleText: {
     fontSize: 28,
@@ -161,6 +163,7 @@ const styles = StyleSheet.create({
     height: "100%",
     flexDirection: "column",
     justifyContent: "center",
+    paddingBottom: 200,
     gap: 10,
     marginTop: 20,
   },

@@ -25,8 +25,15 @@ const BUTTONS_STYLES: ImageSourcePropType[][] = [
   [BAIcons.SettingIcon, BAIcons.SettingActivatedIcon],
 ];
 
-export default function BABottomBar() {
-  const [optionSelected, setOptionSelected] = useState(0);
+type BottomBarProps = {
+  viewIndex: number;
+  setViewIndex: (index: number) => void;
+};
+
+export default function BABottomBar({
+  viewIndex,
+  setViewIndex,
+}: BottomBarProps) {
   const [isKeyboardOnScreen, setIsKeyboardOnScreen] = useState(false);
 
   useEffect(() => {
@@ -44,7 +51,6 @@ export default function BABottomBar() {
       }
     );
 
-    // Don't forget to remove the event listeners when the component unmounts
     return () => {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
@@ -67,16 +73,18 @@ export default function BABottomBar() {
             <MiddleButton
               key={index}
               index={index}
-              optionSelected={optionSelected}
-              setOptionSelected={setOptionSelected}
+              optionSelected={viewIndex}
+              setOptionSelected={() => {
+                setViewIndex(index);
+              }}
             />
           ) : (
             <BAButton
               key={index}
               onPress={() => {
-                setOptionSelected(index);
+                setViewIndex(index);
               }}
-              icon={optionSelected == index ? item[1] : item[0]}
+              icon={viewIndex == index ? item[1] : item[0]}
               iconSize={IconSize.large}
               state={ButtonState.alert}
               style={[styles.buttons]}
@@ -103,7 +111,7 @@ const MiddleButton = ({ index, optionSelected, setOptionSelected }: any) => {
 
   useEffect(() => {
     setPlayAnimation(!showToast);
-    if (playAnimation) {
+    if (showToast && playAnimation) {
       Animated.sequence([
         Animated.timing(buttonScale, {
           toValue: { x: 1, y: 1 },

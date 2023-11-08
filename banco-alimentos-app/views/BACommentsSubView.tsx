@@ -14,7 +14,7 @@ import BAIcons from "../resources/icons/BAIcons";
 import BATextInput from "../components/BATextInput";
 import { Post } from "../views/BAPostsView";
 
-export default function BACommentsSubView() {
+export default function BACommentsSubView({ isOpen, onReturn }) {
   const [comment, setComment] = useState("");
 
   const samplePost = {
@@ -33,17 +33,13 @@ export default function BACommentsSubView() {
     objectId: "67890",
   };
 
-  const sendComment = () => {
-    
-  };
+  const sendComment = () => {};
 
   return (
     <BASubView
       title={samplePost.title}
-      isOpen={true}
-      onReturn={() => {
-        true;
-      }}
+      isOpen={isOpen}
+      onReturn={onReturn}
       style={{
         flex: 1,
         height: "100%",
@@ -51,7 +47,7 @@ export default function BACommentsSubView() {
       }}
       isScrolling={false}
     >
-      <Post post={samplePost} />
+      <Post post={samplePost} onClickPost={() => {}} />
       <BAText type={TypeText.label1} style={{ marginTop: 20, height: 40 }}>
         Comments
       </BAText>
@@ -121,18 +117,10 @@ const Comments = () => {
           </BAText>
         </View>
       </View>
-      <BAText
-        style={{ marginVertical: 20, fontSize: 16  }}
-      >
-        Hello World
-      </BAText>
+      <BAText style={{ marginVertical: 20, fontSize: 16 }}>Hello World</BAText>
       <View style={styles.footer}>
         <View style={[styles.row, { gap: 15 }]}>
-          <TouchableOpacity
-            onPress={() => {
-              
-            }}
-          >
+          <TouchableOpacity onPress={() => {}}>
             <BAIcon
               icon={likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon}
               color={BAPallete.Red01}

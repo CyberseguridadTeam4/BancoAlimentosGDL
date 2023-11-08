@@ -16,6 +16,7 @@ import BASubView from "../components/BASubView";
 import BAButton, { ButtonState } from "../components/BAButton";
 import { useSheet } from "../components/Sheet/BASheetContext";
 import BAMultiTextInput from "../components/BAMultiTextInput";
+import BACommentsSubView from "./BACommentsSubView";
 
 type PostProps = {
   post: {
@@ -33,11 +34,14 @@ type PostProps = {
     reported: boolean;
     objectId: string;
   };
+  onClickPost: () => void;
 };
 
 export default function BAPostsView({ userData }) {
   const [posts, setPosts] = useState<any[]>([]);
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 
   const getPosts = async () => {
     await axios
@@ -83,23 +87,32 @@ export default function BAPostsView({ userData }) {
   };
 
   return (
-    <BAView
-      title="Posts"
-      rightButtons={AddButton()}
-      style={styles.columnPosts}
-      onRefresh={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      {posts.length > 0 &&
-        posts.map((item) => {
-          return <Post post={item} key={item.objectId} />;
-        })}
-    </BAView>
+    <>
+      <BAView
+        title="Posts"
+        rightButtons={AddButton()}
+        style={styles.columnPosts}
+        onRefresh={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {posts.length > 0 &&
+          posts.map((item) => {
+            return (
+              <Post
+                post={item}
+                key={item.objectId}
+                onClickPost={() => setIsCommentsOpen(true)}
+              />
+            );
+          })}
+      </BAView>
+      <BACommentsSubView isOpen={isCommentsOpen} onReturn={setIsCommentsOpen} />
+    </>
   );
 }
 
-export const Post = ({ post }: PostProps) => {
+export const Post = ({ post, onClickPost }: PostProps) => {
   const [likedPost, setLiketPost] = useState(false);
   const [postData, setPostData] = useState(post);
 
@@ -120,7 +133,7 @@ export const Post = ({ post }: PostProps) => {
   }, []);
 
   return (
-    <TouchableOpacity style={styles.postBox}>
+    <TouchableOpacity style={styles.postBox} onPress={onClickPost}>
       <View style={styles.header}>
         <View style={styles.row}>
           <View style={styles.profilePic} />
@@ -193,8 +206,8 @@ const CreatePostView = ({ userData, closeSheet }) => {
     await axios
       .post(`https://banco-alimentos-api.vercel.app/post`, {
         text: textPost,
-        title: userData.username,
-        userId: userData,
+        title: userData.user.username,
+        userId: userData.user,
       })
       .then((res) => {
         console.log(res);
