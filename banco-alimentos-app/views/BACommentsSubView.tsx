@@ -1,4 +1,4 @@
-import React, { useState , useCallback} from "react";
+import React, { useState , useEffect, useCallback} from "react";
 import {
   View,
   StyleSheet,
@@ -12,7 +12,6 @@ import BAPallete from "../resources/BAPallete";
 import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
 import BATextInput from "../components/BATextInput";
-import { Post } from "../views/BAPostsView";
 import axios from "axios";
 
 type CommentProps = {
@@ -36,8 +35,61 @@ type CommentProps = {
   }
 }
 
+type PostProps = {
+  post: {
+    text: string;
+    title: string;
+    userId: {
+      __type: string;
+      className: string;
+      objectId: string;
+    };
+    nViews: number;
+    nLikes: number;
+    createdAt: string;
+    updatedAt: string;
+    reported: boolean;
+    objectId: string;
+  };
+};
+
+
+const calculateDate = (postCreation: string): string => {
+  const currentDate = new Date();
+  const postDate = new Date(postCreation);
+
+
+  let diffInMilliseconds: number = currentDate.getTime() - postDate.getTime();
+  let diffInSeconds: number = Math.floor(diffInMilliseconds / 1000);
+  let diffInMinutes: number = Math.floor(diffInSeconds / 60);
+  let diffInHours: number = Math.floor(diffInMinutes / 60);
+  let diffInDays: number = Math.floor(diffInHours / 24);
+
+  diffInMilliseconds %= 1000;
+  diffInSeconds %= 60;
+  diffInMinutes %= 60;
+  diffInHours %= 24;
+  
+  let result: string = '';
+  if (diffInDays > 0) {
+    result += `${diffInDays} day(s), `;
+  }
+  else if (diffInHours > 0) {
+    result += `${diffInHours} hour(s), `;
+  }
+  else if (diffInMinutes > 0) {
+    result += `${diffInMinutes} minute(s), `;
+  }
+  else if (diffInSeconds > 0) {
+    result += `${diffInSeconds} second(s), `;
+  }
+ 
+  return result.trim().replace(/,\s*$/, ''); // remove trailing comma
+};
+
 export default function BACommentsSubView({userData, post}) {
   const [text, setText] = useState("");
+  const [comments, setComments] = useState<any[]>([]);
 
   const publishComment  = useCallback(async (textComment: string)=> {
     await axios
@@ -53,6 +105,20 @@ export default function BACommentsSubView({userData, post}) {
       setText("");
     })
     .catch((error) => console.log(error));
+  }, []);
+
+  const getComments = async () =>{
+    await axios
+      .get("https://banco-alimentos-api.vercel.app/getComments/"+post.objectId)
+      .then((res: any) => {
+        const commentData = res.data.comments;
+        commentData.reverse();
+        setComments(commentData);
+      });
+  }
+
+  useEffect(() => {
+    getComments();
   }, []);
 
   return (
@@ -84,9 +150,13 @@ export default function BACommentsSubView({userData, post}) {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.columnComments}>
-            {Array.from({ length: 2 }).map(() => {
+            {/* {Array.from({ length: 2 }).map(() => {
               return <Comment />;
-            })}
+            })} */}
+            {comments.length > 0 &&
+              comments.map((item) => {
+                return <Comment comment={item} key={item.objectId} />;
+              })}
           </View>
         </ScrollView>
       </View>
@@ -116,9 +186,13 @@ export default function BACommentsSubView({userData, post}) {
   );
 }
 
-const Comment = () => {
+const Comment = ({comment}: CommentProps) => {
   const [likedPost, setLiketPost] = useState(false);
+  const [commentData, setCommentData] = useState(comment);
 
+  useEffect(() => {
+    setCommentData(comment);
+  }, [comment]);
   return (
     <View style={styles.commentsBox}>
       <View style={styles.header}>
@@ -137,14 +211,14 @@ const Comment = () => {
             />
           </TouchableOpacity>
           <BAText type={TypeText.label3} style={{ fontSize: 12 }}>
-            10m
+            {calculateDate(commentData.createdAt)}
           </BAText>
         </View>
       </View>
       <BAText
         style={{ marginVertical: 20, fontSize: 16  }}
       >
-        Hello World
+       {commentData.text}
       </BAText>
       <View style={styles.footer}>
         <View style={[styles.row, { gap: 15 }]}>
@@ -161,7 +235,89 @@ const Comment = () => {
   );
 };
 
-const windowHeight = Dimensions.get("window").height;
+
+export const Post = ({ post}) => {
+  const [likedPost, setLiketPost] = useState(false);
+  const [postData, setPostData] = useState(post);
+
+  const likePost = useCallback(async (isLike: boolean) => {
+    const postData = post;
+    isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
+    await axios.patch(
+      `https://banco-alimentos-api.vercel.app/like/${post.objectId}/${
+        isLike ? 1 : -1
+      }`,
+      post
+    );
+    setPostData({ ...postData });
+  }, []);
+
+  return (
+    <View style={styles.postBox}>
+      <View style={styles.header}>
+        <View style={styles.row}>
+          <View style={styles.profilePic} />
+          <BAText type={TypeText.label3} style={{ fontSize: 20 }}>
+            {postData.title}
+          </BAText>
+        </View>
+        <BAText type={TypeText.label3} style={{ fontSize: 14 }}>
+          {calculateDate(postData.createdAt)}
+        </BAText>
+      </View>
+      <BAText
+        style={{ marginVertical: 20, fontSize: 22 }}
+        type={TypeText.label1}
+      >
+        {postData.text}
+      </BAText>
+      <View style={styles.footer}>
+        <View style={[styles.row, { gap: 20 }]}>
+          <TouchableOpacity>
+            <BAIcon
+              icon={BAIcons.ForoIcon}
+              color={BAPallete.Red01}
+              size={IconSize.medium}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <BAIcon
+              icon={BAIcons.FlagIcon}
+              color={BAPallete.Red01}
+              size={IconSize.medium}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={[styles.row, { gap: 20 }]}>
+          <TouchableOpacity
+            onPress={() => {
+              setLiketPost(!likedPost);
+              likePost(!likedPost);
+            }}
+          >
+            <View style={styles.likeContainer}>
+              <BAText type={TypeText.label3}>{postData.nLikes}</BAText>
+              <BAIcon
+                icon={
+                  likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
+                }
+                color={BAPallete.Red01}
+                size={IconSize.medium}
+              />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <BAIcon
+              icon={BAIcons.ShareIcon}
+              color={BAPallete.Red01}
+              size={IconSize.medium}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   body: {
@@ -225,5 +381,20 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  postBox: {
+    width: "100%",
+    minHeight: 100,
+    backgroundColor: "white",
+    borderRadius: 10,
+    padding: 15,
+    shadowRadius: 10,
+    shadowColor: BAPallete.StrongBlue,
+    shadowOpacity: 0.15,
+  },
+  likeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
   },
 });
