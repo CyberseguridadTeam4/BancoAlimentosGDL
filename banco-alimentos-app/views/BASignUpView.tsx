@@ -5,6 +5,7 @@ import BATextInput from "../components/BATextInput";
 import BAIcons from "../resources/icons/BAIcons";
 import { useState } from "react";
 import React from "react";
+import { useModal } from "../components/Modal/BAModalContext";
 
 export default function SignUp({
   setIsInPasswordPage,
@@ -15,6 +16,11 @@ export default function SignUp({
   const [user, setUser] = useState("");
   const [email, setEmail] = useState("");
   const [birthDate, setBirthDate] = useState("");
+  const {openModal} = useModal();
+
+  function missing () {
+    return user === "" || email === "" || birthDate === ""
+  }
 
   return (
     <>
@@ -37,22 +43,32 @@ export default function SignUp({
         />
         <BAText style={styles.center}>Fecha de nacimimento:</BAText>
         <BATextInput
-          placeholder="00/00/0000"
+          placeholder="dd/mm/yyyy"
           icon={BAIcons.BirdIcon}
           value={birthDate}
           onChange={setBirthDate}
         />
-        <BAButton
+        {missing() ? <BAButton
           text="Siguiente"
           state={ButtonState.alert}
           style={styles.centerSiguiente}
           onPress={() => {
-            setUserRoot(user);
-            serEmailRoot(email);
-            setBirthDateRoot(birthDate);
-            setIsInPasswordPage(true);
+            openModal(
+              <BAText>Asegurate de escribir correctamente la informacion en todos los campos</BAText>,
+              "Campos incompletos"
+            )
           }}
-        />
+        /> : <BAButton
+        text="Siguiente"
+        state={ButtonState.alert}
+        style={styles.centerSiguiente}
+        onPress={() => {
+          setUserRoot(user);
+          serEmailRoot(email);
+          setBirthDateRoot(birthDate);
+          setIsInPasswordPage(true);
+        }}
+      />}
       </View>
     </>
   );
