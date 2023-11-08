@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useCallback} from "react";
 import {
   View,
   StyleSheet,
@@ -37,11 +37,23 @@ type CommentProps = {
 }
 
 export default function BACommentsSubView({userData, post}) {
-  const [comment, setComment] = useState("");
+  const [text, setText] = useState("");
 
-  const sendComment = () => {
-    
-  };
+  const publishComment  = useCallback(async (textComment: string)=> {
+    await axios
+    .post(`https://banco-alimentos-api.vercel.app/comment`, {
+      text: textComment,
+      userId: userData.user.objectId,
+      postId: post.objectId,
+    })
+    .then((res) => {
+      console.log(res);
+      console.log(post.objectId);
+      console.log(post);
+      setText("");
+    })
+    .catch((error) => console.log(error));
+  }, []);
 
   return (
     <BASubView
@@ -82,13 +94,15 @@ export default function BACommentsSubView({userData, post}) {
         <View style={{ width: "88%", marginRight: 10 }}>
           <BATextInput
             placeholder="Type your comment"
-            value={comment}
-            onChange={setComment}
+            value={text}
+            onChange = {(e) => {
+              setText(e);
+            }}
           />
         </View>
         <TouchableOpacity
           onPress={() => {
-            sendComment();
+           publishComment(text)
           }}
         >
           <BAIcon

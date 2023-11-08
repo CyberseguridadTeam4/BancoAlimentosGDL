@@ -132,6 +132,39 @@ export const Post = ({ post, setShowComment, setChosenPost }: PostProps  & Other
     setPostData({ ...postData });
   }, []);
 
+  const calculateDate = (postCreation: string): string => {
+    const currentDate = new Date();
+    const postDate = new Date(postCreation);
+
+
+    let diffInMilliseconds: number = currentDate.getTime() - postDate.getTime();
+    let diffInSeconds: number = Math.floor(diffInMilliseconds / 1000);
+    let diffInMinutes: number = Math.floor(diffInSeconds / 60);
+    let diffInHours: number = Math.floor(diffInMinutes / 60);
+    let diffInDays: number = Math.floor(diffInHours / 24);
+
+    diffInMilliseconds %= 1000;
+    diffInSeconds %= 60;
+    diffInMinutes %= 60;
+    diffInHours %= 24;
+    
+    let result: string = '';
+    if (diffInDays > 0) {
+      result += `${diffInDays} day(s), `;
+    }
+    else if (diffInHours > 0) {
+      result += `${diffInHours} hour(s), `;
+    }
+    else if (diffInMinutes > 0) {
+      result += `${diffInMinutes} minute(s), `;
+    }
+    else if (diffInSeconds > 0) {
+      result += `${diffInSeconds} second(s), `;
+    }
+   
+    return result.trim().replace(/,\s*$/, ''); // remove trailing comma
+  };
+
   return (
     <TouchableOpacity style={styles.postBox} onPress = {() => {setShowComment(true); setChosenPost(post)}}>
       <View style={styles.header}>
@@ -142,7 +175,7 @@ export const Post = ({ post, setShowComment, setChosenPost }: PostProps  & Other
           </BAText>
         </View>
         <BAText type={TypeText.label3} style={{ fontSize: 14 }}>
-          10m
+          {calculateDate(postData.createdAt)}
         </BAText>
       </View>
       <BAText
@@ -206,8 +239,8 @@ const CreatePostView = ({ userData, closeSheet }) => {
     await axios
       .post(`https://banco-alimentos-api.vercel.app/post`, {
         text: textPost,
-        title: userData.username,
-        userId: userData,
+        title: userData.user.username,
+        userId: userData.user.objectId,
       })
       .then((res) => {
         console.log(res);
