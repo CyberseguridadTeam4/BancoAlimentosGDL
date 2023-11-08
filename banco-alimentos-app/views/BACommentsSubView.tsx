@@ -1,4 +1,4 @@
-import React, { useState , useEffect, useCallback} from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -16,7 +16,7 @@ import axios from "axios";
 
 type CommentProps = {
   comment: {
-    text: string,
+    text: string;
     userId: {
       __type: string;
       className: string;
@@ -32,32 +32,35 @@ type CommentProps = {
     createdAt: string;
     updatedAt: string;
     objectId: string;
-  }
-}
-
-type PostProps = {
-  post: {
-    text: string;
-    title: string;
-    userId: {
-      __type: string;
-      className: string;
-      objectId: string;
-    };
-    nViews: number;
-    nLikes: number;
-    createdAt: string;
-    updatedAt: string;
-    reported: boolean;
-    objectId: string;
   };
 };
 
+type CommentsViewProps = {
+  userData: any;
+  post: PostProps;
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
+};
+
+type PostProps = {
+  text: string;
+  title: string;
+  userId: {
+    __type: string;
+    className: string;
+    objectId: string;
+  };
+  nViews: number;
+  nLikes: number;
+  createdAt: string;
+  updatedAt: string;
+  reported: boolean;
+  objectId: string;
+};
 
 const calculateDate = (postCreation: string): string => {
   const currentDate = new Date();
   const postDate = new Date(postCreation);
-
 
   let diffInMilliseconds: number = currentDate.getTime() - postDate.getTime();
   let diffInSeconds: number = Math.floor(diffInMilliseconds / 1000);
@@ -69,53 +72,57 @@ const calculateDate = (postCreation: string): string => {
   diffInSeconds %= 60;
   diffInMinutes %= 60;
   diffInHours %= 24;
-  
-  let result: string = '';
+
+  let result: string = "";
   if (diffInDays > 0) {
     result += `${diffInDays} day(s), `;
-  }
-  else if (diffInHours > 0) {
+  } else if (diffInHours > 0) {
     result += `${diffInHours} hour(s), `;
-  }
-  else if (diffInMinutes > 0) {
+  } else if (diffInMinutes > 0) {
     result += `${diffInMinutes} minute(s), `;
-  }
-  else if (diffInSeconds > 0) {
+  } else if (diffInSeconds > 0) {
     result += `${diffInSeconds} second(s), `;
   }
- 
-  return result.trim().replace(/,\s*$/, ''); // remove trailing comma
+
+  return result.trim().replace(/,\s*$/, ""); // remove trailing comma
 };
 
-export default function BACommentsSubView({userData, post}) {
+export default function BACommentsSubView({
+  userData,
+  post,
+  isOpen = false,
+  setIsOpen,
+}: CommentsViewProps) {
   const [text, setText] = useState("");
   const [comments, setComments] = useState<any[]>([]);
 
-  const publishComment  = useCallback(async (textComment: string)=> {
+  const publishComment = useCallback(async (textComment: string) => {
     await axios
-    .post(`https://banco-alimentos-api.vercel.app/comment`, {
-      text: textComment,
-      userId: userData.user.objectId,
-      postId: post.objectId,
-    })
-    .then((res) => {
-      console.log(res);
-      console.log(post.objectId);
-      console.log(post);
-      setText("");
-    })
-    .catch((error) => console.log(error));
+      .post(`https://banco-alimentos-api.vercel.app/comment`, {
+        text: textComment,
+        userId: userData.user.objectId,
+        postId: post.objectId,
+      })
+      .then((res) => {
+        console.log(res);
+        console.log(post.objectId);
+        console.log(post);
+        setText("");
+      })
+      .catch((error) => console.log(error));
   }, []);
 
-  const getComments = async () =>{
+  const getComments = async () => {
     await axios
-      .get("https://banco-alimentos-api.vercel.app/getComments/"+post.objectId)
+      .get(
+        "https://banco-alimentos-api.vercel.app/getComments/" + post.objectId
+      )
       .then((res: any) => {
         const commentData = res.data.comments;
         commentData.reverse();
         setComments(commentData);
       });
-  }
+  };
 
   useEffect(() => {
     getComments();
@@ -123,10 +130,10 @@ export default function BACommentsSubView({userData, post}) {
 
   return (
     <BASubView
-      title={post.title}
-      isOpen={true}
+      title={post ? post.title : ""}
+      isOpen={isOpen}
       onReturn={() => {
-        true;
+        setIsOpen(false);
       }}
       style={{
         flex: 1,
@@ -165,14 +172,14 @@ export default function BACommentsSubView({userData, post}) {
           <BATextInput
             placeholder="Type your comment"
             value={text}
-            onChange = {(e) => {
+            onChange={(e) => {
               setText(e);
             }}
           />
         </View>
         <TouchableOpacity
           onPress={() => {
-           publishComment(text)
+            publishComment(text);
           }}
         >
           <BAIcon
@@ -186,7 +193,7 @@ export default function BACommentsSubView({userData, post}) {
   );
 }
 
-const Comment = ({comment}: CommentProps) => {
+const Comment = ({ comment }: CommentProps) => {
   const [likedPost, setLiketPost] = useState(false);
   const [commentData, setCommentData] = useState(comment);
 
@@ -215,10 +222,8 @@ const Comment = ({comment}: CommentProps) => {
           </BAText>
         </View>
       </View>
-      <BAText
-        style={{ marginVertical: 20, fontSize: 16  }}
-      >
-       {commentData.text}
+      <BAText style={{ marginVertical: 20, fontSize: 16 }}>
+        {commentData.text}
       </BAText>
       <View style={styles.footer}>
         <View style={[styles.row, { gap: 15 }]}>
@@ -235,8 +240,7 @@ const Comment = ({comment}: CommentProps) => {
   );
 };
 
-
-export const Post = ({ post}) => {
+export const Post = ({ post }: any) => {
   const [likedPost, setLiketPost] = useState(false);
   const [postData, setPostData] = useState(post);
 

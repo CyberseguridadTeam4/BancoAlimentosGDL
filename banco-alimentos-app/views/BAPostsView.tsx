@@ -40,7 +40,6 @@ type PostProps = {
 interface OtherProps {
   setShowComment: React.Dispatch<React.SetStateAction<boolean>>;
   setChosenPost: React.Dispatch<React.SetStateAction<any>>;
-
 }
 
 export default function BAPostsView({ userData }) {
@@ -94,25 +93,41 @@ export default function BAPostsView({ userData }) {
 
   return (
     <>
-    <BAView
-      title="Posts"
-      rightButtons={AddButton()}
-      style={styles.columnPosts}
-      onRefresh={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      {posts.length > 0 &&
-        posts.map((item) => {
-          return <Post post={item} key={item.objectId} setShowComment = {setShowComment} setChosenPost = {setChosenPost}/>;
-        })}
-    </BAView>
-     {showComment && <BACommentsSubView userData = {userData} post = {chosenPost}/>}
+      <BAView
+        title="Posts"
+        rightButtons={AddButton()}
+        style={styles.columnPosts}
+        onRefresh={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {posts.length > 0 &&
+          posts.map((item) => {
+            return (
+              <Post
+                post={item}
+                key={item.objectId}
+                setShowComment={setShowComment}
+                setChosenPost={setChosenPost}
+              />
+            );
+          })}
+      </BAView>
+      <BACommentsSubView
+        userData={userData}
+        post={chosenPost}
+        isOpen={showComment}
+        setIsOpen={setShowComment}
+      />
     </>
   );
 }
 
-export const Post = ({ post, setShowComment, setChosenPost }: PostProps  & OtherProps) => {
+export const Post = ({
+  post,
+  setShowComment,
+  setChosenPost,
+}: PostProps & OtherProps) => {
   const [likedPost, setLiketPost] = useState(false);
   const [postData, setPostData] = useState(post);
 
@@ -136,7 +151,6 @@ export const Post = ({ post, setShowComment, setChosenPost }: PostProps  & Other
     const currentDate = new Date();
     const postDate = new Date(postCreation);
 
-
     let diffInMilliseconds: number = currentDate.getTime() - postDate.getTime();
     let diffInSeconds: number = Math.floor(diffInMilliseconds / 1000);
     let diffInMinutes: number = Math.floor(diffInSeconds / 60);
@@ -147,26 +161,29 @@ export const Post = ({ post, setShowComment, setChosenPost }: PostProps  & Other
     diffInSeconds %= 60;
     diffInMinutes %= 60;
     diffInHours %= 24;
-    
-    let result: string = '';
+
+    let result: string = "";
     if (diffInDays > 0) {
       result += `${diffInDays} day(s), `;
-    }
-    else if (diffInHours > 0) {
+    } else if (diffInHours > 0) {
       result += `${diffInHours} hour(s), `;
-    }
-    else if (diffInMinutes > 0) {
+    } else if (diffInMinutes > 0) {
       result += `${diffInMinutes} minute(s), `;
-    }
-    else if (diffInSeconds > 0) {
+    } else if (diffInSeconds > 0) {
       result += `${diffInSeconds} second(s), `;
     }
-   
-    return result.trim().replace(/,\s*$/, ''); // remove trailing comma
+
+    return result.trim().replace(/,\s*$/, ""); // remove trailing comma
   };
 
   return (
-    <TouchableOpacity style={styles.postBox} onPress = {() => {setShowComment(true); setChosenPost(post)}}>
+    <TouchableOpacity
+      style={styles.postBox}
+      onPress={() => {
+        setShowComment(true);
+        setChosenPost(post);
+      }}
+    >
       <View style={styles.header}>
         <View style={styles.row}>
           <View style={styles.profilePic} />
