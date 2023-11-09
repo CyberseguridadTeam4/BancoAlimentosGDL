@@ -13,6 +13,7 @@ import BAAccountView from "./views/BAAccountView";
 import BAWelcomeView from "./views/BAWelcomeView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "./axios";
+import BASettingsView from "./views/BASettingsView";
 
 export default function App() {
   const [loggedUser, setLoggedUser] = useState({});
@@ -70,6 +71,8 @@ const ViewSwitch = ({ viewIndex, loggedUser }: ViewSwitchProps) => {
       return <BABirdView />;
     case 3:
       return <BAAccountView />;
+    case 4:
+      return <BASettingsView />;
     default:
       return <BABirdView />;
   }
