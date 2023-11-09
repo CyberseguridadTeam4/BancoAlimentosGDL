@@ -45,7 +45,7 @@ const ViewSwitch = ({ viewIndex, loggedUser }) => {
     case 2:
       return <BABirdView />;
     case 3:
-      return <BAAccountView />;
+      return <BAAccountView userData={loggedUser} />;
     default:
       return <BABirdView />;
   }
