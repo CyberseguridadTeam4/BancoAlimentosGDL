@@ -140,7 +140,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
       <View style={styles.header}>
         <View style={styles.row}>
           <View style={styles.profilePic} />
-          <BAText type={TypeText.label3} style={{ fontSize: 18 }}>
+          <BAText type={TypeText.label3} style={{ fontSize: 16 }}>
             {postData.title}
           </BAText>
         </View>
@@ -149,7 +149,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
         </BAText>
       </View>
       <BAText
-        style={{ marginVertical: 20, fontSize: 20 }}
+        style={{ marginVertical: 20, fontSize: 18 }}
         type={TypeText.label1}
       >
         {postData.text}
