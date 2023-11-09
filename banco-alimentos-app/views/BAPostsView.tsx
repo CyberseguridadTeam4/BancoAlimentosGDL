@@ -113,12 +113,12 @@ export default function BAPostsView({ userData }) {
             );
           })}
       </BAView>
-      <BACommentsSubView
+      { showComment &&<BACommentsSubView
         userData={userData}
         post={chosenPost}
         isOpen={showComment}
         setIsOpen={setShowComment}
-      />
+      />}
     </>
   );
 }
