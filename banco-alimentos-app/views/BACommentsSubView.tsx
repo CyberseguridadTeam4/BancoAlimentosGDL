@@ -113,10 +113,9 @@ export default function BACommentsSubView({
   const getComments = async () => {
     await axios
       .get(
-        '/getComments'
+        `/getComments/${post.objectId}`
       )
       .then((res: any) => {
-        console.log(res);
         const commentData = res.data.comments;
         commentData.reverse();
         setComments(commentData);
@@ -329,7 +328,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   commentsBox: {
-    // width: "100%",
     minheight: 100,
     backgroundColor: "white",
     borderRadius: 10,
