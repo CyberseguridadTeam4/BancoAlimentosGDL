@@ -133,6 +133,7 @@ const BASheet = ({ title, content, onClose }: BASheetProps) => {
         ]}
       >
         <View style={styles.header}>
+          <BAText type={TypeText.label0}>{title}</BAText>
           <TouchableOpacity onPress={onCloseSheet}>
             <BAIcon
               icon={BAIcons.CrossIcon}
@@ -140,7 +141,6 @@ const BASheet = ({ title, content, onClose }: BASheetProps) => {
               size={IconSize.large}
             />
           </TouchableOpacity>
-          <BAText type={TypeText.label0}>{title}</BAText>
         </View>
         {content}
       </Animated.View>
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     flexDirection: "row",
     alignContent: "center",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     gap: 20,
   },
   background: {
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     top: "10%",
     bottom: 0,
     zIndex: 102,
-    padding: 30,
+    padding: 25,
     paddingTop: 10,
     marginTop: 25,
     backgroundColor: BAPallete.Background,
