@@ -12,6 +12,7 @@ import BAMapView from "./views/BAMapView";
 import BAAccountView from "./views/BAAccountView";
 import BAWelcomeView from "./views/BAWelcomeView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "./axios";
 
 export default function App() {
   const [loggedUser, setLoggedUser] = useState({});
@@ -20,9 +21,16 @@ export default function App() {
   useEffect(() => {
     (async () => {
       const sessionToken = await AsyncStorage.getItem("sessionToken");
+      console.log(sessionToken);
 
       if (sessionToken) {
-        // TODO: Llamar endpoint
+        await axios
+          .get(
+            `https://banco-alimentos-api.vercel.app/authSessionToken/${sessionToken}`
+          )
+          .then((res): any => {
+            setLoggedUser(res.data);
+          });
       }
     })();
   }, []);
