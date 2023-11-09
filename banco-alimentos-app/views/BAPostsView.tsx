@@ -140,7 +140,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
       <View style={styles.header}>
         <View style={styles.row}>
           <View style={styles.profilePic} />
-          <BAText type={TypeText.label3} style={{ fontSize: 20 }}>
+          <BAText type={TypeText.label3} style={{ fontSize: 18 }}>
             {postData.title}
           </BAText>
         </View>
@@ -149,7 +149,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
         </BAText>
       </View>
       <BAText
-        style={{ marginVertical: 20, fontSize: 22 }}
+        style={{ marginVertical: 20, fontSize: 20 }}
         type={TypeText.label1}
       >
         {postData.text}
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   profilePic: {
-    width: 50,
+    width: 40,
     aspectRatio: 1 / 1,
     borderRadius: 10,
     backgroundColor: "white",
