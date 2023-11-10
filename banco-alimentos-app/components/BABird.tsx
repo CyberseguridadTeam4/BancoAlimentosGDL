@@ -438,7 +438,7 @@ export default function BABird() {
         <View
           style={{
             transform: [{ scale: 0.7 }],
-            marginTop: 25,
+            flex: 2,
           }}
         >
           {heartReaction && (
@@ -450,6 +450,7 @@ export default function BABird() {
               styles.birdContainer,
               {
                 transform: [{ translateY: birdPosition }],
+                flex: 1,
               },
             ]}
           >
@@ -498,7 +499,7 @@ export default function BABird() {
 const BirdBody = ({ eyeClosed = false, eyeWink = false }: BirdBodyProps) => {
   return (
     <Animated.View style={[styles.container, styles.absolute]}>
-      <Svg viewBox="0 0 500 400">
+      <Svg viewBox="0 0 500 400" width={"100%"} height={"100%"}>
         {/* Cola */}
         <Path
           d="M274.842 275.517a5.085 5.085 0 0 0-10.091.705c-4.997 148.455-111.265 257.047-181.619 283.461a5.086 5.086 0 0 0 .112 9.561c83.365 29.083 176.634 32.785 231.512-56.91.081-.131.976-1.224.7-3.378-.058-.455-.449-2.818-1.116-6.735-6.472-37.965-39.498-226.704-39.498-226.704Zm-5.009.876c-5.081 150.942-113.381 261.193-184.914 288.05 81.144 28.309 172.083 32.543 225.5-54.763.183-.299-40.586-233.287-40.586-233.287Z"
@@ -586,7 +587,7 @@ const BirdLeftFoot = ({ footRotation }: any) => {
         },
       ]}
     >
-      <Svg viewBox="0 0 500 400">
+      <Svg viewBox="0 0 500 400" width={"100%"} height={"100%"}>
         <Path
           d="m443.743 470-1.621 87.986"
           stroke={"#ffae00"}
@@ -621,7 +622,7 @@ const BirdRightFoot = ({ footRotation }: any) => {
         },
       ]}
     >
-      <Svg viewBox="0 0 500 400">
+      <Svg viewBox="0 0 500 400" width={"100%"} height={"100%"}>
         {/* Patita izquierda */}
         <Path
           d="m443.743 470-1.621 87.986"
@@ -662,7 +663,7 @@ const BirdWing = ({ scaleWingRef = new Animated.Value(1) }: BirdWIngProps) => {
         },
       ]}
     >
-      <Svg viewBox="0 0 500 400">
+      <Svg viewBox="0 0 500 400" width={"100%"} height={"100%"}>
         {/* Ala */}
         <Path
           d="M125.106 447.01c-23.565-9.529 76.105-26.452 95.453-98.858 9.779-36.594 35.298-106.646 101.082-104.823 64.013 1.773 86.056 52.425 82.977 92.697-7.485 97.884-166.785 156.568-279.512 110.984Z"
@@ -826,11 +827,12 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   debugButtons: {
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-around",
     gap: 100,
     paddingHorizontal: 50,
-    marginBottom: 30,
+    marginBottom: 50,
   },
   birdContainer: {
     flex: 1,
@@ -845,7 +847,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1 / 1,
   },
   heartContainer: {
-    width: "100%",
+    flex: 1,
     aspectRatio: 1 / 1,
     alignSelf: "center",
     position: "absolute",

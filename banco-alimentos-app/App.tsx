@@ -61,8 +61,24 @@ export default function App() {
 
 type ViewSwitchProps = {
   viewIndex: number;
-  loggedUser: {};
+  loggedUser: UserProps;
   setLoggedUser: (data: any) => void;
+};
+
+type UserProps = {
+  user: {
+    username: string;
+    badges: [];
+    email: string;
+    idProfilePicture: number;
+    visBadge: number;
+    pollo: any;
+    createdAt: string;
+    updatedAt: string;
+    ACL: any;
+    sessionToken: string;
+    objectId: string;
+  };
 };
 
 const ViewSwitch = ({
@@ -76,7 +92,12 @@ const ViewSwitch = ({
     case 1:
       return <BAMapView />;
     case 2:
-      return <BABirdView />;
+      return (
+        <BABirdView
+          birdPointer={loggedUser.user.pollo}
+          username={loggedUser.user.username}
+        />
+      );
     case 3:
       return <BAAccountView />;
     case 4:

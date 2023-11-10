@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BAView from "../components/BAView";
 import BATextInput from "../components/BATextInput";
 import BAButton, { ButtonState } from "../components/BAButton";
@@ -7,6 +7,8 @@ import BAText, { TypeText } from "../components/BAText";
 import BASubView from "../components/BASubView";
 import BAPallete from "../resources/BAPallete";
 import { useModal } from "../components/Modal/BAModalContext";
+import axios from "../axios";
+import BABird from "../components/BABird";
 
 type ColorButtonProps = {
   color: string;
@@ -14,13 +16,46 @@ type ColorButtonProps = {
   onClick: () => void;
 };
 
-export default function BABirdView() {
-  const birdData = null;
+type SetBirdProps = {
+  setBirdData: (data: any) => void;
+};
 
-  return <BABirdName />;
+type BirdData = {
+  pollo: {
+    name: string;
+    xp: number;
+    level: number;
+    nApple: number;
+    nextStage: number;
+    createdAt: string;
+    updatedAt: string;
+    objectId: string;
+  };
+};
+
+export default function BABirdView({ birdPointer, username }: any) {
+  const [birdData, setBirdData] = useState<BirdData | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      await axios
+        .get(
+          `https://banco-alimentos-api.vercel.app/getPollito/${birdPointer.objectId}`
+        )
+        .then((res): any => {
+          setBirdData(res.data);
+        });
+    })();
+  }, []);
+
+  return birdData && birdData.pollo.name == "username" ? (
+    <BABirdName setBirdData={setBirdData} />
+  ) : (
+    <BABird />
+  );
 }
 
-function BABirdName() {
+function BABirdName({ setBirdData }: SetBirdProps) {
   const [name, setName] = useState("");
   const [nextPage, setNextPage] = useState(false);
 
