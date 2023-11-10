@@ -5,6 +5,8 @@ import {
   RefreshControl,
   ScrollView,
   TurboModuleRegistry,
+  Share, 
+  Alert
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import BAView from "../components/BAView";
@@ -41,6 +43,26 @@ interface OtherProps {
   setShowComment: React.Dispatch<React.SetStateAction<boolean>>;
   setChosenPost: React.Dispatch<React.SetStateAction<any>>;
 }
+
+const onShare = async () => {
+  // try {
+  //   const result = await Share.share({
+  //     message:
+  //       'React Native | A framework for building native apps using React',
+  //   });
+  //   if (result.action === Share.sharedAction) {
+  //     if (result.activityType) {
+  //       // shared with activity type of result.activityType
+  //     } else {
+  //       // shared
+  //     }
+  //   } else if (result.action === Share.dismissedAction) {
+  //     // dismissed
+  //   }
+  // } catch (error: any) {
+  //   Alert.alert(error.message);
+  // }
+};
 
 export default function BAPostsView({ userData }) {
   const [posts, setPosts] = useState<any[]>([]);
@@ -203,7 +225,12 @@ export const Post = ({
       </BAText>
       <View style={styles.footer}>
         <View style={[styles.row, { gap: 20 }]}>
-          <TouchableOpacity>
+          <TouchableOpacity
+          onPress={() => {
+            setShowComment(true);
+            setChosenPost(post);
+          }}
+          >
             <BAIcon
               icon={BAIcons.ForoIcon}
               color={BAPallete.Red01}
@@ -236,7 +263,11 @@ export const Post = ({
               />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+          onPress={
+            onShare
+          }
+          >
             <BAIcon
               icon={BAIcons.ShareIcon}
               color={BAPallete.Red01}
