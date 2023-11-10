@@ -5,6 +5,8 @@ import {
   SafeAreaView,
   Animated,
   Easing,
+  Keyboard,
+  Platform,
 } from "react-native";
 import React, { Component, useEffect, useRef, useState } from "react";
 import Svg, { Path } from "react-native-svg";
@@ -23,26 +25,66 @@ const BUTTONS_STYLES: ImageSourcePropType[][] = [
   [BAIcons.SettingIcon, BAIcons.SettingActivatedIcon],
 ];
 
-export default function BABottomBar() {
-  const [optionSelected, setOptionSelected] = useState(0);
+type BottomBarProps = {
+  viewIndex: number;
+  setViewIndex: (index: number) => void;
+};
+
+export default function BABottomBar({
+  viewIndex,
+  setViewIndex,
+}: BottomBarProps) {
+  const [isKeyboardOnScreen, setIsKeyboardOnScreen] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsKeyboardOnScreen(true);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsKeyboardOnScreen(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        {
+          display:
+            isKeyboardOnScreen && Platform.OS == "android" ? "none" : "flex",
+        },
+      ]}
+    >
       <View style={styles.buttonContainer}>
         {BUTTONS_STYLES.map((item: ImageSourcePropType[], index: number) => {
           return index == 2 ? (
             <MiddleButton
               key={index}
               index={index}
-              optionSelected={optionSelected}
-              setOptionSelected={setOptionSelected}
+              optionSelected={viewIndex}
+              setOptionSelected={() => {
+                setViewIndex(index);
+              }}
             />
           ) : (
             <BAButton
               key={index}
               onPress={() => {
-                setOptionSelected(index);
+                setViewIndex(index);
               }}
-              icon={optionSelected == index ? item[1] : item[0]}
+              icon={viewIndex == index ? item[1] : item[0]}
               iconSize={IconSize.large}
               state={ButtonState.alert}
               style={[styles.buttons]}
@@ -69,7 +111,7 @@ const MiddleButton = ({ index, optionSelected, setOptionSelected }: any) => {
 
   useEffect(() => {
     setPlayAnimation(!showToast);
-    if (playAnimation) {
+    if (showToast && playAnimation) {
       Animated.sequence([
         Animated.timing(buttonScale, {
           toValue: { x: 1, y: 1 },

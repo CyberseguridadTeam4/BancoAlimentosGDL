@@ -434,35 +434,44 @@ export default function BABird() {
   return (
     <>
       {openEgg && <BAEgg onClose={() => setOpenEgg(false)} />}
-      <BAView title={"Cuarto de ???"} style={styles.body}>
-        {heartReaction && (
-          <HeartsReaction setHeartReaction={setHeartReaction} />
-        )}
-
-        <Animated.View
-          style={[
-            styles.birdContainer,
-            { transform: [{ translateY: birdPosition }, { scale: 0.8 }] },
-          ]}
+      <BAView title={"Cuarto de Pollo"} style={styles.body} isScrolling={false}>
+        <View
+          style={{
+            flex: 1,
+            marginTop: 20,
+          }}
         >
-          <BirdFeet
-            leftFootRefRotation={leftFootRotation}
-            rightFootRefRotation={rightFootRotation}
-          />
+          {heartReaction && (
+            <HeartsReaction setHeartReaction={setHeartReaction} />
+          )}
+
           <Animated.View
-            style={{
-              transform: [
-                { translateY: BIRD_BODY_ORIGIN },
-                { translateY: birdBodyPosition },
-                { rotate: bodyRotation },
-                { translateY: -BIRD_BODY_ORIGIN },
-              ],
-            }}
+            style={[
+              styles.birdContainer,
+              {
+                transform: [{ translateY: birdPosition }],
+              },
+            ]}
           >
-            <BirdBody eyeClosed={happyEye} eyeWink={winkEye} />
-            <BirdWing scaleWingRef={scaleWingRef} />
+            <BirdFeet
+              leftFootRefRotation={leftFootRotation}
+              rightFootRefRotation={rightFootRotation}
+            />
+            <Animated.View
+              style={{
+                transform: [
+                  { translateY: BIRD_BODY_ORIGIN },
+                  { translateY: birdBodyPosition },
+                  { rotate: bodyRotation },
+                  { translateY: -BIRD_BODY_ORIGIN },
+                ],
+              }}
+            >
+              <BirdBody eyeClosed={happyEye} eyeWink={winkEye} />
+              <BirdWing scaleWingRef={scaleWingRef} />
+            </Animated.View>
           </Animated.View>
-        </Animated.View>
+        </View>
         <View style={styles.debugButtons}>
           <BAButton
             style={styles.birdButtons}
@@ -489,7 +498,12 @@ export default function BABird() {
 const BirdBody = ({ eyeClosed = false, eyeWink = false }: BirdBodyProps) => {
   return (
     <Animated.View style={[styles.container, styles.absolute]}>
-      <Svg viewBox="0 0 500 400">
+      <Svg
+        viewBox="0 0 500 400"
+        width={"70%"}
+        height={"70%"}
+        style={{ alignSelf: "center" }}
+      >
         {/* Cola */}
         <Path
           d="M274.842 275.517a5.085 5.085 0 0 0-10.091.705c-4.997 148.455-111.265 257.047-181.619 283.461a5.086 5.086 0 0 0 .112 9.561c83.365 29.083 176.634 32.785 231.512-56.91.081-.131.976-1.224.7-3.378-.058-.455-.449-2.818-1.116-6.735-6.472-37.965-39.498-226.704-39.498-226.704Zm-5.009.876c-5.081 150.942-113.381 261.193-184.914 288.05 81.144 28.309 172.083 32.543 225.5-54.763.183-.299-40.586-233.287-40.586-233.287Z"
@@ -577,7 +591,12 @@ const BirdLeftFoot = ({ footRotation }: any) => {
         },
       ]}
     >
-      <Svg viewBox="0 0 500 400">
+      <Svg
+        viewBox="0 0 500 400"
+        width={"70%"}
+        height={"70%"}
+        style={{ alignSelf: "center" }}
+      >
         <Path
           d="m443.743 470-1.621 87.986"
           stroke={"#ffae00"}
@@ -612,7 +631,12 @@ const BirdRightFoot = ({ footRotation }: any) => {
         },
       ]}
     >
-      <Svg viewBox="0 0 500 400">
+      <Svg
+        viewBox="0 0 500 400"
+        width={"70%"}
+        height={"70%"}
+        style={{ alignSelf: "center" }}
+      >
         {/* Patita izquierda */}
         <Path
           d="m443.743 470-1.621 87.986"
@@ -653,7 +677,12 @@ const BirdWing = ({ scaleWingRef = new Animated.Value(1) }: BirdWIngProps) => {
         },
       ]}
     >
-      <Svg viewBox="0 0 500 400">
+      <Svg
+        viewBox="0 0 500 400"
+        width={"70%"}
+        height={"70%"}
+        style={{ alignSelf: "center" }}
+      >
         {/* Ala */}
         <Path
           d="M125.106 447.01c-23.565-9.529 76.105-26.452 95.453-98.858 9.779-36.594 35.298-106.646 101.082-104.823 64.013 1.773 86.056 52.425 82.977 92.697-7.485 97.884-166.785 156.568-279.512 110.984Z"
@@ -720,13 +749,13 @@ const HeartsReaction = ({ setHeartReaction }: HeartReactionProps) => {
 
     Animated.sequence([
       Animated.timing(diagonalPosition, {
-        toValue: { x: 30, y: -20 },
+        toValue: { x: 30, y: 30 },
         duration: 200,
         easing: Easing.ease,
         useNativeDriver: true,
       }),
       Animated.timing(diagonalPosition, {
-        toValue: { x: 110, y: -120 },
+        toValue: { x: 80, y: -30 },
         duration: 1000,
         easing: Easing.ease,
         useNativeDriver: true,
@@ -735,13 +764,13 @@ const HeartsReaction = ({ setHeartReaction }: HeartReactionProps) => {
 
     Animated.sequence([
       Animated.timing(negDiagonalPosition, {
-        toValue: { x: -10, y: -20 },
+        toValue: { x: -10, y: 30 },
         duration: 200,
         easing: Easing.ease,
         useNativeDriver: true,
       }),
       Animated.timing(negDiagonalPosition, {
-        toValue: { x: -90, y: -120 },
+        toValue: { x: -60, y: -100 },
         duration: 1000,
         easing: Easing.ease,
         useNativeDriver: true,
@@ -751,7 +780,7 @@ const HeartsReaction = ({ setHeartReaction }: HeartReactionProps) => {
 
   const heartPosition = heartPositionRef.interpolate({
     inputRange: [0, 1],
-    outputRange: [-40, -170],
+    outputRange: [25, -80],
     extrapolate: "identity",
   });
 
@@ -790,7 +819,7 @@ const HeartsReaction = ({ setHeartReaction }: HeartReactionProps) => {
             ]}
             key={item}
           >
-            <Svg width={50} height={50} viewBox="0 0 24 24">
+            <Svg width={40} height={40} viewBox="0 0 24 24">
               <Path
                 d="M14 20.408c-.492.308-.903.546-1.192.709-.153.086-.308.17-.463.252h-.002a.75.75 0 0 1-.686 0 16.709 16.709 0 0 1-.465-.252 31.147 31.147 0 0 1-4.803-3.34C3.8 15.572 1 12.331 1 8.513 1 5.052 3.829 2.5 6.736 2.5 9.03 2.5 10.881 3.726 12 5.605 13.12 3.726 14.97 2.5 17.264 2.5 20.17 2.5 23 5.052 23 8.514c0 3.818-2.801 7.06-5.389 9.262A31.146 31.146 0 0 1 14 20.408z"
                 fill={BAPallete.Red01}
@@ -807,6 +836,7 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     position: "relative",
+    justifyContent: "space-around",
   },
   absolute: {
     width: "100%",
@@ -816,15 +846,14 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   debugButtons: {
-    flex: 1,
     flexDirection: "row",
     justifyContent: "space-around",
     gap: 100,
     paddingHorizontal: 50,
+    marginBottom: 120,
   },
   birdContainer: {
     flex: 1,
-    aspectRatio: 1 / 1,
   },
   container: {
     width: "auto",
@@ -841,6 +870,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   heart: {
+    flex: 1,
     alignSelf: "center",
     position: "absolute",
   },

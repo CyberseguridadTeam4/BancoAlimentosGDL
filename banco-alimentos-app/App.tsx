@@ -8,30 +8,55 @@ import BAModalController from "./components/Modal/BAModal";
 import BASheetController from "./components/Sheet/BASheet";
 import BAToastController from "./components/Toast/BAToast";
 import BAPostsView from "./views/BAPostsView";
-import BABird from "./components/BABird";
-import BAAcount from "./components/BAAccountView";
-import BAAccountBadges from "./components/BABadgesView";
+import BAMapView from "./views/BAMapView";
+import BAAccountView from "./views/BAAccountView";
+import BAWelcomeView from "./views/BAWelcomeView";
+
 export default function App() {
-  const [selectedOption, setSelectedOption] = useState("1");
-  const [text, setText] = useState("Hello");
+  const [loggedUser, setLoggedUser] = useState(null);
+
+  const [viewIndex, setViewIndex] = useState(2);
+
+
   return (
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
-        <BABottomBar />
-        {/* <BAModalController />
+        {loggedUser ? (
+          <>
+            <ViewSwitch viewIndex={viewIndex} loggedUser={loggedUser} />
+            <BABottomBar viewIndex={viewIndex} setViewIndex={setViewIndex} />
+          </>
+        ) : (
+          <BAWelcomeView setLoggedUser={setLoggedUser} />
+        )}
+        <BAModalController />
         <BASheetController />
         <BAToastController />
-        <BAPostsView />
-        <BABirdView />
-        <BAAcount />
-        <BABird /> */}
-        <BAAccountBadges badges={null}/>
-        {/* <BAAcount /> */}
       </BAContextProviderWrapper>
     </View>
   );
 }
+
+type ViewSwitchProps = {
+  viewIndex: number;
+  loggedUser: (index: {}) => void;
+};
+
+const ViewSwitch = ({ viewIndex, loggedUser }: ViewSwitchProps) => {
+  switch (viewIndex) {
+    case 0:
+      return <BAPostsView userData={loggedUser} />;
+    case 1:
+      return <BAMapView />;
+    case 2:
+      return <BABirdView />;
+    case 3:
+      return <BAAccountView />;
+    default:
+      return <BABirdView />;
+  }
+};
 
 const styles = StyleSheet.create({
   container: {
