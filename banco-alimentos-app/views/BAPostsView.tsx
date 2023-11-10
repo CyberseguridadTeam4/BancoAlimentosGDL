@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     width: "100%",
     minHeight: 100,
     backgroundColor: "white",
-    borderRadius: 10,
+    borderRadius: 15,
     padding: 15,
     shadowRadius: 10,
     shadowColor: BAPallete.StrongBlue,
