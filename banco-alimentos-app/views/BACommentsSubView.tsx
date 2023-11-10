@@ -277,13 +277,6 @@ export const Post = ({ post }: any) => {
         <View style={[styles.row, { gap: 20 }]}>
           <TouchableOpacity>
             <BAIcon
-              icon={BAIcons.ForoIcon}
-              color={BAPallete.Red01}
-              size={IconSize.medium}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <BAIcon
               icon={BAIcons.FlagIcon}
               color={BAPallete.Red01}
               size={IconSize.medium}
