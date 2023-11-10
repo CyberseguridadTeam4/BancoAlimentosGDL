@@ -1,25 +1,60 @@
 import { View, StyleSheet } from "react-native";
 import { Image } from "react-native";
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import BAView from "../components/BAView";
 import BAButton, { ButtonState } from "../components/BAButton";
-import BAText from "../components/BAText";
+import BAText, { TypeText } from "../components/BAText";
+import { useSheet } from "../components/Sheet/BASheetContext";
+import { useModal } from "../components/Modal/BAModalContext";
+import BATextInput from "../components/BATextInput";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function BASettingsView() {
+type SettingProps = {
+  userData: any;
+  setUserData: (data: any) => void;
+};
+
+export default function BASettingsView({
+  userData,
+  setUserData,
+}: SettingProps) {
+  const { openSheet } = useSheet();
+  const { openModal } = useModal();
+
   return (
     <BAView title="Configuración" style={styles.body}>
       <View style={styles.buttonsWrapper}>
-        <BAButton text="Términos y Condiciones" onPress={() => {}} />
-        <BAButton text="Cerrar Sesión" onPress={() => {}} />
+        <BAButton
+          text="Términos y Condiciones"
+          onPress={() => openSheet(<></>, "Terminos y Condiciones")}
+        />
+        <BAButton
+          text="Cerrar Sesión"
+          onPress={() =>
+            openModal(<LogOutModal setUserData={setUserData} />, "Confirmar")
+          }
+        />
       </View>
       <BAButton
         text="Eliminar Cuenta"
         state={ButtonState.alert}
-        onPress={() => {}}
+        onPress={() =>
+          openModal(
+            <DeleteAccountModal
+              userData={userData}
+              setUserData={setUserData}
+            />,
+            "Eliminar cuenta"
+          )
+        }
         style={{ marginVertical: 20 }}
       />
       <Image
         source={require("../assets/AppIcon.png")}
+        style={styles.imageStyle}
+      />
+      <Image
+        source={require("../assets/BALogo.png")}
         style={styles.imageStyle}
       />
       <View style={styles.membersWrapper}>
@@ -34,13 +69,92 @@ export default function BASettingsView() {
         source={require("../assets/TecIcon.png")}
         style={styles.imageStyle}
       />
-      <Image
-        source={require("../assets/BALogo.png")}
-        style={styles.imageStyle}
-      />
     </BAView>
   );
 }
+
+const LogOutModal = ({ setUserData }: any) => {
+  const { closeModal } = useModal();
+
+  return (
+    <View>
+      <BAText>¿Estas seguro que quieres cerrar sesión?</BAText>
+      <BAButton
+        text="Cerrar Sesión"
+        onPress={() => {
+          (async () => {
+            await AsyncStorage.removeItem("sessionToken");
+          })();
+
+          closeModal();
+          setUserData(null);
+        }}
+        state={ButtonState.alert}
+        style={{ marginTop: 25 }}
+      />
+    </View>
+  );
+};
+
+const DeleteAccountModal = ({ userData, setUserData }: SettingProps) => {
+  const { openModal, closeModal } = useModal();
+
+  return (
+    <View>
+      <BAText style={{ textAlign: "center" }}>
+        ¿Estas seguro que quieres eliminar tu cuenta?
+      </BAText>
+      <BAText
+        type={TypeText.label3}
+        style={{ textAlign: "center", marginTop: 10, fontSize: 16 }}
+      >
+        Esta opción no se puede deshacer
+      </BAText>
+      <BAButton
+        text="Confirmar"
+        onPress={() => {
+          closeModal();
+          openModal(
+            <ConfirmDeleteModal
+              userData={userData}
+              setUserData={setUserData}
+            />,
+            "Confirmar"
+          );
+        }}
+        state={ButtonState.alert}
+        style={{ marginTop: 25 }}
+      />
+    </View>
+  );
+};
+
+const ConfirmDeleteModal = ({ userData, setUserData }: SettingProps) => {
+  const { closeModal } = useModal();
+  const [name, setName] = useState("");
+
+  return (
+    <View>
+      <BAText style={{ textAlign: "center", marginBottom: 15 }}>
+        Escribe tu nombre de usuario para confirmar esta acción
+      </BAText>
+      <BATextInput value={name} onChange={setName} />
+      <BAButton
+        text="Eliminar"
+        onPress={() => {
+          (async () => {
+            await AsyncStorage.removeItem("sessionToken");
+          })();
+
+          closeModal();
+          setUserData(null);
+        }}
+        state={ButtonState.alert}
+        style={{ marginTop: 25 }}
+      />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   body: {
@@ -61,5 +175,8 @@ const styles = StyleSheet.create({
     height: 200,
     alignSelf: "center",
     resizeMode: "contain",
+  },
+  deleteModalText: {
+    textAlign: "center",
   },
 });

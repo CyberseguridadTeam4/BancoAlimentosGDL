@@ -16,15 +16,14 @@ import axios from "./axios";
 import BASettingsView from "./views/BASettingsView";
 
 export default function App() {
-  const [loggedUser, setLoggedUser] = useState({});
+  const [loggedUser, setLoggedUser] = useState(null);
   const [viewIndex, setViewIndex] = useState(2);
 
   useEffect(() => {
     (async () => {
       const sessionToken = await AsyncStorage.getItem("sessionToken");
-      console.log(sessionToken);
 
-      if (sessionToken) {
+      if (sessionToken != null) {
         await axios
           .get(
             `https://banco-alimentos-api.vercel.app/authSessionToken/${sessionToken}`
@@ -40,9 +39,13 @@ export default function App() {
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
-        {Object.keys(loggedUser).length > 0 ? (
+        {loggedUser ? (
           <>
-            <ViewSwitch viewIndex={viewIndex} loggedUser={loggedUser} />
+            <ViewSwitch
+              viewIndex={viewIndex}
+              loggedUser={loggedUser}
+              setLoggedUser={setLoggedUser}
+            />
             <BABottomBar viewIndex={viewIndex} setViewIndex={setViewIndex} />
           </>
         ) : (
@@ -59,9 +62,14 @@ export default function App() {
 type ViewSwitchProps = {
   viewIndex: number;
   loggedUser: {};
+  setLoggedUser: (data: any) => void;
 };
 
-const ViewSwitch = ({ viewIndex, loggedUser }: ViewSwitchProps) => {
+const ViewSwitch = ({
+  viewIndex,
+  loggedUser,
+  setLoggedUser,
+}: ViewSwitchProps) => {
   switch (viewIndex) {
     case 0:
       return <BAPostsView userData={loggedUser} />;
@@ -72,7 +80,9 @@ const ViewSwitch = ({ viewIndex, loggedUser }: ViewSwitchProps) => {
     case 3:
       return <BAAccountView />;
     case 4:
-      return <BASettingsView />;
+      return (
+        <BASettingsView userData={loggedUser} setUserData={setLoggedUser} />
+      );
     default:
       return <BABirdView />;
   }

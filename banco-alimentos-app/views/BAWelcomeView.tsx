@@ -13,7 +13,7 @@ import BAPasswordCreationView from "./BAPasswordCreationView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type WelcomeProps = {
-  setLoggedUser: (obj: {}) => void;
+  setLoggedUser: (data: any) => void;
 };
 
 export default function LogIn({ setLoggedUser }: WelcomeProps) {
