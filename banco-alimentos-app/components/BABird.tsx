@@ -1,4 +1,10 @@
-import { View, Animated, StyleSheet, Easing } from "react-native";
+import {
+  View,
+  Animated,
+  StyleSheet,
+  Easing,
+  TouchableOpacity,
+} from "react-native";
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import Svg, { Path, Ellipse } from "react-native-svg";
 import BAButton, { ButtonState } from "./BAButton";
@@ -10,14 +16,28 @@ import { useModal } from "./Modal/BAModalContext";
 import BASubView from "./BASubView";
 import { useToast } from "./Toast/BAToastContext";
 import BAEgg from "./BAEgg";
+import BAIcons from "../resources/icons/BAIcons";
+
+const BIRD_COLORS: [string, string][] = [
+  [BAPallete.SoftRed, BAPallete.WingRed],
+  [BAPallete.SoftOrange, BAPallete.WingOrange],
+  [BAPallete.SoftYellow, BAPallete.WingYellow],
+  [BAPallete.SoftGreen, BAPallete.WingGreen],
+  [BAPallete.SoftSky, BAPallete.WingSky],
+  [BAPallete.SoftBlue, BAPallete.WingBlue],
+  [BAPallete.SoftPurple, BAPallete.WingPurple],
+  [BAPallete.SoftPink, BAPallete.WingPink],
+];
 
 type BirdBodyProps = {
   eyeClosed: boolean;
   eyeWink: boolean;
+  colors: [string, string];
 };
 
 type BirdWIngProps = {
   scaleWingRef: Animated.Value;
+  colors: [string, string];
 };
 
 type BirdFeetProps = {
@@ -29,7 +49,9 @@ type HeartReactionProps = {
   setHeartReaction: (v: boolean) => void;
 };
 
-export default function BABird() {
+export default function BABird({ birdData }: any) {
+  const BIRD_COLOR = BIRD_COLORS[birdData.color];
+
   const [animIsPlaying, setAnimIsPlaying] = useState(false);
   const [happyEye, setHappyEye] = useState(false);
   const [winkEye, setWinkEye] = useState(false);
@@ -434,7 +456,11 @@ export default function BABird() {
   return (
     <>
       {openEgg && <BAEgg onClose={() => setOpenEgg(false)} />}
-      <BAView title={"Cuarto de ???"} style={styles.body} isScrolling={false}>
+      <BAView
+        title={`Cuarto de ${birdData.name}`}
+        style={styles.body}
+        isScrolling={false}
+      >
         <View
           style={{
             transform: [{ scale: 0.7 }],
@@ -468,15 +494,24 @@ export default function BABird() {
                 ],
               }}
             >
-              <BirdBody eyeClosed={happyEye} eyeWink={winkEye} />
-              <BirdWing scaleWingRef={scaleWingRef} />
+              <BirdBody
+                eyeClosed={happyEye}
+                eyeWink={winkEye}
+                colors={BIRD_COLORS[birdData.color]}
+              />
+              <BirdWing
+                scaleWingRef={scaleWingRef}
+                colors={BIRD_COLORS[birdData.color]}
+              />
             </Animated.View>
           </Animated.View>
         </View>
         <View style={styles.debugButtons}>
           <BAButton
             style={styles.birdButtons}
-            text="Feed"
+            icon={BAIcons.AppleIcon}
+            iconSize={55}
+            iconColor={BAPallete.Red01}
             onPress={() => {
               FeedAnimation();
             }}
@@ -484,7 +519,9 @@ export default function BABird() {
           />
           <BAButton
             style={styles.birdButtons}
-            text="Egg"
+            icon={BAIcons.EggIcon}
+            iconColor={BAPallete.Red01}
+            iconSize={55}
             onPress={() => {
               setOpenEgg(true);
             }}
@@ -496,14 +533,18 @@ export default function BABird() {
   );
 }
 
-const BirdBody = ({ eyeClosed = false, eyeWink = false }: BirdBodyProps) => {
+const BirdBody = ({
+  eyeClosed = false,
+  eyeWink = false,
+  colors = [BAPallete.SoftRed, BAPallete.WingRed],
+}: BirdBodyProps) => {
   return (
     <Animated.View style={[styles.container, styles.absolute]}>
       <Svg viewBox="0 0 500 400" width={"100%"} height={"100%"}>
         {/* Cola */}
         <Path
           d="M274.842 275.517a5.085 5.085 0 0 0-10.091.705c-4.997 148.455-111.265 257.047-181.619 283.461a5.086 5.086 0 0 0 .112 9.561c83.365 29.083 176.634 32.785 231.512-56.91.081-.131.976-1.224.7-3.378-.058-.455-.449-2.818-1.116-6.735-6.472-37.965-39.498-226.704-39.498-226.704Zm-5.009.876c-5.081 150.942-113.381 261.193-184.914 288.05 81.144 28.309 172.083 32.543 225.5-54.763.183-.299-40.586-233.287-40.586-233.287Z"
-          fill={"#b71f1f"}
+          fill={colors[1]}
           transform="rotate(11.49 720.808 62.972) scale(.78666)"
         />
         {/* Pico */}
@@ -518,8 +559,8 @@ const BirdBody = ({ eyeClosed = false, eyeWink = false }: BirdBodyProps) => {
         {/* Cuerpo */}
         <Path
           d="M175.896 493.875c18.099-26.147 68.249-70.576 87.314-140.87 15.649-57.699 10.34-108.968 26.802-152.308 21.396-56.327 60.869-84.293 97.413-83.963 71.24.644 100.383 34.004 97.301 86.547-2.953 50.336-10.259 102.811-10.702 159.378-.426 54.44-37.358 106.449-109.306 134.172-51.182 19.721-118.426 30.075-188.822-2.956Z"
-          fill={"#df5959"}
-          stroke={"#df5959"}
+          fill={colors[0]}
+          stroke={colors[0]}
           transform="rotate(4.041 1559.212 -189.93) scale(.78666)"
         />
         {/* Ojo */}
@@ -643,7 +684,10 @@ const BirdRightFoot = ({ footRotation }: any) => {
   );
 };
 
-const BirdWing = ({ scaleWingRef = new Animated.Value(1) }: BirdWIngProps) => {
+const BirdWing = ({
+  scaleWingRef = new Animated.Value(1),
+  colors,
+}: BirdWIngProps) => {
   const scaleWing = scaleWingRef.interpolate({
     inputRange: [0, 1],
     outputRange: [1, -1],
@@ -667,8 +711,8 @@ const BirdWing = ({ scaleWingRef = new Animated.Value(1) }: BirdWIngProps) => {
         {/* Ala */}
         <Path
           d="M125.106 447.01c-23.565-9.529 76.105-26.452 95.453-98.858 9.779-36.594 35.298-106.646 101.082-104.823 64.013 1.773 86.056 52.425 82.977 92.697-7.485 97.884-166.785 156.568-279.512 110.984Z"
-          fill={"#b71f1f"}
-          stroke={"#b71f1f"}
+          fill={colors[1]}
+          stroke={colors[1]}
           transform="rotate(-2.896 -1497.718 1123.72) scale(.78666)"
         />
       </Svg>

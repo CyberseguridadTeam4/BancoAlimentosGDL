@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import BAView from "../components/BAView";
 import BATextInput from "../components/BATextInput";
 import BAButton, { ButtonState } from "../components/BAButton";
@@ -9,6 +9,7 @@ import BAPallete from "../resources/BAPallete";
 import { useModal } from "../components/Modal/BAModalContext";
 import axios from "../axios";
 import BABird from "../components/BABird";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type ColorButtonProps = {
   color: string;
@@ -37,21 +38,22 @@ export default function BABirdView({ birdPointer, username }: any) {
   const [birdData, setBirdData] = useState<BirdData | null>(null);
 
   useEffect(() => {
-    (async () => {
-      await axios
-        .get(
-          `https://banco-alimentos-api.vercel.app/getPollito/${birdPointer.objectId}`
-        )
-        .then((res): any => {
-          setBirdData(res.data);
-        });
-    })();
+    birdPointer &&
+      (async () => {
+        await axios
+          .get(
+            `https://banco-alimentos-api.vercel.app/getPollito/${birdPointer.objectId}`
+          )
+          .then((res): any => {
+            setBirdData(res.data.pollo);
+          });
+      })();
   }, []);
 
-  return birdData && birdData.pollo.name == "username" ? (
+  return !birdData ? (
     <BABirdName setBirdData={setBirdData} />
   ) : (
-    <BABird />
+    <BABird birdData={birdData} />
   );
 }
 
@@ -90,14 +92,20 @@ function BABirdName({ setBirdData }: SetBirdProps) {
         style={styles.colorsView}
         isScrolling={false}
       >
-        <BABirdColor />
+        <BABirdColor name={name} setBirdData={setBirdData} />
       </BASubView>
     </>
   );
 }
 
-function BABirdColor() {
+type ColorSelectionProps = {
+  name: string;
+  setBirdData: (data: any) => void;
+};
+
+function BABirdColor({ name, setBirdData }: ColorSelectionProps) {
   const [colorSelected, setColorSelected] = useState(BAPallete.SoftRed);
+  const [color, setColor] = useState(0);
   const BIRD_COLORS = [
     [
       BAPallete.SoftRed,
@@ -113,7 +121,23 @@ function BABirdColor() {
     ],
   ];
 
-  const { openModal } = useModal();
+  const { openModal, closeModal } = useModal();
+
+  const createPollo = useCallback(async () => {
+    console.log(color);
+    const sessionToken = await AsyncStorage.getItem("sessionToken");
+    await axios
+      .post("https://banco-alimentos-api.vercel.app/pollo", {
+        sessionToken,
+        name,
+        color,
+      })
+      .then((res): any => {
+        closeModal();
+        console.log(res.data);
+        setBirdData(res.data.pollo);
+      });
+  }, [color]);
 
   const adoptButtonHadler = () => {
     openModal(
@@ -124,7 +148,7 @@ function BABirdColor() {
         <BAButton
           text="Confirmar"
           state={ButtonState.alert}
-          onPress={() => {}}
+          onPress={() => createPollo()}
         />
       </View>,
       "Confirmar Datos"
@@ -140,13 +164,16 @@ function BABirdColor() {
         {BIRD_COLORS.map((colorsRow, i) => {
           return (
             <View style={styles.colorRow} key={i}>
-              {colorsRow.map((color) => {
+              {colorsRow.map((color, j) => {
                 return (
                   <ColorButton
                     key={color}
                     color={color}
                     colorSelected={colorSelected}
-                    onClick={() => setColorSelected(color)}
+                    onClick={() => {
+                      setColor(i > 0 ? j + 4 : j);
+                      setColorSelected(color);
+                    }}
                   />
                 );
               })}
