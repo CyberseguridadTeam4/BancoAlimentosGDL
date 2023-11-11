@@ -160,14 +160,14 @@ export const Post = ({ post, onClickPost }: PostProps) => {
             <BAIcon
               icon={BAIcons.ForoIcon}
               color={BAPallete.Red01}
-              size={IconSize.medium}
+              size={"medium"}
             />
           </TouchableOpacity>
           <TouchableOpacity>
             <BAIcon
               icon={BAIcons.FlagIcon}
               color={BAPallete.Red01}
-              size={IconSize.medium}
+              size={"medium"}
             />
           </TouchableOpacity>
         </View>
@@ -185,7 +185,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
                   likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
                 }
                 color={BAPallete.Red01}
-                size={IconSize.medium}
+                size={"medium"}
               />
             </View>
           </TouchableOpacity>
@@ -193,7 +193,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
             <BAIcon
               icon={BAIcons.ShareIcon}
               color={BAPallete.Red01}
-              size={IconSize.medium}
+              size={"medium"}
             />
           </TouchableOpacity>
         </View>

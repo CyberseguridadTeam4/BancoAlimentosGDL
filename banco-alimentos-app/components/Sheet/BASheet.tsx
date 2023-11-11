@@ -138,7 +138,7 @@ const BASheet = ({ title, content, onClose }: BASheetProps) => {
             <BAIcon
               icon={BAIcons.CrossIcon}
               color={BAPallete.Red01}
-              size={IconSize.large}
+              size={"large"}
             />
           </TouchableOpacity>
         </View>

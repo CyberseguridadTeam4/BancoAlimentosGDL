@@ -99,7 +99,7 @@ export default function BASubView({
                 <BAIcon
                   icon={BAIcons.BackIcon}
                   color={BAPallete.Red01}
-                  size={IconSize.large}
+                  size={"large"}
                 />
               </TouchableOpacity>
               <BAText type={TypeText.label0}>{title}</BAText>
