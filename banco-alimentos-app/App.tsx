@@ -14,6 +14,7 @@ import BAWelcomeView from "./views/BAWelcomeView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "./axios";
 import BASettingsView from "./views/BASettingsView";
+import BALoading from "./components/Loading/BALoading";
 
 export default function App() {
   const [loggedUser, setLoggedUser] = useState(null);
@@ -46,10 +47,14 @@ export default function App() {
               loggedUser={loggedUser}
               setLoggedUser={setLoggedUser}
             />
+            <BALoading />
             <BABottomBar viewIndex={viewIndex} setViewIndex={setViewIndex} />
           </>
         ) : (
-          <BAWelcomeView setLoggedUser={setLoggedUser} />
+          <>
+            <BALoading />
+            <BAWelcomeView setLoggedUser={setLoggedUser} />
+          </>
         )}
         <BAModalController />
         <BASheetController />
