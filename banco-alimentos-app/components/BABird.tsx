@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Easing,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import Svg, { Path, Ellipse } from "react-native-svg";
@@ -17,6 +18,7 @@ import BASubView from "./BASubView";
 import { useToast } from "./Toast/BAToastContext";
 import BAEgg from "./BAEgg";
 import BAIcons from "../resources/icons/BAIcons";
+import BAIcon from "../resources/icons/BAIcon";
 
 const BIRD_COLORS: [string, string][] = [
   [BAPallete.SoftRed, BAPallete.WingRed],
@@ -28,6 +30,21 @@ const BIRD_COLORS: [string, string][] = [
   [BAPallete.SoftPurple, BAPallete.WingPurple],
   [BAPallete.SoftPink, BAPallete.WingPink],
 ];
+
+type BirdData = {
+  birdData: {
+    color: number;
+    createdAt: string;
+    level: number;
+    nApple: number;
+    nEggs: number;
+    name: string;
+    nextStage: number;
+    objectId: string;
+    updatedAt: string;
+    xp: number;
+  };
+};
 
 type BirdBodyProps = {
   eyeClosed: boolean;
@@ -49,9 +66,7 @@ type HeartReactionProps = {
   setHeartReaction: (v: boolean) => void;
 };
 
-export default function BABird({ birdData }: any) {
-  const BIRD_COLOR = BIRD_COLORS[birdData.color];
-
+export default function BABird({ birdData }: BirdData) {
   const [animIsPlaying, setAnimIsPlaying] = useState(false);
   const [happyEye, setHappyEye] = useState(false);
   const [winkEye, setWinkEye] = useState(false);
@@ -507,26 +522,38 @@ export default function BABird({ birdData }: any) {
           </Animated.View>
         </View>
         <View style={styles.debugButtons}>
-          <BAButton
+          <TouchableOpacity
             style={styles.birdButtons}
-            icon={BAIcons.AppleIcon}
-            iconSize={60}
-            iconColor={BAPallete.Red01}
-            onPress={() => {
-              FeedAnimation();
-            }}
-            state={animIsPlaying ? ButtonState.disabled : undefined}
-          />
-          <BAButton
+            onPress={() => birdData.nApple > 0 && FeedAnimation()}
+            disabled={animIsPlaying}
+          >
+            <View style={styles.buttonWrapper}>
+              <BAIcon
+                icon={BAIcons.AppleIcon}
+                color={BAPallete.Red01}
+                size={60}
+              />
+              <View style={styles.numberCircle}>
+                <BAText style={styles.textCircle}>{birdData.nApple}</BAText>
+              </View>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
             style={styles.birdButtons}
-            icon={BAIcons.EggIcon}
-            iconColor={BAPallete.Red01}
-            iconSize={60}
-            onPress={() => {
-              setOpenEgg(true);
-            }}
-            state={animIsPlaying ? ButtonState.disabled : undefined}
-          />
+            onPress={() => birdData.nEggs > 0 && {}}
+            disabled={animIsPlaying}
+          >
+            <View style={styles.buttonWrapper}>
+              <BAIcon
+                icon={BAIcons.EggIcon}
+                color={BAPallete.Red01}
+                size={60}
+              />
+              <View style={styles.numberCircle}>
+                <BAText style={styles.textCircle}>{birdData.nEggs}</BAText>
+              </View>
+            </View>
+          </TouchableOpacity>
         </View>
       </BAView>
     </>
@@ -889,6 +916,34 @@ const styles = StyleSheet.create({
   birdButtons: {
     width: "40%",
     aspectRatio: 1 / 1,
+    backgroundColor: "white",
+    borderRadius: 15,
+    shadowRadius: 10,
+    shadowColor: BAPallete.StrongBlue,
+    shadowOpacity: 0.1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  numberCircle: {
+    backgroundColor: BAPallete.Red01,
+    width: 30,
+    height: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 100,
+    borderColor: "white",
+    borderWidth: 4,
+    position: "absolute",
+    transform: [{ translateY: 10 }, { translateX: 5 }],
+  },
+  textCircle: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  buttonWrapper: {
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
   },
   heartContainer: {
     flex: 1,
