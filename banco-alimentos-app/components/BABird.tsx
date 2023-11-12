@@ -31,7 +31,7 @@ const BIRD_COLORS: [string, string][] = [
   [BAPallete.SoftPink, BAPallete.WingPink],
 ];
 
-type BirdData = {
+export type BirdData = {
   birdData: {
     color: number;
     createdAt: string;
@@ -43,6 +43,7 @@ type BirdData = {
     objectId: string;
     updatedAt: string;
     xp: number;
+    nextApple: number;
   };
 };
 
@@ -66,7 +67,7 @@ type HeartReactionProps = {
   setHeartReaction: (v: boolean) => void;
 };
 
-export default function BABird({ birdData }: BirdData) {
+export default function BABird({ birdData }: BirdData | any) {
   const [animIsPlaying, setAnimIsPlaying] = useState(false);
   const [happyEye, setHappyEye] = useState(false);
   const [winkEye, setWinkEye] = useState(false);

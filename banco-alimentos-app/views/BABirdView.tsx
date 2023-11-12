@@ -11,6 +11,7 @@ import axios from "../axios";
 import BABird from "../components/BABird";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLoading } from "../components/Loading/BALoadingContext";
+import { useBird } from "../components/BABirdContext";
 
 type ColorButtonProps = {
   color: string;
@@ -36,38 +37,12 @@ type BirdData = {
 };
 
 export default function BABirdView({ birdPointer }: any) {
-  const [birdData, setBirdData] = useState<BirdData | null>(null);
+  const { birdData } = useBird();
 
-  const { openLoading, closeLoading } = useLoading();
-
-  useEffect(() => {
-    if (birdPointer) {
-      openLoading();
-
-      (async () => {
-        await axios
-          .get(
-            `https://banco-alimentos-api.vercel.app/getPollito/${birdPointer.objectId}`
-          )
-          .then((res): any => {
-            setBirdData(res.data.pollo);
-            closeLoading();
-          })
-          .catch((error) => {
-            closeLoading();
-          });
-      })();
-    }
-  }, []);
-
-  return !birdData ? (
-    <BABirdName setBirdData={setBirdData} />
-  ) : (
-    <BABird birdData={birdData} />
-  );
+  return !birdData ? <BABirdName /> : <BABird birdData={birdData} />;
 }
 
-function BABirdName({ setBirdData }: SetBirdProps) {
+function BABirdName() {
   const [name, setName] = useState("");
   const [nextPage, setNextPage] = useState(false);
 
@@ -102,7 +77,7 @@ function BABirdName({ setBirdData }: SetBirdProps) {
         style={styles.colorsView}
         isScrolling={false}
       >
-        <BABirdColor name={name} setBirdData={setBirdData} />
+        <BABirdColor name={name} />
       </BASubView>
     </>
   );
@@ -110,10 +85,9 @@ function BABirdName({ setBirdData }: SetBirdProps) {
 
 type ColorSelectionProps = {
   name: string;
-  setBirdData: (data: any) => void;
 };
 
-function BABirdColor({ name, setBirdData }: ColorSelectionProps) {
+function BABirdColor({ name }: ColorSelectionProps) {
   const [colorSelected, setColorSelected] = useState(BAPallete.SoftRed);
   const [color, setColor] = useState(0);
   const BIRD_COLORS = [
@@ -132,6 +106,7 @@ function BABirdColor({ name, setBirdData }: ColorSelectionProps) {
   ];
 
   const { openModal, closeModal } = useModal();
+  const { setBird } = useBird();
 
   const createPollo = useCallback(async () => {
     console.log(color);
@@ -144,8 +119,7 @@ function BABirdColor({ name, setBirdData }: ColorSelectionProps) {
       })
       .then((res): any => {
         closeModal();
-        console.log(res.data);
-        setBirdData(res.data.pollo);
+        setBird(res.data.pollo);
       });
   }, [color]);
 

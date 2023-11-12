@@ -15,9 +15,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "./axios";
 import BASettingsView from "./views/BASettingsView";
 import BALoading from "./components/Loading/BALoading";
+import { BirdProvider } from "./components/BABirdContext";
 
 export default function App() {
-  const [loggedUser, setLoggedUser] = useState(null);
+  const [loggedUser, setLoggedUser] = useState<UserProps | null>(null);
   const [viewIndex, setViewIndex] = useState(2);
 
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function App() {
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
         {loggedUser ? (
-          <>
+          <BirdProvider birdPointer={loggedUser.user.pollo}>
             <ViewSwitch
               viewIndex={viewIndex}
               loggedUser={loggedUser}
@@ -49,7 +50,7 @@ export default function App() {
             />
             <BALoading />
             <BABottomBar viewIndex={viewIndex} setViewIndex={setViewIndex} />
-          </>
+          </BirdProvider>
         ) : (
           <>
             <BALoading />
