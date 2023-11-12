@@ -18,7 +18,7 @@ export default function BALoading() {
   });
   const loadingPosition = new Animated.Value(0);
 
-  const OPEN_CLOSE_ANIMATION_TIME = 200;
+  const OPEN_CLOSE_ANIMATION_TIME = 50;
 
   const { showLoading } = useLoading();
 
@@ -57,7 +57,7 @@ export default function BALoading() {
       Animated.sequence([
         Animated.timing(loadingScale, {
           toValue: { x: 0.3, y: 0.3 },
-          duration: 400,
+          duration: 100,
           easing: Easing.ease,
           useNativeDriver: true,
         }),
@@ -98,7 +98,7 @@ export default function BALoading() {
       Animated.sequence([
         Animated.timing(loadingPosition, {
           toValue: 0,
-          duration: 400,
+          duration: 100,
           easing: Easing.ease,
           useNativeDriver: true,
         }),
