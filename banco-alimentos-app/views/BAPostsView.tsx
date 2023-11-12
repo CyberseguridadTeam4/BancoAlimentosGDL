@@ -16,6 +16,7 @@ import BAButton, { ButtonState } from "../components/BAButton";
 import { useSheet } from "../components/Sheet/BASheetContext";
 import BAMultiTextInput from "../components/BAMultiTextInput";
 import BACommentsSubView from "./BACommentsSubView";
+import { useLoading } from "../components/Loading/BALoadingContext";
 
 type PostProps = {
   post: {
@@ -46,6 +47,8 @@ export default function BAPostsView({ userData }: PostsProps) {
 
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 
+  const { openLoading, closeLoading } = useLoading();
+
   const getPosts = async () => {
     await axios
       .get("https://banco-alimentos-api.vercel.app/getPosts")
@@ -53,12 +56,14 @@ export default function BAPostsView({ userData }: PostsProps) {
         const postsData = res.data.posts;
         postsData.reverse();
         setPosts(postsData);
+        closeLoading();
       });
   };
 
   const { openSheet, closeSheet } = useSheet();
 
   useEffect(() => {
+    openLoading();
     getPosts();
   }, []);
 
