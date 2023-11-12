@@ -10,6 +10,7 @@ import { useModal } from "../components/Modal/BAModalContext";
 import axios from "../axios";
 import BABird from "../components/BABird";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useLoading } from "../components/Loading/BALoadingContext";
 
 type ColorButtonProps = {
   color: string;
@@ -34,11 +35,15 @@ type BirdData = {
   };
 };
 
-export default function BABirdView({ birdPointer, username }: any) {
+export default function BABirdView({ birdPointer }: any) {
   const [birdData, setBirdData] = useState<BirdData | null>(null);
 
+  const { openLoading, closeLoading } = useLoading();
+
   useEffect(() => {
-    birdPointer &&
+    if (birdPointer) {
+      openLoading();
+
       (async () => {
         await axios
           .get(
@@ -46,8 +51,13 @@ export default function BABirdView({ birdPointer, username }: any) {
           )
           .then((res): any => {
             setBirdData(res.data.pollo);
+            closeLoading();
+          })
+          .catch((error) => {
+            closeLoading();
           });
       })();
+    }
   }, []);
 
   return !birdData ? (
