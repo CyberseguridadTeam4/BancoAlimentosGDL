@@ -82,4 +82,10 @@ export default {
   get EggIcon(): ImageSourcePropType {
     return require("./EggIcon.png");
   },
+  get LoadingIcon(): ImageSourcePropType {
+    return require("./LoadingIcon.png");
+  },
+  get BAIcon(): ImageSourcePropType {
+    return require("./BancoAlimentosIcon.png");
+  },
 };
