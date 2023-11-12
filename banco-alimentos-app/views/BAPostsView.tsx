@@ -129,10 +129,11 @@ export const Post = ({ post, onClickPost }: PostProps) => {
   }, [post]);
 
   const likePost = useCallback(async (isLike: boolean) => {
+    console.log(post.objectId);
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
     await axios.patch(
-      `https://banco-alimentos-api.vercel.app/like/${post.objectId}/${
+      `https://banco-alimentos-api.vercel.app/likePost/${post.objectId}/${
         isLike ? 1 : -1
       }`,
       post
