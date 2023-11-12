@@ -510,7 +510,7 @@ export default function BABird({ birdData }: any) {
           <BAButton
             style={styles.birdButtons}
             icon={BAIcons.AppleIcon}
-            iconSize={55}
+            iconSize={60}
             iconColor={BAPallete.Red01}
             onPress={() => {
               FeedAnimation();
@@ -521,7 +521,7 @@ export default function BABird({ birdData }: any) {
             style={styles.birdButtons}
             icon={BAIcons.EggIcon}
             iconColor={BAPallete.Red01}
-            iconSize={55}
+            iconSize={60}
             onPress={() => {
               setOpenEgg(true);
             }}
