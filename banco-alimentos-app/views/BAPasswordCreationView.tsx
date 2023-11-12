@@ -7,6 +7,7 @@ import BAIcons from "../resources/icons/BAIcons";
 import axios from "axios";
 import PasswordMeter from "../components/BAPasswordMeter";
 import { useModal } from "../components/Modal/BAModalContext";
+import Parse from 'parse/react-native';
 
 export default function SignUp({
   username,
@@ -36,8 +37,22 @@ export default function SignUp({
           email: email,
           name: name,
         })
-        .then(function (response) {
+        .then(async function (response) {
           console.log(response);
+
+        // EMAIL VERIFICATION
+        // Set the user as the current user
+        const user = await Parse.User.currentAsync();
+        if (user) {
+          // Call Cloud Function to send email verification
+          try {
+            await Parse.Cloud.run('sendVerificationEmail');
+            console.log('Email verification request sent successfully');
+          } catch (error: any) {
+            console.log('Error sending email verification request:', error.message);
+          }
+        }
+
           setLoggedUser(response.data);
         })
         .catch(function (error) {
@@ -45,14 +60,6 @@ export default function SignUp({
         });
     }
   };
-
-
-  if(seguridad){
-    console.log('bien')
-  } 
-  else{
-    console.log("fake")
-  }
 
   return (
     <View style={styles.container}>
@@ -121,7 +128,9 @@ const styles = StyleSheet.create({
     marginTop: 150,
   },
 });
+
 function openSheet(arg0: React.JSX.Element, arg1: string) {
   throw new Error("Function not implemented.");
 }
+
 

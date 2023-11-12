@@ -16,7 +16,7 @@ export default function LogIn({ setLoggedUser }) {
   const [isInPasswordPage, setIsInPasswordPage] = useState(false);
   const [email, setTextEmail] = useState("");
   const [contraseña, setTextContraseña] = useState("");
-
+  // const [Verified, setVerified] = useState("");
   const [user, setUser] = useState("");
   const [birthday, setBirthday] = useState("");
 
@@ -25,12 +25,14 @@ export default function LogIn({ setLoggedUser }) {
       .post("https://banco-alimentos-api.vercel.app/userLogin", {
         username: email,
         password: contraseña,
+        // emailVerified: Verified,
       })
-      .then(function (response) {
+      .then( function (response) {
         console.log(response);
         if (response.status == 200) {
           setLoggedUser(response.data);
           console.log("Usuario logeado");
+          
         } else {
           console.log("Usuario no logeado");
         }

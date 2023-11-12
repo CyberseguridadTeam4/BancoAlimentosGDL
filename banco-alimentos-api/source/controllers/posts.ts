@@ -59,19 +59,48 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const userLogin = async (req: Request, res: Response, next: NextFunction) => {
-    try{
-    const{username,password}=req.body
-    const user = await Parse.User.logIn(username, password, { usePost: false });
-    return res.status(200).json({
-        user: user,
-    });
-    }catch (error) {
+    try {
+        const { username, password, usePost, checkValue } = req.body;
+
+        // Fetch the user from the database based on the username
+        const query = new Parse.Query(Parse.User);
+        query.equalTo('username', username);
+        const user = await query.first();
+
+        // Check if the user exists and if the checkValue matches the value in the database
+        if (user && user.get('emailVerified')) {
+            // Use the additional parameter in the login method
+            const loggedInUser = await Parse.User.logIn(username, password, { usePost: usePost });
+
+            return res.status(200).json({
+                user: loggedInUser,
+            });
+        } else {
+            return res.status(401).json({
+                message: 'Invalid credentials or checkValue mismatch',
+            });
+        }
+    } catch (error) {
         return res.status(500).json({
             message: error,
         });
     }
-
 };
+
+// const userLogin = async (req: Request, res: Response, next: NextFunction) => {
+//     try{
+//     const{username,password}=req.body
+//     const user = await Parse.User.logIn(username, password, { usePost: false });
+//     return res.status(200).json({
+//         user: user,
+//     });
+//     }catch (error) {
+//         return res.status(500).json({
+//             message: error,
+//         });
+//     }
+
+// };
 
 const createPost = async (req: Request, res: Response, next: NextFunction) => {
     try{
