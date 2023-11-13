@@ -333,6 +333,12 @@ export default function BABird({ birdData }: BirdData | any) {
         setWinkEye(false);
         setHappyEye(true);
         dispatchEggs(true);
+        openToast(
+          <BAText type={TypeText.label3} style={{ textAlign: "center" }}>
+            ¡Has obtenido un huevo!
+          </BAText>,
+          3000
+        );
       });
 
       Animated.timing(birdBodyPositionRef, {
@@ -398,12 +404,6 @@ export default function BABird({ birdData }: BirdData | any) {
         setHatchEgg(false);
         setHappyEye(false);
         setAnimIsPlaying(false);
-        openToast(
-          <BAText type={TypeText.label3} style={{ textAlign: "center" }}>
-            ¡Has obtenido un huevo!
-          </BAText>,
-          3000
-        );
       });
 
       Animated.sequence([
