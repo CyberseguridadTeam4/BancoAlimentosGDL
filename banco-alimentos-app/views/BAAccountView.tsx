@@ -5,6 +5,7 @@ import BASubView from "../components/BASubView";
 import BAText, { TypeText } from "../components/BAText";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAProfilePic from "../components/BAProfilePic";
+import BABadgesView from "./BABadgesView";
 
 type UserProps = {
   user: {
@@ -27,6 +28,7 @@ type UserProps = {
 export default function BAAcount({ userData }: UserProps) {
   const [subpage, setSubpage] = useState(false);
   const [user, setUser] = useState(userData.user);
+  const [isBadgesOpen, setIsBadgesOpen] = useState(false);
 
   console.log(user.createdAt);
 
@@ -46,7 +48,9 @@ export default function BAAcount({ userData }: UserProps) {
         <BAButton
           style={styles.button}
           text="Mis insignias"
-          onPress={() => {}}
+          onPress={() => {
+            setIsBadgesOpen(true);
+          }}
           state={ButtonState.alert}
         />
         <View style={styles.textContainer}>
@@ -56,6 +60,7 @@ export default function BAAcount({ userData }: UserProps) {
           <BAText>{date.toLocaleDateString("es-ES")}</BAText>
         </View>
       </BAView>
+      {isBadgesOpen && <BABadgesView isOpen={isBadgesOpen} setIsOpen={setIsBadgesOpen} badges={user.badges}/>}
       <BASubView title="Editar perfil" isOpen={subpage} onReturn={setSubpage}>
         <BAText>Nombre de usuario</BAText>
       </BASubView>
