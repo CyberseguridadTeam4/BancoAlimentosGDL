@@ -25,8 +25,15 @@ const BUTTONS_STYLES: ImageSourcePropType[][] = [
   [BAIcons.SettingIcon, BAIcons.SettingActivatedIcon],
 ];
 
-export default function BABottomBar({ setViewIndex }) {
-  const [optionSelected, setOptionSelected] = useState(0);
+type BottomBarProps = {
+  viewIndex: number;
+  setViewIndex: (index: number) => void;
+};
+
+export default function BABottomBar({
+  viewIndex,
+  setViewIndex,
+}: BottomBarProps) {
   const [isKeyboardOnScreen, setIsKeyboardOnScreen] = useState(false);
 
   useEffect(() => {
@@ -44,7 +51,6 @@ export default function BABottomBar({ setViewIndex }) {
       }
     );
 
-    // Don't forget to remove the event listeners when the component unmounts
     return () => {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
@@ -67,9 +73,8 @@ export default function BABottomBar({ setViewIndex }) {
             <MiddleButton
               key={index}
               index={index}
-              optionSelected={optionSelected}
-              setOptionSelected={(index) => {
-                setOptionSelected(index);
+              optionSelected={viewIndex}
+              setOptionSelected={() => {
                 setViewIndex(index);
               }}
             />
@@ -78,9 +83,8 @@ export default function BABottomBar({ setViewIndex }) {
               key={index}
               onPress={() => {
                 setViewIndex(index);
-                setOptionSelected(index);
               }}
-              icon={optionSelected == index ? item[1] : item[0]}
+              icon={viewIndex == index ? item[1] : item[0]}
               iconSize={IconSize.large}
               state={ButtonState.alert}
               style={[styles.buttons]}

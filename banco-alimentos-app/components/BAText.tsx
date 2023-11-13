@@ -24,6 +24,7 @@ export enum TypeText {
   label4,
   label5,
   label6,
+  label7,
 }
 
 type Props = {
@@ -99,6 +100,12 @@ export const styleText = (type: TypeText): TextStyle => {
         fontWeight: "500",
         alignContent: "space-around",
         textDecorationLine: "underline",
+      };
+    case TypeText.label7:
+      return {
+        fontSize: PixelRatio.get() > 2 ? 16 : 14,
+        color: BAPallete.Gray02,
+        fontWeight: "500",
       };
     default:
       return {

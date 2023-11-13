@@ -21,6 +21,7 @@ import { useSheet } from "../components/Sheet/BASheetContext";
 import BAMultiTextInput from "../components/BAMultiTextInput";
 import BACommentsSubView from "./BACommentsSubView";
 
+
 type PostProps = {
   post: {
     text: string;
@@ -37,12 +38,8 @@ type PostProps = {
     reported: boolean;
     objectId: string;
   };
+  onClickPost: () => void;
 };
-
-interface OtherProps {
-  setShowComment: React.Dispatch<React.SetStateAction<boolean>>;
-  setChosenPost: React.Dispatch<React.SetStateAction<any>>;
-}
 
 const onShare = async () => {
   // try {
@@ -66,8 +63,8 @@ const onShare = async () => {
 
 export default function BAPostsView({ userData }) {
   const [posts, setPosts] = useState<any[]>([]);
-  const [refreshing, setRefreshing] = React.useState(false);
-  const [showComment, setShowComment] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [chosenPost, setChosenPost] = useState<any>(null);
 
   const getPosts = async () => {
@@ -129,27 +126,18 @@ export default function BAPostsView({ userData }) {
               <Post
                 post={item}
                 key={item.objectId}
-                setShowComment={setShowComment}
-                setChosenPost={setChosenPost}
+                onClickPost={() =>{setIsCommentsOpen(true); setChosenPost(item)}}
               />
             );
           })}
       </BAView>
-      { showComment &&<BACommentsSubView
-        userData={userData}
-        post={chosenPost}
-        isOpen={showComment}
-        setIsOpen={setShowComment}
-      />}
+     { isCommentsOpen && <BACommentsSubView isOpen={isCommentsOpen} setIsOpen={setIsCommentsOpen}  userData={userData}
+        post={chosenPost} />}
     </>
   );
 }
 
-export const Post = ({
-  post,
-  setShowComment,
-  setChosenPost,
-}: PostProps & OtherProps) => {
+export const Post = ({ post, onClickPost }: PostProps) => {
   const [likedPost, setLiketPost] = useState(false);
   const [postData, setPostData] = useState(post);
 
@@ -199,13 +187,7 @@ export const Post = ({
   };
 
   return (
-    <TouchableOpacity
-      style={styles.postBox}
-      onPress={() => {
-        setShowComment(true);
-        setChosenPost(post);
-      }}
-    >
+    <TouchableOpacity style={styles.postBox} onPress={onClickPost}>
       <View style={styles.header}>
         <View style={styles.row}>
           <View style={styles.profilePic} />
@@ -227,8 +209,7 @@ export const Post = ({
         <View style={[styles.row, { gap: 20 }]}>
           <TouchableOpacity
           onPress={() => {
-            setShowComment(true);
-            setChosenPost(post);
+            onClickPost
           }}
           >
             <BAIcon
@@ -288,7 +269,7 @@ const CreatePostView = ({ userData, closeSheet }) => {
       .post(`/post`, {
         text: textPost,
         title: userData.user.username,
-        userId: userData.user.objectId,
+        userId: userData.user,
       })
       .then((res) => {
         console.log(res);

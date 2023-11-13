@@ -14,7 +14,9 @@ import BAWelcomeView from "./views/BAWelcomeView";
 
 export default function App() {
   const [loggedUser, setLoggedUser] = useState(null);
-  const [viewIndex, setViewIndex] = useState(1);
+
+  const [viewIndex, setViewIndex] = useState(2);
+
 
   return (
     <View style={styles.container}>
@@ -23,7 +25,7 @@ export default function App() {
         {loggedUser ? (
           <>
             <ViewSwitch viewIndex={viewIndex} loggedUser={loggedUser} />
-            <BABottomBar setViewIndex={setViewIndex} />
+            <BABottomBar viewIndex={viewIndex} setViewIndex={setViewIndex} />
           </>
         ) : (
           <BAWelcomeView setLoggedUser={setLoggedUser} />
@@ -36,7 +38,12 @@ export default function App() {
   );
 }
 
-const ViewSwitch = ({ viewIndex, loggedUser }) => {
+type ViewSwitchProps = {
+  viewIndex: number;
+  loggedUser: (index: {}) => void;
+};
+
+const ViewSwitch = ({ viewIndex, loggedUser }: ViewSwitchProps) => {
   switch (viewIndex) {
     case 0:
       return <BAPostsView userData={loggedUser} />;

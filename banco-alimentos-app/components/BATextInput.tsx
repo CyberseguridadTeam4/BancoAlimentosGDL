@@ -15,8 +15,7 @@ import {
 } from "react-native";
 import BAIcon from "../resources/icons/BAIcon";
 import BAPallete from "../resources/BAPallete";
-import BAText, { styleText, TypeText } from "./BAText";
-import DatePickerModal from "./Modal/BADatePickerModal";
+import { styleText, TypeText } from "./BAText";
 import BAIcons from "../resources/icons/BAIcons";
 
 type Props = {

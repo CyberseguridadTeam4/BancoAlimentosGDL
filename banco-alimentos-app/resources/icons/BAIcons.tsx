@@ -79,4 +79,7 @@ export default {
   get PhoneIcon(): ImageSourcePropType {
     return require("./PhoneIcon.png");
   },
+  get BAMXLogo(): ImageSourcePropType {
+    return require("./BAMXLogo.png");
+  },
 };

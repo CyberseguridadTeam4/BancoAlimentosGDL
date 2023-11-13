@@ -36,6 +36,7 @@ function BATextInput({
         multiline={true}
         placeholderTextColor={BAPallete.Gray03}
         style={[styles.textInput, styleText(TypeText.label3)]}
+        textAlignVertical="top"
         placeholder={"Type something..."}
         value={value}
         onChangeText={onChange}
@@ -48,7 +49,6 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: BAPallete.White,
     width: "100%",
-    height: 300,
     flexDirection: "row",
     alignItems: "center",
     alignSelf: "center",
@@ -57,14 +57,15 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
     shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.15,
-    padding: 10,
+    // padding: 20,
     justifyContent: "flex-start",
   },
   textInput: {
     width: "100%",
-    textAlignVertical: "center",
-    borderColor: "transparent", // Set to your background color
-    borderWidth: 1,
+    minHeight: 150,
+    maxHeight: 300,
+    marginTop: 15,
+    padding: 20,
   },
   shadow: {
     elevation: 4,
