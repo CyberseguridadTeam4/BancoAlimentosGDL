@@ -30,6 +30,9 @@ export default function App() {
           .get(`/authSessionToken/${sessionToken}`)
           .then((res): any => {
             setLoggedUser(res.data);
+          })
+          .catch((error): any => {
+            console.log(error);
           });
       }
     })();
