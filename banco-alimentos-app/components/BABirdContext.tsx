@@ -63,13 +63,15 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
       if (interactions >= birdData.nextApple) {
         patchNoApples(true);
         const nextApple = Math.floor(Math.random() * 5) + 3;
-        patchNextApple(nextApple);
-        openToast(
-          <BAText type={TypeText.label3} style={{ textAlign: "center" }}>
-            ¡Has obtenido una galleta!
-          </BAText>,
-          3000
-        );
+        patchNextApple(nextApple).then(() => {
+          openToast(
+            <BAText type={TypeText.label3} style={{ textAlign: "center" }}>
+              ¡Has obtenido más alimento!
+            </BAText>,
+            3000
+          );
+        });
+        interactions = 0;
       }
     }
   };

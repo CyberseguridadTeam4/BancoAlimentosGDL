@@ -116,7 +116,7 @@ export function BAToast({
         }
       });
     });
-  }, [openToast]);
+  }, []);
 
   const transition = transitionRef.interpolate({
     inputRange: [0, 1],

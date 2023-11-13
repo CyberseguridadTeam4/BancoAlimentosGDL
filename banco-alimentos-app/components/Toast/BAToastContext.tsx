@@ -19,9 +19,11 @@ export const ToastProvider = ({ children }: any) => {
   const [showToast, setShowToast] = useState(false);
 
   const openToast = (content: any, toastTime: number) => {
-    setToastContent(content);
-    setToastTime(toastTime);
-    setShowToast(true);
+    if (!showToast) {
+      setToastContent(content);
+      setToastTime(toastTime);
+      setShowToast(true);
+    }
   };
 
   const closeToast = () => {
