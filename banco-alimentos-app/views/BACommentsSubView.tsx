@@ -192,12 +192,25 @@ export default function BACommentsSubView({
 }
 
 const Comment = ({ comment }: CommentProps) => {
-  const [likedPost, setLiketPost] = useState(false);
+  const [likedComment, setLiketComment] = useState(false);
   const [commentData, setCommentData] = useState(comment);
 
   useEffect(() => {
     setCommentData(comment);
   }, [comment]);
+
+  const likeComment= useCallback(async (isLike: boolean) => {
+    const commentData = comment;
+    isLike ? (commentData.nLikes += 1) : (commentData.nLikes -= 1);
+    await axios.patch(
+      `/likeComment/${comment.objectId}/${
+        isLike ? 1 : -1
+      }`,
+      comment
+    );
+    setCommentData({ ...commentData });
+  }, []);
+
   return (
     <View style={styles.commentsBox}>
       <View style={styles.header}>
@@ -225,9 +238,14 @@ const Comment = ({ comment }: CommentProps) => {
       </BAText>
       <View style={styles.footer}>
         <View style={[styles.row, { gap: 15 }]}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setLiketComment(!likedComment);
+              likeComment(!likedComment);
+            }}
+          >
             <BAIcon
-              icon={likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon}
+              icon={likedComment ? BAIcons.HeartIconActivated : BAIcons.HeartIcon}
               color={BAPallete.Red01}
               size={IconSize.small}
             />
