@@ -19,6 +19,7 @@ import { useToast } from "./Toast/BAToastContext";
 import BAEgg from "./BAEgg";
 import BAIcons from "../resources/icons/BAIcons";
 import BAIcon from "../resources/icons/BAIcon";
+import { useBird } from "./BABirdContext";
 
 const BIRD_COLORS: [string, string][] = [
   [BAPallete.SoftRed, BAPallete.WingRed],
@@ -85,6 +86,8 @@ export default function BABird({ birdData }: BirdData | any) {
     x: leftFootRef,
     y: rightFootRef,
   });
+
+  const { dispatchFeed } = useBird();
 
   const FeedAnimation = useCallback(() => {
     setAnimIsPlaying(true);
@@ -525,7 +528,12 @@ export default function BABird({ birdData }: BirdData | any) {
         <View style={styles.debugButtons}>
           <TouchableOpacity
             style={styles.birdButtons}
-            onPress={() => birdData.nApple > 0 && FeedAnimation()}
+            onPress={() => {
+              if (birdData.nApple > 0) {
+                dispatchFeed();
+                FeedAnimation();
+              }
+            }}
             disabled={animIsPlaying}
           >
             <View style={styles.buttonWrapper}>

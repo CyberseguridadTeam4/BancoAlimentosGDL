@@ -17,6 +17,7 @@ import { useSheet } from "../components/Sheet/BASheetContext";
 import BAMultiTextInput from "../components/BAMultiTextInput";
 import BACommentsSubView from "./BACommentsSubView";
 import { useLoading } from "../components/Loading/BALoadingContext";
+import { useBird } from "../components/BABirdContext";
 
 type PostProps = {
   post: {
@@ -124,6 +125,8 @@ export const Post = ({ post, onClickPost }: PostProps) => {
   const [likedPost, setLiketPost] = useState(false);
   const [postData, setPostData] = useState(post);
 
+  const { dispatchInteraction } = useBird();
+
   useEffect(() => {
     setPostData(post);
   }, [post]);
@@ -131,6 +134,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
   const likePost = useCallback(async (isLike: boolean) => {
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
+    dispatchInteraction(postData.objectId);
     await axios.patch(
       `https://banco-alimentos-api.vercel.app/likePost/${post.objectId}/${
         isLike ? 1 : -1
