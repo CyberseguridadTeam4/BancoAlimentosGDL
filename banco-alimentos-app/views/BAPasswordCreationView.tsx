@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { StyleSheet, Text, View, Dimensions, PixelRatio } from "react-native";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
@@ -18,9 +18,41 @@ export default function SignUp({
 }: any) {
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
-  const [seguridad, setSeguridad] = useState(false)
+  const [seguridad, setSeguridad] = useState(false);
+  const [userCreated, setUserCreated] = useState(false);
 
   const { openModal } = useModal();
+
+  useEffect(() => {
+    // This effect will run when passwordsEntered changes to true
+    const showModal = async () => {
+      console.log("In useEffect");
+      openModal(
+        <View>
+          <BAText>
+            Usuario creado exitosamente.             Por favor confirma tu correo en el email enviado.
+          </BAText>
+          <BAButton
+            text="OK"
+            state={ButtonState.alert}
+            style={styles.centerConfirmar}
+            onPress={() => {
+              console.log("IR A LOGIN");
+            }}
+          />
+        </View>,
+        "Cuenta creada!"
+      );
+    };
+
+    // Call the function only when passwords have been entered
+    if (userCreated) {
+      showModal();
+    }
+
+  }, [userCreated]); // Dependency array updated
+
+
   const createUser = async () => {
     if (password !== passwordConf) {
       openModal(
@@ -30,16 +62,14 @@ export default function SignUp({
       console.log("Las contraseñas no coinciden");
     } else {
       console.log("Crear usuario");
-      axios
-        .post("https://banco-alimentos-api.vercel.app/userSignUp", {
+      try {
+        const response = await axios.post("https://banco-alimentos-api.vercel.app/userSignUp", {
           username: username,
           password: password,
           email: email,
           name: name,
-        })
-        .then(async function (response) {
-          console.log(response);
-
+        });
+        setUserCreated(true);
         // EMAIL VERIFICATION
         // Set the user as the current user
         const user = await Parse.User.currentAsync();
@@ -52,14 +82,15 @@ export default function SignUp({
             console.log('Error sending email verification request:', error.message);
           }
         }
-
-          setLoggedUser(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+        setLoggedUser(response.data);
+        console.log("LoggedUser")
+      } catch (error) {
+        console.log(error);
+        console.log("FFFFFFFFFFFFFFFFFFFFF");
+      }
     }
   };
+
 
   return (
     <View style={styles.container}>
@@ -84,14 +115,16 @@ export default function SignUp({
       <PasswordMeter password={password} confidence={0} setSeguridad={setSeguridad} updatePassword={function (text: string): void {
         throw new Error("Function not implemented.");
       } } />
-
       {seguridad ? <BAButton
           text="Confirmar"
           state={ButtonState.alert}
           style={styles.centerConfirmar}
-          onPress={() => createUser()}
+          onPress={() => {
+            createUser();
+            // setUserCreated(true);
+          }}
         /> : <BAButton
-        text="Siguiente"
+        text="Confirmar"
         state={ButtonState.alert}
         style={styles.centerSiguiente}
         onPress={() => {
@@ -101,7 +134,6 @@ export default function SignUp({
             )
         }}
       />}
-
     </View>
   );
 }

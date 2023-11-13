@@ -16,7 +16,6 @@ export default function LogIn({ setLoggedUser }) {
   const [isInPasswordPage, setIsInPasswordPage] = useState(false);
   const [email, setTextEmail] = useState("");
   const [contraseña, setTextContraseña] = useState("");
-  // const [Verified, setVerified] = useState("");
   const [user, setUser] = useState("");
   const [birthday, setBirthday] = useState("");
 
@@ -25,19 +24,25 @@ export default function LogIn({ setLoggedUser }) {
       .post("https://banco-alimentos-api.vercel.app/userLogin", {
         username: email,
         password: contraseña,
-        // emailVerified: Verified,
       })
       .then( function (response) {
         console.log(response);
         if (response.status == 200) {
           setLoggedUser(response.data);
           console.log("Usuario logeado");
-          
         } else {
           console.log("Usuario no logeado");
+          openModal(
+            <BAText>Asegurate de que tu contraseña o correo esten escritos correctamente. Y que tu correo ya este verificado en el email que se te envio.</BAText>,
+            "Ops!!! Hubo un error"
+          )
         }
       })
       .catch(function (error) {
+        openModal(
+            <BAText>Asegurate de que tu contraseña o correo esten escritos correctamente. Y que tu correo ya este verificado en el email que se te envio.</BAText>,
+            "Ops!!! Hubo un error"
+          )
         console.log(error);
       });
   };
@@ -122,7 +127,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F4F5FF",
     alignItems: "center",
-    // height: Dimensions.get("window").height,
     gap: 19,
     paddingHorizontal: 20,
   },
@@ -142,8 +146,12 @@ const styles = StyleSheet.create({
   },
   image: {
     width:  Dimensions.get("window").width * 0.550,
-    // Dimensions.get("window").height * 100,
     height: Dimensions.get("window").height * 0.106,
     marginTop: 10,
   },
 });
+
+function openModal(arg0: React.JSX.Element, arg1: string) {
+  throw new Error("Function not implemented.");
+}
+
