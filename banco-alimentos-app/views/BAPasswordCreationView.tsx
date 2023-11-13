@@ -5,7 +5,7 @@ import BATextInput from "../components/BATextInput";
 import BAIcons from "../resources/icons/BAIcons";
 import { useState } from "react";
 import React from "react";
-import axios from "axios";
+import axios from "../axios";
 
 export default function SignUp({
   username,
@@ -27,7 +27,7 @@ export default function SignUp({
     } else {
       console.log("Crear usuario");
       axios
-        .post("https://banco-alimentos-api.vercel.app/userSignUp", {
+        .post("/userSignUp", {
           username: username,
           password: text,
           email: email,

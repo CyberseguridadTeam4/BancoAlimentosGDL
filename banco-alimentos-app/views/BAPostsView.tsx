@@ -10,7 +10,7 @@ import BAText, { TypeText } from "../components/BAText";
 import BAPallete from "../resources/BAPallete";
 import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
-import axios from "axios";
+import axios from "../axios";
 import BASubView from "../components/BASubView";
 import BAButton, { ButtonState } from "../components/BAButton";
 import { useSheet } from "../components/Sheet/BASheetContext";
@@ -51,14 +51,12 @@ export default function BAPostsView({ userData }: PostsProps) {
   const { openLoading, closeLoading } = useLoading();
 
   const getPosts = async () => {
-    await axios
-      .get("https://banco-alimentos-api.vercel.app/getPosts")
-      .then((res: any) => {
-        const postsData = res.data.posts;
-        postsData.reverse();
-        setPosts(postsData);
-        closeLoading();
-      });
+    await axios.get("/getPosts").then((res: any) => {
+      const postsData = res.data.posts;
+      postsData.reverse();
+      setPosts(postsData);
+      closeLoading();
+    });
   };
 
   const { openSheet, closeSheet } = useSheet();
@@ -135,12 +133,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
     dispatchInteraction(postData.objectId);
-    await axios.patch(
-      `https://banco-alimentos-api.vercel.app/likePost/${post.objectId}/${
-        isLike ? 1 : -1
-      }`,
-      post
-    );
+    await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);
     setPostData({ ...postData });
   }, []);
 
@@ -216,7 +209,7 @@ const CreatePostView = ({ userData, closeSheet }: any) => {
 
   const publishPost = useCallback(async (textPost: string) => {
     await axios
-      .post(`https://banco-alimentos-api.vercel.app/post`, {
+      .post(`/post`, {
         text: textPost,
         title: userData.user.username,
         userId: userData.user,

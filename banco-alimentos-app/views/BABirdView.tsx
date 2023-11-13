@@ -112,7 +112,7 @@ function BABirdColor({ name }: ColorSelectionProps) {
     console.log(color);
     const sessionToken = await AsyncStorage.getItem("sessionToken");
     await axios
-      .post("https://banco-alimentos-api.vercel.app/pollo", {
+      .post("/pollo", {
         sessionToken,
         name,
         color,

@@ -5,7 +5,7 @@ import BATextInput from "../components/BATextInput";
 import BAIcons from "../resources/icons/BAIcons";
 import { useState } from "react";
 import BAView from "../components/BAView";
-import axios from "axios";
+import axios from "../axios";
 import React from "react";
 import BASubView from "../components/BASubView";
 import BASignUpView from "./BASignUpView";
@@ -27,7 +27,7 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
 
   const userLogin = async () => {
     axios
-      .post("https://banco-alimentos-api.vercel.app/userLogin", {
+      .post("/userLogin", {
         username: email,
         password: contraseña,
       })

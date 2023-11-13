@@ -42,9 +42,7 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
   const getData = async () => {
     openLoading();
     await axios
-      .get(
-        `https://banco-alimentos-api.vercel.app/getPollito/${birdPointer.objectId}`
-      )
+      .get(`/getPollito/${birdPointer.objectId}`)
       .then((res): any => {
         setBirdData(res.data.pollo);
         console.log(res.data.pollo);
@@ -79,10 +77,7 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
   const patchNoApples = async (increase: boolean) => {
     const nApple = increase ? birdData.nApple + 1 : birdData.nApple - 1;
     await axios
-      .patch(
-        `https://banco-alimentos-api.vercel.app/patchPollito/${birdData.objectId}`,
-        { nApple }
-      )
+      .patch(`/patchPollito/${birdData.objectId}`, { nApple })
       .then((res): any => {
         setBirdData(res.data.pollo);
       });
@@ -101,10 +96,7 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
 
   const patchNextApple = async (nextApple: number) => {
     await axios
-      .patch(
-        `https://banco-alimentos-api.vercel.app/nextApple/${birdData.objectId}`,
-        { nextApple }
-      )
+      .patch(`/nextApple/${birdData.objectId}`, { nextApple })
       .then((res): any => {
         setBirdData(res.data.pollo);
       });
@@ -112,10 +104,9 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
 
   const patchNextStage = async () => {
     await axios
-      .patch(
-        `https://banco-alimentos-api.vercel.app/nextStagePollito/${birdData.objectId}`,
-        { nextStage: birdData.nextStage - 1 }
-      )
+      .patch(`/nextStagePollito/${birdData.objectId}`, {
+        nextStage: birdData.nextStage - 1,
+      })
       .then((res): any => {
         setBirdData(res.data.pollo);
       });
@@ -127,10 +118,9 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
 
   const patchEgg = async (increase: boolean) => {
     await axios
-      .patch(
-        `https://banco-alimentos-api.vercel.app/eggPollito/${birdData.objectId}`,
-        { nEggs: increase ? birdData.nEggs + 1 : birdData.nEggs - 1 }
-      )
+      .patch(`/eggPollito/${birdData.objectId}`, {
+        nEggs: increase ? birdData.nEggs + 1 : birdData.nEggs - 1,
+      })
       .then((res): any => {
         setBirdData(res.data.pollo);
       });

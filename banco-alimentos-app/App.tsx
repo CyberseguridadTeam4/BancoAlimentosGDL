@@ -27,9 +27,7 @@ export default function App() {
 
       if (sessionToken != null) {
         await axios
-          .get(
-            `https://banco-alimentos-api.vercel.app/authSessionToken/${sessionToken}`
-          )
+          .get(`/authSessionToken/${sessionToken}`)
           .then((res): any => {
             setLoggedUser(res.data);
           });
