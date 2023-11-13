@@ -12,7 +12,7 @@ import BAButton, { ButtonState } from "./BAButton";
 import BAPallete from "../resources/BAPallete";
 import BAView from "./BAView";
 import { useSheet } from "./Sheet/BASheetContext";
-import BAText from "./BAText";
+import BAText, { TypeText } from "./BAText";
 import { useModal } from "./Modal/BAModalContext";
 import BASubView from "./BASubView";
 import { useToast } from "./Toast/BAToastContext";
@@ -70,6 +70,7 @@ type HeartReactionProps = {
 
 export default function BABird({ birdData }: BirdData | any) {
   const [animIsPlaying, setAnimIsPlaying] = useState(false);
+  const [hatchAnimControl, setHatchAnimControl] = useState(false);
   const [happyEye, setHappyEye] = useState(false);
   const [winkEye, setWinkEye] = useState(false);
   const [heartReaction, setHeartReaction] = useState(false);
@@ -87,7 +88,16 @@ export default function BABird({ birdData }: BirdData | any) {
     y: rightFootRef,
   });
 
-  const { dispatchFeed } = useBird();
+  const { dispatchFeed, dispatchEggs, hatchEgg, setHatchEgg } = useBird();
+  const { openToast } = useToast();
+
+  useEffect(() => {
+    if (hatchAnimControl && hatchEgg) {
+      HatchAnimation();
+    } else {
+      setHatchAnimControl(false);
+    }
+  }, [hatchAnimControl]);
 
   const FeedAnimation = useCallback(() => {
     setAnimIsPlaying(true);
@@ -225,6 +235,10 @@ export default function BABird({ birdData }: BirdData | any) {
       ]).start(() => {
         setHappyEye(false);
         setAnimIsPlaying(false);
+
+        Animated.delay(500).start(() => {
+          setHatchAnimControl(true);
+        });
       });
 
       Animated.sequence([
@@ -318,6 +332,7 @@ export default function BABird({ birdData }: BirdData | any) {
       Animated.delay(100).start(() => {
         setWinkEye(false);
         setHappyEye(true);
+        dispatchEggs(true);
       });
 
       Animated.timing(birdBodyPositionRef, {
@@ -380,8 +395,15 @@ export default function BABird({ birdData }: BirdData | any) {
           useNativeDriver: true,
         }),
       ]).start(() => {
+        setHatchEgg(false);
         setHappyEye(false);
         setAnimIsPlaying(false);
+        openToast(
+          <BAText type={TypeText.label3} style={{ textAlign: "center" }}>
+            ¡Has obtenido un huevo!
+          </BAText>,
+          3000
+        );
       });
 
       Animated.sequence([
@@ -534,7 +556,7 @@ export default function BABird({ birdData }: BirdData | any) {
                 FeedAnimation();
               }
             }}
-            disabled={animIsPlaying}
+            disabled={animIsPlaying || hatchEgg}
           >
             <View style={styles.buttonWrapper}>
               <BAIcon
@@ -549,8 +571,13 @@ export default function BABird({ birdData }: BirdData | any) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.birdButtons}
-            onPress={() => birdData.nEggs > 0 && {}}
-            disabled={animIsPlaying}
+            onPress={() => {
+              if (birdData.nEggs > 0) {
+                dispatchEggs(false);
+                setOpenEgg(true);
+              }
+            }}
+            disabled={animIsPlaying || hatchEgg}
           >
             <View style={styles.buttonWrapper}>
               <BAIcon

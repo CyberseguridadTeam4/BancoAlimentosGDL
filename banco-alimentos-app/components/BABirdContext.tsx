@@ -12,7 +12,9 @@ const BirdContext = createContext({
   getData: async () => {},
   dispatchInteraction: (postId: string) => {},
   dispatchFeed: () => {},
-  decreaseEggs: () => {},
+  dispatchEggs: (value: boolean) => {},
+  hatchEgg: false,
+  setHatchEgg: (value: boolean) => {},
 });
 
 export const useBird = () => {
@@ -22,6 +24,7 @@ export const useBird = () => {
 export const BirdProvider = ({ children, birdPointer }: any) => {
   const [birdData, setBirdData] = useState<any>(null);
   const [interactedPosts, setInteractedPosts] = useState<Array<any>>([]);
+  const [hatchEgg, setHatchEgg] = useState(false);
 
   const { openLoading, closeLoading } = useLoading();
   const { openToast } = useToast();
@@ -58,21 +61,20 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
       interactions++;
 
       if (interactions >= birdData.nextApple) {
-        patchNoAples(true);
+        patchNoApples(true);
         const nextApple = Math.floor(Math.random() * 5) + 3;
+        patchNextApple(nextApple);
         openToast(
           <BAText type={TypeText.label3} style={{ textAlign: "center" }}>
             ¡Has obtenido una galleta!
           </BAText>,
-          2500
+          3000
         );
-
-        // TODO: Set path for nextApple
       }
     }
   };
 
-  const patchNoAples = async (increase: boolean) => {
+  const patchNoApples = async (increase: boolean) => {
     const nApple = increase ? birdData.nApple + 1 : birdData.nApple - 1;
     await axios
       .patch(
@@ -85,10 +87,52 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
   };
 
   const dispatchFeed = () => {
-    patchNoAples(false);
+    patchNoApples(false);
+    if (birdData.nextStage - 1 <= 0) {
+      patchNextStage().then(() => {
+        setHatchEgg(true);
+      });
+    } else {
+      patchNextStage();
+    }
   };
 
-  const decreaseEggs = () => {};
+  const patchNextApple = async (nextApple: number) => {
+    await axios
+      .patch(
+        `https://banco-alimentos-api.vercel.app/nextApple/${birdData.objectId}`,
+        { nextApple }
+      )
+      .then((res): any => {
+        setBirdData(res.data.pollo);
+      });
+  };
+
+  const patchNextStage = async () => {
+    await axios
+      .patch(
+        `https://banco-alimentos-api.vercel.app/nextStagePollito/${birdData.objectId}`,
+        { nextStage: birdData.nextStage - 1 }
+      )
+      .then((res): any => {
+        setBirdData(res.data.pollo);
+      });
+  };
+
+  const dispatchEggs = (increase: boolean) => {
+    patchEgg(increase);
+  };
+
+  const patchEgg = async (increase: boolean) => {
+    await axios
+      .patch(
+        `https://banco-alimentos-api.vercel.app/eggPollito/${birdData.objectId}`,
+        { nEggs: increase ? birdData.nEggs + 1 : birdData.nEggs - 1 }
+      )
+      .then((res): any => {
+        setBirdData(res.data.pollo);
+      });
+  };
 
   return (
     <BirdContext.Provider
@@ -98,7 +142,9 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
         getData,
         dispatchInteraction,
         dispatchFeed,
-        decreaseEggs,
+        dispatchEggs,
+        hatchEgg,
+        setHatchEgg,
       }}
     >
       {children}
