@@ -127,7 +127,7 @@ export function BAModal({ title, content, onClose }: BAModalProps) {
             <BAIcon
               icon={BAIcons.CrossIcon}
               color={BAPallete.Red01}
-              size={IconSize.large}
+              size={"large"}
             />
           </TouchableOpacity>
         </View>

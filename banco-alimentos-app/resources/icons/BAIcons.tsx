@@ -76,6 +76,18 @@ export default {
   get EyeIcon(): ImageSourcePropType {
     return require("./EyeIcon.png");
   },
+  get AppleIcon(): ImageSourcePropType {
+    return require("./AppleIcon.png");
+  },
+  get EggIcon(): ImageSourcePropType {
+    return require("./EggIcon.png");
+  },
+  get LoadingIcon(): ImageSourcePropType {
+    return require("./LoadingIcon.png");
+  },
+  get BAIcon(): ImageSourcePropType {
+    return require("./BancoAlimentosIcon.png");
+  },
   get BAMXLogo(): ImageSourcePropType {
     return require("./BAMXLogo.png");
   },
