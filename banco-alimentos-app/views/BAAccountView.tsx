@@ -8,32 +8,30 @@ import BAProfilePic from "../components/BAProfilePic";
 import BABadgesView from "./BABadgesView";
 
 type UserProps = {
-  user: {
-    createdAt: string;
+  userData: {
     username: string;
+    badges: [];
     email: string;
-    pollo: {
-      __type: string;
-      className: string;
-      objectId: string;
-    };
-    idProfilePicture:number;
-    objectId: string;
+    idProfilePicture: number;
+    visBadge: number;
+    pollo: any;
+    createdAt: string;
+    updatedAt: string;
+    ACL: any;
     sessionToken: string;
-    ACL: Record<string, any>;
-    badges: any[];
+    objectId: string;
   }
 }
 
 export default function BAAcount({ userData }: UserProps) {
   const [subpage, setSubpage] = useState(false);
-  const [user, setUser] = useState(userData.user);
+  const [user, setUser] = useState(userData);
   const [isBadgesOpen, setIsBadgesOpen] = useState(false);
 
   console.log(user.createdAt);
 
   useEffect(() => {
-    setUser(userData.user);
+    setUser(userData);
   }, [userData]);
 
   const date = new Date(user.createdAt) ;
