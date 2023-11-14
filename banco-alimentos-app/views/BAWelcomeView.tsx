@@ -43,6 +43,8 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
         if (response.status == 200) {
           setLoggedUser(response.data);
           AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
+          axios.defaults.headers.common["Authorization"] =
+            response.data.user.sessionToken;
           console.log("Usuario logeado");
         } else {
           console.log("Usuario no logeado");

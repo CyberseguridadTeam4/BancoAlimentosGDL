@@ -34,6 +34,7 @@ type PostProps = {
     updatedAt: string;
     reported: boolean;
     objectId: string;
+    isliked: boolean;
   };
   onClickPost: () => void;
 };
@@ -124,7 +125,7 @@ export default function BAPostsView({ userData }: PostsProps) {
 }
 
 export const Post = ({ post, onClickPost }: PostProps) => {
-  const [likedPost, setLiketPost] = useState(false);
+  const [likedPost, setLiketPost] = useState(post.isliked);
   const [postData, setPostData] = useState(post);
 
   const { dispatchInteraction } = useBird();
