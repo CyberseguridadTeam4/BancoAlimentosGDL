@@ -34,7 +34,7 @@ function BABadgeModal({ image }: BadgeProps) {
   return (
     <View style={styles.modalContainer}>
       <View style={styles.badgeWrapper}>
-        <BAIcon icon={image} color={BAPallete.Red01} size={IconSize.large} />
+        <BAIcon icon={image} color={BAPallete.Red01} size={"large"} />
       </View>
     </View>
   );

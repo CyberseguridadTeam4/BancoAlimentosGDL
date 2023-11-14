@@ -20,4 +20,12 @@ export default {
   SoftBlue: "#869ED8",
   SoftPurple: "#AB9ED3",
   SoftPink: "#D39ED1",
+  WingRed: "#B71F1F",
+  WingOrange: "#E06D0C",
+  WingYellow: "#E5B200",
+  WingGreen: "#5FBF30",
+  WingSky: "#3DC1B9",
+  WingBlue: "#3558B1",
+  WingPurple: "#7461B0",
+  WingPink: "#B66EB3",
 };

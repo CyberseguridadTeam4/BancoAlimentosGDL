@@ -41,9 +41,7 @@ function BAMenuCell({
       onPress={() => onSelect && onSelect(value)}
       disabled={onSelect == null}
     >
-      {icon && (
-        <BAIcon size={IconSize.small} icon={icon} color={BAPallete.Gray02} />
-      )}
+      {icon && <BAIcon size={"small"} icon={icon} color={BAPallete.Gray02} />}
       <View style={styles.textWrapper}>
         <BAText type={TypeText.label3}>{text}</BAText>
       </View>

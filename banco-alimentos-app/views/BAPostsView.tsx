@@ -3,10 +3,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   RefreshControl,
-  ScrollView,
-  TurboModuleRegistry,
-  Share, 
-  Alert
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import BAView from "../components/BAView";
@@ -20,7 +16,8 @@ import BAButton, { ButtonState } from "../components/BAButton";
 import { useSheet } from "../components/Sheet/BASheetContext";
 import BAMultiTextInput from "../components/BAMultiTextInput";
 import BACommentsSubView from "./BACommentsSubView";
-
+import { useLoading } from "../components/Loading/BALoadingContext";
+import { useBird } from "../components/BABirdContext";
 
 type PostProps = {
   post: {
@@ -41,45 +38,31 @@ type PostProps = {
   onClickPost: () => void;
 };
 
-const onShare = async () => {
-  // try {
-  //   const result = await Share.share({
-  //     message:
-  //       'React Native | A framework for building native apps using React',
-  //   });
-  //   if (result.action === Share.sharedAction) {
-  //     if (result.activityType) {
-  //       // shared with activity type of result.activityType
-  //     } else {
-  //       // shared
-  //     }
-  //   } else if (result.action === Share.dismissedAction) {
-  //     // dismissed
-  //   }
-  // } catch (error: any) {
-  //   Alert.alert(error.message);
-  // }
+type PostsProps = {
+  userData: any;
 };
 
-export default function BAPostsView({ userData }) {
+export default function BAPostsView({ userData }: PostsProps) {
   const [posts, setPosts] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+
+  const { openLoading, closeLoading } = useLoading();
   const [chosenPost, setChosenPost] = useState<any>(null);
 
   const getPosts = async () => {
-    await axios
-      .get("/getPosts")
-      .then((res: any) => {
-        const postsData = res.data.posts;
-        postsData.reverse();
-        setPosts(postsData);
-      });
+    await axios.get("/getPosts").then((res: any) => {
+      const postsData = res.data.posts;
+      postsData.reverse();
+      setPosts(postsData);
+      closeLoading();
+    });
   };
 
   const { openSheet, closeSheet } = useSheet();
 
   useEffect(() => {
+    openLoading();
     getPosts();
   }, []);
 
@@ -141,6 +124,8 @@ export const Post = ({ post, onClickPost }: PostProps) => {
   const [likedPost, setLiketPost] = useState(false);
   const [postData, setPostData] = useState(post);
 
+  const { dispatchInteraction } = useBird();
+
   useEffect(() => {
     setPostData(post);
   }, [post]);
@@ -148,12 +133,8 @@ export const Post = ({ post, onClickPost }: PostProps) => {
   const likePost = useCallback(async (isLike: boolean) => {
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
-    await axios.patch(
-      `/like/${post.objectId}/${
-        isLike ? 1 : -1
-      }`,
-      post
-    );
+    dispatchInteraction(postData.objectId);
+    await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);
     setPostData({ ...postData });
   }, []);
 
@@ -191,7 +172,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
       <View style={styles.header}>
         <View style={styles.row}>
           <View style={styles.profilePic} />
-          <BAText type={TypeText.label3} style={{ fontSize: 20 }}>
+          <BAText type={TypeText.label3} style={{ fontSize: 16 }}>
             {postData.title}
           </BAText>
         </View>
@@ -200,7 +181,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
         </BAText>
       </View>
       <BAText
-        style={{ marginVertical: 20, fontSize: 22 }}
+        style={{ marginVertical: 20, fontSize: 18 }}
         type={TypeText.label1}
       >
         {postData.text}
@@ -215,14 +196,14 @@ export const Post = ({ post, onClickPost }: PostProps) => {
             <BAIcon
               icon={BAIcons.ForoIcon}
               color={BAPallete.Red01}
-              size={IconSize.medium}
+              size={"medium"}
             />
           </TouchableOpacity>
           <TouchableOpacity>
             <BAIcon
               icon={BAIcons.FlagIcon}
               color={BAPallete.Red01}
-              size={IconSize.medium}
+              size={"medium"}
             />
           </TouchableOpacity>
         </View>
@@ -240,7 +221,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
                   likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
                 }
                 color={BAPallete.Red01}
-                size={IconSize.medium}
+                size={"medium"}
               />
             </View>
           </TouchableOpacity>
@@ -252,7 +233,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
             <BAIcon
               icon={BAIcons.ShareIcon}
               color={BAPallete.Red01}
-              size={IconSize.medium}
+              size={"medium"}
             />
           </TouchableOpacity>
         </View>
@@ -261,7 +242,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
   );
 };
 
-const CreatePostView = ({ userData, closeSheet }) => {
+const CreatePostView = ({ userData, closeSheet }: any) => {
   const [text, setText] = useState("");
 
   const publishPost = useCallback(async (textPost: string) => {
@@ -306,7 +287,7 @@ const styles = StyleSheet.create({
     width: "100%",
     minHeight: 100,
     backgroundColor: "white",
-    borderRadius: 10,
+    borderRadius: 15,
     padding: 15,
     shadowRadius: 10,
     shadowColor: BAPallete.StrongBlue,
@@ -328,7 +309,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   profilePic: {
-    width: 50,
+    width: 40,
     aspectRatio: 1 / 1,
     borderRadius: 10,
     backgroundColor: "white",

@@ -5,13 +5,18 @@ import BATextInput from "../components/BATextInput";
 import BAIcons from "../resources/icons/BAIcons";
 import { useState } from "react";
 import BAView from "../components/BAView";
-import axios from "axios";
+import axios from "../axios";
 import React from "react";
 import BASubView from "../components/BASubView";
 import BASignUpView from "./BASignUpView";
 import BAPasswordCreationView from "./BAPasswordCreationView";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function LogIn({ setLoggedUser }) {
+type WelcomeProps = {
+  setLoggedUser: (data: any) => void;
+};
+
+export default function LogIn({ setLoggedUser }: WelcomeProps) {
   const [isInRegisterPage, setIsInRegisterPage] = useState(false);
   const [isInPasswordPage, setIsInPasswordPage] = useState(false);
   const [email, setTextEmail] = useState("");
@@ -22,14 +27,15 @@ export default function LogIn({ setLoggedUser }) {
 
   const userLogin = async () => {
     axios
-      .post("https://banco-alimentos-api.vercel.app/userLogin", {
+      .post("/userLogin", {
         username: email,
         password: contraseña,
       })
       .then(function (response) {
-        console.log(response);
+        console.log(response.data);
         if (response.status == 200) {
           setLoggedUser(response.data);
+          AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
           console.log("Usuario logeado");
         } else {
           console.log("Usuario no logeado");

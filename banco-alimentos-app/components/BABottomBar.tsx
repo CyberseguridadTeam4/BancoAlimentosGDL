@@ -85,7 +85,7 @@ export default function BABottomBar({
                 setViewIndex(index);
               }}
               icon={viewIndex == index ? item[1] : item[0]}
-              iconSize={IconSize.large}
+              iconSize={"large"}
               state={ButtonState.alert}
               style={[styles.buttons]}
               disableShadow={true}
@@ -159,7 +159,7 @@ const MiddleButton = ({ index, optionSelected, setOptionSelected }: any) => {
               ? BAIcons.BirdActivatedIcon
               : BAIcons.BirdIcon
           }
-          iconSize={IconSize.large}
+          iconSize={"large"}
           state={ButtonState.alert}
           disableShadow={true}
           style={styles.middleButton}

@@ -183,7 +183,7 @@ export default function BACommentsSubView({
           <BAIcon
             icon={BAIcons.SendIcon}
             color={BAPallete.Red01}
-            size={IconSize.large}
+            size={"large"}
           />
         </TouchableOpacity>
       </View>
@@ -225,7 +225,7 @@ const Comment = ({ comment }: CommentProps) => {
             <BAIcon
               icon={BAIcons.FlagIcon}
               color={BAPallete.Red01}
-              size={IconSize.medium}
+              size={"medium"}
             />
           </TouchableOpacity>
           <BAText type={TypeText.label3} style={{ fontSize: 12 }}>
@@ -247,7 +247,7 @@ const Comment = ({ comment }: CommentProps) => {
             <BAIcon
               icon={likedComment ? BAIcons.HeartIconActivated : BAIcons.HeartIcon}
               color={BAPallete.Red01}
-              size={IconSize.small}
+              size={"small"}
             />
           </TouchableOpacity>
         </View>

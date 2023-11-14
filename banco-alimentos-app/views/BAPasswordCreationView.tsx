@@ -4,7 +4,7 @@ import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
 import BAIcons from "../resources/icons/BAIcons";
-import axios from "axios";
+import axios from "../axios";
 import PasswordMeter from "../components/BAPasswordMeter";
 import { useModal } from "../components/Modal/BAModalContext";
 
@@ -17,7 +17,7 @@ export default function SignUp({
 }: any) {
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
-  const [seguridad, setSeguridad] = useState(false)
+  const [seguridad, setSeguridad] = useState(false);
 
   const { openModal } = useModal();
   const createUser = async () => {
@@ -25,12 +25,12 @@ export default function SignUp({
       openModal(
         <BAText>Asegurate de que las contraseñas coincidan</BAText>,
         "Contraseñas no coinciden"
-      )
+      );
       console.log("Las contraseñas no coinciden");
     } else {
       console.log("Crear usuario");
       axios
-        .post("https://banco-alimentos-api.vercel.app/userSignUp", {
+        .post("/userSignUp", {
           username: username,
           password: password,
           email: email,
@@ -46,59 +46,73 @@ export default function SignUp({
     }
   };
 
-
-  if(seguridad){
-    console.log('bien')
-  } 
-  else{
-    console.log("fake")
+  if (seguridad) {
+    console.log("bien");
+  } else {
+    console.log("fake");
   }
 
   return (
     <View style={styles.container}>
       <BAText style={styles.center}>Contraseña:</BAText>
-      { <BATextInput
-        placeholder="Contraseña"
-        icon={BAIcons.PersonIcon}
-        value={password}
-        onChange={setPassword}
-        isPassword={true} // Use secureTextEntry for password input
-      /> }
-      { <BAText type={TypeText.label1} style={styles.center}>
-        Confirmar contraseña:
-      </BAText> }
-      { <BATextInput
-        placeholder="Contraseña"
-        icon={BAIcons.SMSIcon}
-        value={passwordConf}
-        onChange={setPasswordConf}
-        isPassword={true} // Use secureTextEntry for password input
-      /> }
-      <PasswordMeter password={password} confidence={0} setSeguridad={setSeguridad} updatePassword={function (text: string): void {
-        throw new Error("Function not implemented.");
-      } } />
+      {
+        <BATextInput
+          placeholder="Contraseña"
+          icon={BAIcons.PersonIcon}
+          value={password}
+          onChange={setPassword}
+          isPassword={true} // Use secureTextEntry for password input
+        />
+      }
+      {
+        <BAText type={TypeText.label1} style={styles.center}>
+          Confirmar contraseña:
+        </BAText>
+      }
+      {
+        <BATextInput
+          placeholder="Contraseña"
+          icon={BAIcons.SMSIcon}
+          value={passwordConf}
+          onChange={setPasswordConf}
+          isPassword={true} // Use secureTextEntry for password input
+        />
+      }
+      <PasswordMeter
+        password={password}
+        confidence={0}
+        setSeguridad={setSeguridad}
+        updatePassword={function (text: string): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
 
-      {seguridad ? <BAButton
+      {seguridad ? (
+        <BAButton
           text="Confirmar"
           state={ButtonState.alert}
           style={styles.centerConfirmar}
           onPress={() => createUser()}
-        /> : <BAButton
-        text="Siguiente"
-        state={ButtonState.alert}
-        style={styles.centerSiguiente}
-        onPress={() => {
-          openModal(
-              <BAText>Asegurate de que tu contraseña cumpla con los puntos de seguridad</BAText>,
+        />
+      ) : (
+        <BAButton
+          text="Siguiente"
+          state={ButtonState.alert}
+          style={styles.centerSiguiente}
+          onPress={() => {
+            openModal(
+              <BAText>
+                Asegurate de que tu contraseña cumpla con los puntos de
+                seguridad
+              </BAText>,
               "Contraseña insegura"
-            )
-        }}
-      />}
-
+            );
+          }}
+        />
+      )}
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -124,4 +138,3 @@ const styles = StyleSheet.create({
 function openSheet(arg0: React.JSX.Element, arg1: string) {
   throw new Error("Function not implemented.");
 }
-

@@ -82,7 +82,7 @@ export default function BAMapView() {
           <BAIcon
             icon={BAIcons.MapIcon}
             color={BAPallete.Red01}
-            size={IconSize.small}
+            size={"small"}
           />
           {vicinity && <BAText style={styles.textLabel}>{vicinity}</BAText>}
         </View>
@@ -90,7 +90,7 @@ export default function BAMapView() {
           <BAIcon
             icon={BAIcons.PhoneIcon}
             color={BAPallete.Red01}
-            size={IconSize.small}
+            size={"small"}
           />
           <TouchableOpacity onPress={handlePress}>
             {phoneNumber && (
