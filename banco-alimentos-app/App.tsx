@@ -30,6 +30,7 @@ export default function App() {
           .get(`/authSessionToken/${sessionToken}`)
           .then((res): any => {
             setLoggedUser(res.data);
+            axios.defaults.headers.common["Authorization"] = sessionToken;
           })
           .catch((error): any => {
             console.log(error);
