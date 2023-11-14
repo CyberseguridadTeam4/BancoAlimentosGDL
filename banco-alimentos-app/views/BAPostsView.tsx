@@ -106,11 +106,15 @@ export default function BAPostsView({ userData }: PostsProps) {
         {posts.length > 0 &&
           posts.map((item) => {
             return (
-              <Post
-                post={item}
-                key={item.objectId}
-                onClickPost={() => setIsCommentsOpen(true)}
-              />
+              <>
+                {!item.reported && (
+                  <Post
+                    post={item}
+                    key={item.objectId}
+                    onClickPost={() => setIsCommentsOpen(true)}
+                  />
+                )}
+              </>
             );
           })}
       </BAView>
