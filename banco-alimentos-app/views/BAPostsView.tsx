@@ -34,6 +34,7 @@ type PostProps = {
     updatedAt: string;
     reported: boolean;
     objectId: string;
+    isliked: boolean;
   };
   onClickPost: () => void;
 };
@@ -106,11 +107,15 @@ export default function BAPostsView({ userData }: PostsProps) {
         {posts.length > 0 &&
           posts.map((item) => {
             return (
-              <Post
-                post={item}
-                key={item.objectId}
-                onClickPost={() => setIsCommentsOpen(true)}
-              />
+              <>
+                {!item.reported && (
+                  <Post
+                    post={item}
+                    key={item.objectId}
+                    onClickPost={() => setIsCommentsOpen(true)}
+                  />
+                )}
+              </>
             );
           })}
       </BAView>
@@ -120,7 +125,7 @@ export default function BAPostsView({ userData }: PostsProps) {
 }
 
 export const Post = ({ post, onClickPost }: PostProps) => {
-  const [likedPost, setLiketPost] = useState(false);
+  const [likedPost, setLiketPost] = useState(post.isliked);
   const [postData, setPostData] = useState(post);
 
   const { dispatchInteraction } = useBird();
