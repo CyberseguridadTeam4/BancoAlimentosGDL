@@ -189,9 +189,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
       <View style={styles.footer}>
         <View style={[styles.row, { gap: 20 }]}>
           <TouchableOpacity
-          onPress={() => {
-            onClickPost
-          }}
+          onPress={onClickPost}
           >
             <BAIcon
               icon={BAIcons.ForoIcon}
@@ -225,11 +223,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
               />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-          onPress={
-            onShare
-          }
-          >
+          <TouchableOpacity>
             <BAIcon
               icon={BAIcons.ShareIcon}
               color={BAPallete.Red01}
