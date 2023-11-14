@@ -17,11 +17,7 @@ import axios from "../axios";
 type CommentProps = {
   comment: {
     text: string;
-    userId: {
-      __type: string;
-      className: string;
-      objectId: string;
-    };
+    username: string;
     postId: {
       __type: string;
       className: string;
@@ -45,11 +41,7 @@ type CommentsViewProps = {
 type PostProps = {
   text: string;
   title: string;
-  userId: {
-    __type: string;
-    className: string;
-    objectId: string;
-  };
+  username: string;
   nViews: number;
   nLikes: number;
   createdAt: string;
@@ -104,7 +96,7 @@ export default function BACommentsSubView({
         postId: post.objectId,
       })
       .then((res) => {
-        console.log(res);
+        console.log("res");
         setText("");
       })
       .catch((error) => console.log(error));
@@ -155,9 +147,6 @@ export default function BACommentsSubView({
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.columnComments}>
-            {/* {Array.from({ length: 2 }).map(() => {
-              return <Comment />;
-            })} */}
             {comments.length > 0 &&
               comments.map((item) => {
                 return <Comment comment={item} key={item.objectId} />;
@@ -217,7 +206,7 @@ const Comment = ({ comment }: CommentProps) => {
         <View style={styles.row}>
           <View style={styles.profilePic} />
           <BAText type={TypeText.label3} style={{ fontSize: 18 }}>
-            Name
+            {commentData.username}
           </BAText>
         </View>
         <View style={[styles.row, { gap: 15 }]}>
@@ -244,11 +233,14 @@ const Comment = ({ comment }: CommentProps) => {
               likeComment(!likedComment);
             }}
           >
-            <BAIcon
-              icon={likedComment ? BAIcons.HeartIconActivated : BAIcons.HeartIcon}
-              color={BAPallete.Red01}
-              size={"small"}
-            />
+            <View style={styles.likeContainer}>
+              <BAText type={TypeText.label3}>{commentData.nLikes}</BAText>
+              <BAIcon
+                icon={likedComment ? BAIcons.HeartIconActivated : BAIcons.HeartIcon}
+                color={BAPallete.Red01}
+                size={"small"}
+              />
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -297,7 +289,7 @@ export const Post = ({ post }: any) => {
             <BAIcon
               icon={BAIcons.FlagIcon}
               color={BAPallete.Red01}
-              size={IconSize.medium}
+              size={"medium"}
             />
           </TouchableOpacity>
         </View>
@@ -315,7 +307,7 @@ export const Post = ({ post }: any) => {
                   likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
                 }
                 color={BAPallete.Red01}
-                size={IconSize.medium}
+                size={"medium"}
               />
             </View>
           </TouchableOpacity>
@@ -323,7 +315,7 @@ export const Post = ({ post }: any) => {
             <BAIcon
               icon={BAIcons.ShareIcon}
               color={BAPallete.Red01}
-              size={IconSize.medium}
+              size={"medium"}
             />
           </TouchableOpacity>
         </View>
