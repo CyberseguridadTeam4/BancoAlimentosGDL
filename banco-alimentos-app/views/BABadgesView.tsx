@@ -85,7 +85,7 @@ export default function BAAccountBadges({
         <BASubView 
           title={"Mis insignias"} 
           style={styles.body}
-           isScrolling={true}
+           isScrolling={false}
            isOpen= {isOpen}
            onReturn={() => {
             setIsOpen(false);
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     },
     badgeContainer: {
         flex: 1,
-        justifyContent: "space-around",
+        // justifyContent: "space-around",
         
     },
     badgeItem: {
@@ -127,5 +127,6 @@ const styles = StyleSheet.create({
         aspectRatio: 1, // Maintain a square aspect ratio for each badge
         justifyContent: "center",
         alignItems: "center",
+        paddingBottom: 10,
     },
   });
