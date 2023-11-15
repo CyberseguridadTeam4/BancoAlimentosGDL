@@ -23,6 +23,7 @@ type ViewProps = {
         string | React.JSXElementConstructor<any>
       >
     | undefined;
+  rightButtons?: React.ReactElement;
 };
 
 export default function BAView({
@@ -31,39 +32,47 @@ export default function BAView({
   title,
   isScrolling = true,
   onRefresh,
+  rightButtons,
 }: ViewProps) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <BAText
-        style={{
-          marginTop: 20,
-          marginBottom: 10,
-          width: "100%",
-          paddingHorizontal: 20,
-        }}
-        type={TypeText.label0}
-      >
-        {title}
-      </BAText>
+      <View style={styles.header}>
+        <BAText type={TypeText.label0}>{title}</BAText>
+        {rightButtons}
+      </View>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 25 : undefined}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          scrollEnabled={isScrolling}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{
-            paddingHorizontal: 20,
-            paddingTop: 20,
-            paddingBottom: 100,
-            flexGrow: 1,
-          }}
-          refreshControl={onRefresh}
-        >
-          <View style={style}>{children}</View>
-        </ScrollView>
+        {isScrolling ? (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              flexGrow: 1,
+              paddingBottom: 275,
+            }}
+            style={{ paddingTop: 20 }}
+            keyboardShouldPersistTaps="handled"
+            refreshControl={onRefresh}
+            scrollEnabled={isScrolling}
+          >
+            <View style={[style]}>{children}</View>
+          </ScrollView>
+        ) : (
+          <View
+            style={[
+              style,
+              {
+                flex: 1,
+                height: "100%",
+                flexDirection: "column",
+              },
+            ]}
+          >
+            {children}
+          </View>
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -75,5 +84,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 100,
     paddingTop: 20,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 20,
+    marginBottom: 10,
+    width: "100%",
+    paddingHorizontal: 20,
   },
 });

@@ -5,17 +5,25 @@
  * @format
  */
 
-import React from "react";
-import { ImageSourcePropType, StyleSheet, TextInput, View } from "react-native";
+import React, { useState } from "react";
+import {
+  ImageSourcePropType,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import BAIcon from "../resources/icons/BAIcon";
 import BAPallete from "../resources/BAPallete";
 import { styleText, TypeText } from "./BAText";
+import BAIcons from "../resources/icons/BAIcons";
 
 type Props = {
   icon?: ImageSourcePropType;
   placeholder?: string;
   value: string;
   onChange: (input: string) => void;
+  isPassword?: boolean; // New prop to indicate if it's a password input
 };
 
 function BATextInput({
@@ -23,7 +31,10 @@ function BATextInput({
   placeholder,
   value,
   onChange,
+  isPassword = false,
 }: Props): JSX.Element {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <View style={styles.wrapper}>
       {icon && <BAIcon icon={icon} color={BAPallete.Black} />}
@@ -33,7 +44,16 @@ function BATextInput({
         placeholder={placeholder}
         value={value}
         onChangeText={onChange}
+        secureTextEntry={isPassword}
       />
+      {isPassword && (
+        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <BAIcon
+            icon={showPassword ? BAIcons.EyeIcon : BAIcons.EyeIcon}
+            color={BAPallete.Gray03}
+          />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -56,6 +76,17 @@ const styles = StyleSheet.create({
     textAlignVertical: "center",
     borderColor: "transparent", // Set to your background color
     borderWidth: 1,
+  },
+  shadow: {
+    // Apply shadow styles for Android
+    elevation: 4, // Adjust the elevation value as needed
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4, // Adjust the shadow radius as needed
   },
 });
 

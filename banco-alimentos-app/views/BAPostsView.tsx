@@ -10,7 +10,15 @@ import BAText, { TypeText } from "../components/BAText";
 import BAPallete from "../resources/BAPallete";
 import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
-import axios from "axios";
+import axios from "../axios";
+import BASubView from "../components/BASubView";
+import BAButton, { ButtonState } from "../components/BAButton";
+import { useSheet } from "../components/Sheet/BASheetContext";
+import BAMultiTextInput from "../components/BAMultiTextInput";
+import BACommentsSubView from "./BACommentsSubView";
+import { useLoading } from "../components/Loading/BALoadingContext";
+import { useBird } from "../components/BABirdContext";
+import BAReportView from "./BAReportView";
 
 type PostProps = {
   post: {
@@ -27,51 +35,112 @@ type PostProps = {
     updatedAt: string;
     reported: boolean;
     objectId: string;
+    isliked: boolean;
   };
+  onClickPost: () => void;
 };
 
-export default function BAPostsView() {
+type PostsProps = {
+  userData: any;
+};
+
+export default function BAPostsView({ userData }: PostsProps) {
   const [posts, setPosts] = useState<any[]>([]);
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+
+  const { openLoading, closeLoading } = useLoading();
+  const [chosenPost, setChosenPost] = useState<any>(null);
 
   const getPosts = async () => {
-    await axios
-      .get("https://banco-alimentos-cseo1rmbe-bojavs-svg.vercel.app/getPosts")
-      .then((res: any) => {
-        setPosts(res.data.posts);
-      });
+    await axios.get("/getPosts").then((res: any) => {
+      const postsData = res.data.posts;
+      postsData.reverse();
+      setPosts(postsData);
+      closeLoading();
+    });
   };
 
+  const { openSheet, closeSheet } = useSheet();
+
   useEffect(() => {
+    openLoading();
     getPosts();
   }, []);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    getPosts().then(() => {
-      setRefreshing(false)
-    });
+    getPosts()
+      .then(() => {
+        setRefreshing(false);
+      })
+      .catch((error) => {
+        setRefreshing(false);
+      });
   }, []);
 
+  const AddButton = () => {
+    return (
+      <TouchableOpacity
+        style={{ marginRight: 5 }}
+        onPress={() =>
+          openSheet(
+            <CreatePostView userData={userData} closeSheet={closeSheet} />,
+            "Create Post"
+          )
+        }
+      >
+        <BAIcon icon={BAIcons.AddIcon} color={BAPallete.Red01} />
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <BAView
-      title="Posts"
-      style={styles.columnPosts}
-      onRefresh={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      {posts.length > 0 &&
-        posts.map((item) => {
-          return <Post post={item} key={item.objectId} />;
-        })}
-    </BAView>
+    <>
+      <BAView
+        title="Posts"
+        rightButtons={AddButton()}
+        style={styles.columnPosts}
+        onRefresh={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        {posts.length > 0 &&
+          posts.map((item) => {
+            return (
+              <>
+                {!item.reported && (
+                  <Post
+                    post={item}
+                    key={item.objectId}
+                    onClickPost={() => {
+                      setIsCommentsOpen(true);
+                      setChosenPost(item);
+                    }}
+                  />
+                )}
+              </>
+            );
+          })}
+      </BAView>
+      {isCommentsOpen && (
+        <BACommentsSubView
+          isOpen={isCommentsOpen}
+          setIsOpen={setIsCommentsOpen}
+          userData={userData}
+          post={chosenPost}
+        />
+      )}
+    </>
   );
 }
 
-export const Post = ({ post }: PostProps) => {
-  const [likedPost, setLiketPost] = useState(false);
+export const Post = ({ post, onClickPost }: PostProps) => {
+  const [likedPost, setLiketPost] = useState(post.isliked);
   const [postData, setPostData] = useState(post);
+
+  const { dispatchInteraction } = useBird();
+  const { openSheet, closeSheet } = useSheet();
 
   useEffect(() => {
     setPostData(post);
@@ -80,48 +149,84 @@ export const Post = ({ post }: PostProps) => {
   const likePost = useCallback(async (isLike: boolean) => {
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
-    await axios.patch(
-      `https://banco-alimentos-api.vercel.app/like/${post.objectId}/${
-        isLike ? 1 : -1
-      }`,
-      post
-    );
+    dispatchInteraction(postData.objectId);
+    await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);
     setPostData({ ...postData });
   }, []);
 
+  const calculateDate = (postCreation: string): string => {
+    const currentDate = new Date();
+    const postDate = new Date(postCreation);
+
+    let diffInMilliseconds: number = currentDate.getTime() - postDate.getTime();
+    let diffInSeconds: number = Math.floor(diffInMilliseconds / 1000);
+    let diffInMinutes: number = Math.floor(diffInSeconds / 60);
+    let diffInHours: number = Math.floor(diffInMinutes / 60);
+    let diffInDays: number = Math.floor(diffInHours / 24);
+
+    diffInMilliseconds %= 1000;
+    diffInSeconds %= 60;
+    diffInMinutes %= 60;
+    diffInHours %= 24;
+
+    let result: string = "";
+    if (diffInDays > 0) {
+      result += `${diffInDays} day(s), `;
+    } else if (diffInHours > 0) {
+      result += `${diffInHours} hour(s), `;
+    } else if (diffInMinutes > 0) {
+      result += `${diffInMinutes} minute(s), `;
+    } else if (diffInSeconds > 0) {
+      result += `${diffInSeconds} second(s), `;
+    }
+
+    return result.trim().replace(/,\s*$/, ""); // remove trailing comma
+  };
+
   return (
-    <TouchableOpacity style={styles.postBox}>
+    <TouchableOpacity style={styles.postBox} onPress={onClickPost}>
       <View style={styles.header}>
         <View style={styles.row}>
           <View style={styles.profilePic} />
-          <BAText type={TypeText.label3} style={{ fontSize: 20 }}>
+          <BAText type={TypeText.label3} style={{ fontSize: 16 }}>
             {postData.title}
           </BAText>
         </View>
         <BAText type={TypeText.label3} style={{ fontSize: 14 }}>
-          10m
+          {calculateDate(postData.createdAt)}
         </BAText>
       </View>
       <BAText
-        style={{ marginVertical: 20, fontSize: 22 }}
+        style={{ marginVertical: 20, fontSize: 18 }}
         type={TypeText.label1}
       >
         {postData.text}
       </BAText>
       <View style={styles.footer}>
         <View style={[styles.row, { gap: 20 }]}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onClickPost}>
             <BAIcon
               icon={BAIcons.ForoIcon}
               color={BAPallete.Red01}
-              size={IconSize.medium}
+              size={"medium"}
             />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              openSheet(
+                <BAReportView
+                  closeSheet={closeSheet}
+                  type={0}
+                  objId={post.objectId}
+                />,
+                "Reportar"
+              )
+            }
+          >
             <BAIcon
               icon={BAIcons.FlagIcon}
               color={BAPallete.Red01}
-              size={IconSize.medium}
+              size={"medium"}
             />
           </TouchableOpacity>
         </View>
@@ -139,7 +244,7 @@ export const Post = ({ post }: PostProps) => {
                   likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
                 }
                 color={BAPallete.Red01}
-                size={IconSize.medium}
+                size={"medium"}
               />
             </View>
           </TouchableOpacity>
@@ -147,7 +252,7 @@ export const Post = ({ post }: PostProps) => {
             <BAIcon
               icon={BAIcons.ShareIcon}
               color={BAPallete.Red01}
-              size={IconSize.medium}
+              size={"medium"}
             />
           </TouchableOpacity>
         </View>
@@ -156,12 +261,52 @@ export const Post = ({ post }: PostProps) => {
   );
 };
 
+const CreatePostView = ({ userData, closeSheet }: any) => {
+  const [text, setText] = useState("");
+
+  const publishPost = useCallback(async (textPost: string) => {
+    await axios
+      .post(`/post`, {
+        text: textPost,
+        title: userData.user.username,
+        userId: userData.user,
+      })
+      .then((res) => {
+        console.log(res);
+        closeSheet();
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  return (
+    <View style={{ flex: 1, gap: 40, marginTop: 10 }}>
+      <BAMultiTextInput
+        value={text}
+        onChange={(e) => {
+          setText(e);
+        }}
+      />
+      <BAButton
+        state={ButtonState.alert}
+        onPress={() => publishPost(text)}
+        text="Send"
+      />
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
+  addButton: {
+    position: "absolute",
+    bottom: 100,
+    right: 0,
+    marginRight: 20,
+  },
   postBox: {
     width: "100%",
     minHeight: 100,
     backgroundColor: "white",
-    borderRadius: 10,
+    borderRadius: 15,
     padding: 15,
     shadowRadius: 10,
     shadowColor: BAPallete.StrongBlue,
@@ -173,7 +318,8 @@ const styles = StyleSheet.create({
   },
   columnPosts: {
     flex: 1,
-    gap: 35,
+    gap: 30,
+    paddingHorizontal: 20,
   },
   header: {
     flexDirection: "row",
@@ -182,7 +328,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   profilePic: {
-    width: 50,
+    width: 40,
     aspectRatio: 1 / 1,
     borderRadius: 10,
     backgroundColor: "white",

@@ -31,7 +31,8 @@ type Props = {
   onPress: () => void;
   state?: ButtonState;
   icon?: ImageSourcePropType;
-  iconSize?: IconSize;
+  iconColor?: string;
+  iconSize?: IconSize | number;
   style?: StyleProp<ViewStyle>;
   disableShadow?: boolean;
 };
@@ -40,7 +41,8 @@ function BAButton({
   text,
   onPress,
   icon,
-  iconSize = IconSize.medium,
+  iconSize = "medium",
+  iconColor = "black",
   state = ButtonState.enabled,
   style,
   disableShadow = false,
@@ -59,7 +61,11 @@ function BAButton({
       {state == ButtonState.disabled && <View style={styles.disabledBg} />}
       <View style={styles.wrapper}>
         {icon && (
-          <BAIcon icon={icon} size={iconSize} color={getIconColor(state)} />
+          <BAIcon
+            icon={icon}
+            size={iconSize}
+            color={getIconColor(state ? state : iconColor)}
+          />
         )}
         {text && <BAText type={getFontStyle(state)}>{text}</BAText>}
       </View>
@@ -67,8 +73,11 @@ function BAButton({
   );
 }
 
-const getIconColor = (state: ButtonState) => {
-  if (state === ButtonState.enabled || state === ButtonState.disabled) {
+const getIconColor = (color: ButtonState | string | undefined) => {
+  if (typeof color == "string") {
+    return color;
+  }
+  if (color === ButtonState.enabled || color === ButtonState.disabled) {
     return BAPallete.Black;
   } else {
     return BAPallete.White;
@@ -117,7 +126,7 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   shadow: {
-    shadowRadius: 15,
+    shadowRadius: 10,
     shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.15,
   },

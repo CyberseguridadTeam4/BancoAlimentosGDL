@@ -82,51 +82,72 @@ export default function BASubView({
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
-        <Animated.View
-          style={[
-            {
-              transform: [{ translateX: subpagePositionRef }],
-              paddingHorizontal: 20,
-            },
-          ]}
-        >
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => onCloseSubpage()}>
-              <BAIcon
-                icon={BAIcons.BackIcon}
-                color={BAPallete.Red01}
-                size={IconSize.large}
-              />
-            </TouchableOpacity>
-            <BAText type={TypeText.label0}>{title}</BAText>
-          </View>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 25 : undefined}
+      {isOpen && (
+        <SafeAreaView style={styles.container}>
+          <Animated.View
+            style={[
+              {
+                transform: [{ translateX: subpagePositionRef }],
+                flex: 1,
+                paddingHorizontal: 20,
+                backgroundColor: BAPallete.Background,
+              },
+            ]}
           >
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{
-                flexGrow: 1,
-                paddingBottom: 275,
-              }}
-              style={{ paddingTop: 20 }}
-              keyboardShouldPersistTaps="handled"
-              refreshControl={onRefresh}
-              scrollEnabled={isScrolling}
+            <View style={styles.header}>
+              <TouchableOpacity onPress={() => onCloseSubpage()}>
+                <BAIcon
+                  icon={BAIcons.BackIcon}
+                  color={BAPallete.Red01}
+                  size={"large"}
+                />
+              </TouchableOpacity>
+              <BAText type={TypeText.label0}>{title}</BAText>
+            </View>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : undefined}
+              keyboardVerticalOffset={Platform.OS === "ios" ? 25 : undefined}
+              style={{ flex: 1 }}
             >
-              <View style={style}>{children}</View>
-            </ScrollView>
-          </KeyboardAvoidingView>
-        </Animated.View>
-      </SafeAreaView>
+              {isScrolling ? (
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{
+                    flexGrow: 1,
+                    paddingBottom: 275,
+                  }}
+                  style={{ paddingTop: 20 }}
+                  keyboardShouldPersistTaps="handled"
+                  refreshControl={onRefresh}
+                  scrollEnabled={isScrolling}
+                >
+                  <View style={[style]}>{children}</View>
+                </ScrollView>
+              ) : (
+                <View
+                  style={[
+                    style,
+                    {
+                      flex: 1,
+                      height: "100%",
+                      flexDirection: "column",
+                    },
+                  ]}
+                >
+                  {children}
+                </View>
+              )}
+            </KeyboardAvoidingView>
+          </Animated.View>
+        </SafeAreaView>
+      )}
     </>
   );
 }
 
 const styles = StyleSheet.create({
   header: {
+    marginBottom: 25,
     marginVertical: 20,
     flexDirection: "row",
     alignContent: "center",
@@ -142,13 +163,12 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   container: {
-    width: "100%",
     flex: 1,
+    width: "100%",
     height: "100%",
     flexDirection: "column",
     alignSelf: "center",
     position: "absolute",
     paddingVertical: 20,
-    backgroundColor: BAPallete.Background,
   },
 });

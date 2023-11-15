@@ -5,48 +5,60 @@ import BASubView from "../components/BASubView";
 import BAText, { TypeText } from "../components/BAText";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAProfilePic from "../components/BAProfilePic";
+import BABadgesView from "./BABadgesView";
 
-export default function BAAcount() {
+type UserProps = {
+  userData: {
+    username: string;
+    badges: [];
+    email: string;
+    idProfilePicture: number;
+    visBadge: number;
+    pollo: any;
+    createdAt: string;
+    updatedAt: string;
+    ACL: any;
+    sessionToken: string;
+    objectId: string;
+  }
+}
+
+export default function BAAcount({ userData }: UserProps) {
   const [subpage, setSubpage] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(userData);
+  const [isBadgesOpen, setIsBadgesOpen] = useState(false);
 
-  // const fetchUser = async () => {
-  //     try {
-  //         const response = await fetch('/user');
-  //         if (!response.ok) {
-  //           throw new Error(`HTTP error! status: ${response.status}`);
-  //         }
-  //         const data = await response.json();
-  //         setUser(data);
-  //     } catch (error) {
-  //         console.error('Error:', error);
-  //     }
-  // };
+  console.log(user.createdAt);
 
-  // useEffect(() => {
-  //     fetchUser();
-  // }, []);
+  useEffect(() => {
+    setUser(userData);
+  }, [userData]);
 
+  const date = new Date(user.createdAt) ;
+  
   return (
     <>
       <BAView title={"Perfil"} style={styles.body} isScrolling={true}>
         <BAProfilePic />
         <BAText style={{ marginBottom: 20, width: "100%" }}>
-          Nombre de usuario
+          {user.username}
         </BAText>
         <BAButton
           style={styles.button}
           text="Mis insignias"
-          onPress={() => {}}
+          onPress={() => {
+            setIsBadgesOpen(true);
+          }}
           state={ButtonState.alert}
         />
         <View style={styles.textContainer}>
           <BAText type={TypeText.label3}>Estas registrado como:</BAText>
-          <BAText>email</BAText>
+          <BAText>{user.email}</BAText>
           <BAText type={TypeText.label3}>Fecha de registro:</BAText>
-          <BAText>Fecha</BAText>
+          <BAText>{date.toLocaleDateString("es-ES")}</BAText>
         </View>
       </BAView>
+      {isBadgesOpen && <BABadgesView isOpen={isBadgesOpen} setIsOpen={setIsBadgesOpen} badges={user.badges}/>}
       <BASubView title="Editar perfil" isOpen={subpage} onReturn={setSubpage}>
         <BAText>Nombre de usuario</BAText>
       </BASubView>
@@ -59,6 +71,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignContent: "center",
     justifyContent: "center",
+    paddingHorizontal: 20,
   },
   button: {
     width: "100%",

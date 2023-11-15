@@ -64,4 +64,34 @@ export default {
   get ShareIcon(): ImageSourcePropType {
     return require("./ShareIcon.png");
   },
+  get SendIcon(): ImageSourcePropType {
+    return require("./SendIcon.png");
+  },
+  get SendIconActivated(): ImageSourcePropType {
+    return require("./SendIconActivated.png");
+  },
+  get SMSIcon(): ImageSourcePropType {
+    return require("./SMSIcon.png");
+  },
+  get EyeIcon(): ImageSourcePropType {
+    return require("./EyeIcon.png");
+  },
+  get PhoneIcon(): ImageSourcePropType {
+    return require("./PhoneIcon.png");
+  },
+  get AppleIcon(): ImageSourcePropType {
+    return require("./AppleIcon.png");
+  },
+  get EggIcon(): ImageSourcePropType {
+    return require("./EggIcon.png");
+  },
+  get LoadingIcon(): ImageSourcePropType {
+    return require("./LoadingIcon.png");
+  },
+  get BAIcon(): ImageSourcePropType {
+    return require("./BancoAlimentosIcon.png");
+  },
+  get BAMXLogo(): ImageSourcePropType {
+    return require("./BAMXLogo.png");
+  },
 };
