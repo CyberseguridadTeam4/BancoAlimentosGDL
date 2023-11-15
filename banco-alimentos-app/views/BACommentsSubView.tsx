@@ -13,6 +13,9 @@ import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
 import BATextInput from "../components/BATextInput";
 import axios from "../axios";
+import BAReportView from "./BAReportView";
+import { useSheet } from "../components/Sheet/BASheetContext";
+
 
 type CommentProps = {
   comment: {
@@ -96,7 +99,7 @@ export default function BACommentsSubView({
         postId: post.objectId,
       })
       .then((res) => {
-        console.log("res");
+        console.log(res);
         setText("");
       })
       .catch((error) => console.log(error));
@@ -188,6 +191,8 @@ const Comment = ({ comment }: CommentProps) => {
     setCommentData(comment);
   }, [comment]);
 
+  const { openSheet, closeSheet } = useSheet();
+
   const likeComment= useCallback(async (isLike: boolean) => {
     const commentData = comment;
     isLike ? (commentData.nLikes += 1) : (commentData.nLikes -= 1);
@@ -210,7 +215,14 @@ const Comment = ({ comment }: CommentProps) => {
           </BAText>
         </View>
         <View style={[styles.row, { gap: 15 }]}>
-          <TouchableOpacity>
+          <TouchableOpacity
+          onPress={ () => 
+            openSheet(
+              <BAReportView closeSheet={closeSheet} type={1} objId={commentData.objectId}/>, 
+              "Reportar"
+            )
+          }
+          >
             <BAIcon
               icon={BAIcons.FlagIcon}
               color={BAPallete.Red01}
@@ -252,6 +264,8 @@ export const Post = ({ post }: any) => {
   const [likedPost, setLiketPost] = useState(false);
   const [postData, setPostData] = useState(post);
 
+  const { openSheet, closeSheet } = useSheet();
+
   const likePost = useCallback(async (isLike: boolean) => {
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
@@ -285,7 +299,14 @@ export const Post = ({ post }: any) => {
       </BAText>
       <View style={styles.footer}>
         <View style={[styles.row, { gap: 20 }]}>
-          <TouchableOpacity>
+          <TouchableOpacity
+           onPress={ () =>
+            openSheet(
+              <BAReportView closeSheet={closeSheet} type={0} objId={post.objectId}/>,
+              "Reportar"
+            )
+          }
+          >
             <BAIcon
               icon={BAIcons.FlagIcon}
               color={BAPallete.Red01}
