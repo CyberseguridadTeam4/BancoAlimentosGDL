@@ -70,7 +70,7 @@ export default function BAMapView() {
           >
             <Callout>
               <View>
-                {/* <Text>Banco de alimentos de Guadalajara</Text> */}
+                <Text>Banco de alimentos de Guadalajara</Text> 
               </View>
             </Callout>
           </Marker>

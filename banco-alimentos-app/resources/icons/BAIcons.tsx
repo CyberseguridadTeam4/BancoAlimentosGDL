@@ -76,6 +76,9 @@ export default {
   get EyeIcon(): ImageSourcePropType {
     return require("./EyeIcon.png");
   },
+  get PhoneIcon(): ImageSourcePropType {
+    return require("./PhoneIcon.png");
+  },
   get AppleIcon(): ImageSourcePropType {
     return require("./AppleIcon.png");
   },

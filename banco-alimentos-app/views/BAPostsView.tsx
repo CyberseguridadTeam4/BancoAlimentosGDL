@@ -18,6 +18,7 @@ import BAMultiTextInput from "../components/BAMultiTextInput";
 import BACommentsSubView from "./BACommentsSubView";
 import { useLoading } from "../components/Loading/BALoadingContext";
 import { useBird } from "../components/BABirdContext";
+import BAReportView from "./BAReportView";
 
 type PostProps = {
   post: {
@@ -46,10 +47,10 @@ type PostsProps = {
 export default function BAPostsView({ userData }: PostsProps) {
   const [posts, setPosts] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 
   const { openLoading, closeLoading } = useLoading();
+  const [chosenPost, setChosenPost] = useState<any>(null);
 
   const getPosts = async () => {
     await axios.get("/getPosts").then((res: any) => {
@@ -112,14 +113,15 @@ export default function BAPostsView({ userData }: PostsProps) {
                   <Post
                     post={item}
                     key={item.objectId}
-                    onClickPost={() => setIsCommentsOpen(true)}
+                    onClickPost={() => {setIsCommentsOpen(true); setChosenPost(item)}}
                   />
                 )}
               </>
             );
           })}
       </BAView>
-      <BACommentsSubView isOpen={isCommentsOpen} onReturn={setIsCommentsOpen} />
+     { isCommentsOpen && <BACommentsSubView isOpen={isCommentsOpen} setIsOpen={setIsCommentsOpen}  userData={userData}
+        post={chosenPost} />}
     </>
   );
 }
@@ -129,6 +131,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
   const [postData, setPostData] = useState(post);
 
   const { dispatchInteraction } = useBird();
+  const { openSheet, closeSheet } = useSheet();
 
   useEffect(() => {
     setPostData(post);
@@ -142,6 +145,35 @@ export const Post = ({ post, onClickPost }: PostProps) => {
     setPostData({ ...postData });
   }, []);
 
+  const calculateDate = (postCreation: string): string => {
+    const currentDate = new Date();
+    const postDate = new Date(postCreation);
+
+    let diffInMilliseconds: number = currentDate.getTime() - postDate.getTime();
+    let diffInSeconds: number = Math.floor(diffInMilliseconds / 1000);
+    let diffInMinutes: number = Math.floor(diffInSeconds / 60);
+    let diffInHours: number = Math.floor(diffInMinutes / 60);
+    let diffInDays: number = Math.floor(diffInHours / 24);
+
+    diffInMilliseconds %= 1000;
+    diffInSeconds %= 60;
+    diffInMinutes %= 60;
+    diffInHours %= 24;
+
+    let result: string = "";
+    if (diffInDays > 0) {
+      result += `${diffInDays} day(s), `;
+    } else if (diffInHours > 0) {
+      result += `${diffInHours} hour(s), `;
+    } else if (diffInMinutes > 0) {
+      result += `${diffInMinutes} minute(s), `;
+    } else if (diffInSeconds > 0) {
+      result += `${diffInSeconds} second(s), `;
+    }
+
+    return result.trim().replace(/,\s*$/, ""); // remove trailing comma
+  };
+
   return (
     <TouchableOpacity style={styles.postBox} onPress={onClickPost}>
       <View style={styles.header}>
@@ -152,7 +184,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
           </BAText>
         </View>
         <BAText type={TypeText.label3} style={{ fontSize: 14 }}>
-          10m
+          {calculateDate(postData.createdAt)}
         </BAText>
       </View>
       <BAText
@@ -163,14 +195,23 @@ export const Post = ({ post, onClickPost }: PostProps) => {
       </BAText>
       <View style={styles.footer}>
         <View style={[styles.row, { gap: 20 }]}>
-          <TouchableOpacity>
+          <TouchableOpacity
+          onPress={onClickPost}
+          >
             <BAIcon
               icon={BAIcons.ForoIcon}
               color={BAPallete.Red01}
               size={"medium"}
             />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+          onPress={ () =>
+            openSheet(
+              <BAReportView closeSheet={closeSheet} type={0} objId={post.objectId}/>,
+              "Reportar"
+            )
+          }
+          >
             <BAIcon
               icon={BAIcons.FlagIcon}
               color={BAPallete.Red01}

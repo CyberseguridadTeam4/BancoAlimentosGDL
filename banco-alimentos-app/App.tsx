@@ -59,8 +59,8 @@ export default function App() {
             <BAWelcomeView setLoggedUser={setLoggedUser} />
           </>
         )}
-        <BAModalController />
         <BASheetController />
+        <BAModalController />
         <BAToastController />
       </BAContextProviderWrapper>
     </View>
@@ -107,7 +107,7 @@ const ViewSwitch = ({
         />
       );
     case 3:
-      return <BAAccountView />;
+      return <BAAccountView userData={loggedUser.user} />;
     case 4:
       return (
         <BASettingsView userData={loggedUser} setUserData={setLoggedUser} />

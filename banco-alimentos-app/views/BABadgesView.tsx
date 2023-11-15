@@ -1,13 +1,15 @@
 import { StyleSheet, View, ImageSourcePropType,FlatList  } from "react-native";
 import React, {useState, useEffect} from "react";
-import BAView from "./BAView";
-import BASubView from "./BASubView";
-import BAText, { TypeText } from "./BAText"; 
-import BAButton, {ButtonState} from "./BAButton";
-import BABadge from "./BABadge";
+import BAView from "../components/BAView";
+import BASubView from "../components/BASubView";
+import BAText, { TypeText } from "../components/BAText"; 
+import BAButton, {ButtonState} from "../components/BAButton";
+import BABadge from "../components/BABadge";
 
 interface BAAccountBadgesProps {
     badges: number[] | null;
+    isOpen: boolean;
+    setIsOpen: (value: boolean) => void;
   }
 
 function DynamicBadge({ badgeNumber }: { badgeNumber: number }) {
@@ -69,14 +71,26 @@ function getBadgeImageSource(badgeNumber: number): ImageSourcePropType {
     return require("../assets/badges/default.png");
     }
 }
-export default function BAAccountBadges({ badges }: BAAccountBadgesProps) {
+export default function BAAccountBadges({
+   badges,
+   isOpen = false,
+   setIsOpen,
+   }: BAAccountBadgesProps) {
     // Use example
     if (!badges) {
         badges = [1, 2, 5];
       }    
     const badgeNumbers = Array.from({ length: 24 }, (_, i) => i + 1); // Creates an array [1, 2, 3, ..., 24]
     return (
-        <BAView title={"Mis insignias"} style={styles.body} isScrolling={true}>
+        <BASubView 
+          title={"Mis insignias"} 
+          style={styles.body}
+           isScrolling={false}
+           isOpen= {isOpen}
+           onReturn={() => {
+            setIsOpen(false);
+          }}
+          >
         {/* Return button ?*/}
         <FlatList
           data={badgeNumbers}
@@ -93,7 +107,7 @@ export default function BAAccountBadges({ badges }: BAAccountBadgesProps) {
           )}
           keyExtractor={(item) => item.toString()}
         />
-        </BAView>
+        </BASubView>
     );
 }
 
@@ -105,7 +119,7 @@ const styles = StyleSheet.create({
     },
     badgeContainer: {
         flex: 1,
-        justifyContent: "space-around",
+        // justifyContent: "space-around",
         
     },
     badgeItem: {
@@ -113,5 +127,6 @@ const styles = StyleSheet.create({
         aspectRatio: 1, // Maintain a square aspect ratio for each badge
         justifyContent: "center",
         alignItems: "center",
+        paddingBottom: 10,
     },
   });
