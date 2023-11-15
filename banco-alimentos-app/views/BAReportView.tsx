@@ -8,7 +8,7 @@ import axios from "../axios";
 
 type ReportProps = {
     closeSheet: any;
-    type: number;
+    type: any;
     objId: any;
 };
 
@@ -30,10 +30,12 @@ export default function BAReportView({
     };
     const { openModal } = useModal();
 
+    const text = type == 1 ?  "este comentario" : "esta publicación";
+
    return (
     <View style = {styles.body} >
         <BAText type={TypeText.label1} >
-        ¿Por qué razón quieres reportar esta publicación?
+        ¿Por qué razón quieres reportar {text}?
         </BAText>
         <BAText type={TypeText.label3}>
             Tu reporte es anónimo.
@@ -52,7 +54,7 @@ export default function BAReportView({
             ))}
         </View>
         <BAButton 
-            onPress={() =>{
+            onPress={() =>{                         
                 openModal(<ConfirmReportModal reason={selectedReason} closeSheet={closeSheet} type={type} objId={objId}/>, "Confirmar reporte")
             }   
             }
@@ -72,7 +74,7 @@ const ConfirmReportModal = ({reason, closeSheet, type, objId}: any) => {
     const sentReport = async () => {
         await axios
             .patch(`/report/${objId}/${type}`, {
-                reason,
+                cause: reason,
             }).then((res) => {
                 closeModal();
                 closeSheet();
