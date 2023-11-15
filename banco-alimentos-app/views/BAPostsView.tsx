@@ -18,6 +18,7 @@ import BAMultiTextInput from "../components/BAMultiTextInput";
 import BACommentsSubView from "./BACommentsSubView";
 import { useLoading } from "../components/Loading/BALoadingContext";
 import { useBird } from "../components/BABirdContext";
+import BAReportView from "./BAReportView";
 
 type PostProps = {
   post: {
@@ -130,6 +131,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
   const [postData, setPostData] = useState(post);
 
   const { dispatchInteraction } = useBird();
+  const { openSheet, closeSheet } = useSheet();
 
   useEffect(() => {
     setPostData(post);
@@ -202,7 +204,14 @@ export const Post = ({ post, onClickPost }: PostProps) => {
               size={"medium"}
             />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+          onPress={ () =>
+            openSheet(
+              <BAReportView closeSheet={closeSheet} type={0} objId={post.objectId}/>,
+              "Reportar"
+            )
+          }
+          >
             <BAIcon
               icon={BAIcons.FlagIcon}
               color={BAPallete.Red01}
