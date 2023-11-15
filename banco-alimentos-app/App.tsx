@@ -59,8 +59,8 @@ export default function App() {
             <BAWelcomeView setLoggedUser={setLoggedUser} />
           </>
         )}
-        <BAModalController />
         <BASheetController />
+        <BAModalController />
         <BAToastController />
       </BAContextProviderWrapper>
     </View>
