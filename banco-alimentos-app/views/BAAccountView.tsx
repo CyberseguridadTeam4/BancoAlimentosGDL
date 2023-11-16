@@ -20,28 +20,23 @@ type UserProps = {
     ACL: any;
     sessionToken: string;
     objectId: string;
-  }
-}
+  };
+};
 
 export default function BAAcount({ userData }: UserProps) {
   const [subpage, setSubpage] = useState(false);
-  const [user, setUser] = useState(userData);
   const [isBadgesOpen, setIsBadgesOpen] = useState(false);
 
-  console.log(user.createdAt);
+  console.log(userData);
 
-  useEffect(() => {
-    setUser(userData);
-  }, [userData]);
+  const date = new Date(userData.createdAt);
 
-  const date = new Date(user.createdAt) ;
-  
   return (
     <>
       <BAView title={"Perfil"} style={styles.body} isScrolling={true}>
-        <BAProfilePic />
+        <BAProfilePic user={userData} />
         <BAText style={{ marginBottom: 20, width: "100%" }}>
-          {user.username}
+          {userData.username}
         </BAText>
         <BAButton
           style={styles.button}
@@ -53,12 +48,18 @@ export default function BAAcount({ userData }: UserProps) {
         />
         <View style={styles.textContainer}>
           <BAText type={TypeText.label3}>Estas registrado como:</BAText>
-          <BAText>{user.email}</BAText>
+          <BAText>{userData.email}</BAText>
           <BAText type={TypeText.label3}>Fecha de registro:</BAText>
           <BAText>{date.toLocaleDateString("es-ES")}</BAText>
         </View>
       </BAView>
-      {isBadgesOpen && <BABadgesView isOpen={isBadgesOpen} setIsOpen={setIsBadgesOpen} badges={user.badges}/>}
+      {isBadgesOpen && (
+        <BABadgesView
+          isOpen={isBadgesOpen}
+          setIsOpen={setIsBadgesOpen}
+          badges={userData.badges}
+        />
+      )}
       <BASubView title="Editar perfil" isOpen={subpage} onReturn={setSubpage}>
         <BAText>Nombre de usuario</BAText>
       </BASubView>
