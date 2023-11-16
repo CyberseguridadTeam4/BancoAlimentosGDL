@@ -108,7 +108,7 @@ export default function BAPostsView({ userData }: PostsProps) {
         {posts.length > 0 &&
           posts.map((item) => {
             return (
-              <>
+              <View key={item.objectId}>
                 {!item.reported && (
                   <Post
                     post={item}
@@ -119,7 +119,7 @@ export default function BAPostsView({ userData }: PostsProps) {
                     }}
                   />
                 )}
-              </>
+              </View>
             );
           })}
       </BAView>
