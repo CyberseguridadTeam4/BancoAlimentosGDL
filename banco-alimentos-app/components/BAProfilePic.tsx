@@ -13,12 +13,9 @@ export default function BAProfilePic({ user }: any) {
             source={require("../resources/icons/PersonIcon.png")}
           />
         </View>
-        {user.profileBadge != -1 && (
+        {user.visBadge != -1 && (
           <View style={styles.badge}>
-            <Image
-              style={styles.badgePic}
-              source={BABadges[user.profileBadge]}
-            />
+            <Image style={styles.badgePic} source={BABadges[user.visBadge]} />
           </View>
         )}
       </View>
@@ -53,8 +50,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   badgePic: {
-    width: "70%",
-    height: "70%",
+    width: "100%",
+    height: "100%",
+    borderRadius: 200,
     alignSelf: "center",
     transform: [{ rotate: "-45deg" }],
     // margin: 12

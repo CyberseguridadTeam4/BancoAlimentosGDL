@@ -21,13 +21,12 @@ type UserProps = {
     sessionToken: string;
     objectId: string;
   };
+  setUserData: (data: any) => void;
 };
 
-export default function BAAcount({ userData }: UserProps) {
+export default function BAAcount({ userData, setUserData }: UserProps) {
   const [subpage, setSubpage] = useState(false);
   const [isBadgesOpen, setIsBadgesOpen] = useState(false);
-
-  console.log(userData);
 
   const date = new Date(userData.createdAt);
 
@@ -55,6 +54,7 @@ export default function BAAcount({ userData }: UserProps) {
       </BAView>
       {isBadgesOpen && (
         <BABadgesView
+          setUserData={setUserData}
           isOpen={isBadgesOpen}
           setIsOpen={setIsBadgesOpen}
           badges={userData.badges}
