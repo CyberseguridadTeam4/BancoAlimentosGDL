@@ -147,7 +147,7 @@ export default function BASubView({
 
 const styles = StyleSheet.create({
   header: {
-    marginBottom: 25,
+    marginBottom: 10,
     marginVertical: 20,
     flexDirection: "row",
     alignContent: "center",

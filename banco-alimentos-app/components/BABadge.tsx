@@ -5,37 +5,109 @@ import {
   StyleProp,
   ImageSourcePropType,
   TouchableOpacity,
+  Image,
 } from "react-native";
-import React from "react";
-import BAIcon, { IconSize } from "../resources/icons/BAIcon";
+import React, { useCallback, useState } from "react";
 import BAPallete from "../resources/BAPallete";
 import { useModal } from "./Modal/BAModalContext";
+import BAButton, { ButtonState } from "./BAButton";
+import BABadges from "../assets/badges/BABadges";
+import BAIcons from "../resources/icons/BAIcons";
+import axios from "../axios";
 
 type BadgeProps = {
   image: ImageSourcePropType;
+  badges: any[];
+  setUserData: (data: any) => void;
   style?: StyleProp<ViewStyle>;
 };
 
-export default function BABadge({ image, style }: BadgeProps) {
+export default function BABadge({
+  image,
+  badges,
+  setUserData,
+  style,
+}: BadgeProps) {
   const { openModal } = useModal();
+
   return (
     <TouchableOpacity
       style={[styles.container, style]}
       onPress={() => {
-        openModal(<BABadgeModal image={image} />, "");
+        openModal(
+          <BABadgeModal
+            index={badges.indexOf(BABadges.indexOf(image))}
+            badges={badges}
+            setUserData={setUserData}
+          />,
+          ""
+        );
       }}
     >
-      <BAIcon icon={image} color={BAPallete.Red01} />
+      <Image
+        source={image}
+        style={[
+          { width: 70, height: 70, resizeMode: "contain", borderRadius: 10 },
+        ]}
+      />
     </TouchableOpacity>
   );
 }
 
-function BABadgeModal({ image }: BadgeProps) {
+function BABadgeModal({ index, badges, setUserData }: any) {
+  const [badgeIndex, setBadgeIndex] = useState(index);
+
+  const { closeModal } = useModal();
+
+  const handleButton = (value: number) => {
+    setBadgeIndex(badgeIndex + value);
+  };
+
+  const handleProfileBadge = useCallback(async () => {
+    await axios
+      .patch(`/profileBadge/${badges[badgeIndex]}`)
+      .then((res) => setUserData(res.data));
+    closeModal();
+  }, []);
+
   return (
     <View style={styles.modalContainer}>
-      <View style={styles.badgeWrapper}>
-        <BAIcon icon={image} color={BAPallete.Red01} size={"large"} />
+      <View style={styles.badgeContainer}>
+        <BAButton
+          style={[styles.buttonStyle, { transform: [{ scaleX: -1 }] }]}
+          icon={BAIcons.ArrowIcon}
+          onPress={() => handleButton(-1)}
+          state={badgeIndex > 0 ? ButtonState.enabled : ButtonState.disabled}
+        />
+        <View style={styles.badgeWrapper}>
+          <Image
+            source={BABadges[badges[badgeIndex]]}
+            style={[
+              {
+                width: "100%",
+                height: "100%",
+                resizeMode: "contain",
+                borderRadius: 10,
+              },
+            ]}
+          />
+        </View>
+        <BAButton
+          style={styles.buttonStyle}
+          icon={BAIcons.ArrowIcon}
+          onPress={() => handleButton(1)}
+          state={
+            badgeIndex < badges.length - 1
+              ? ButtonState.enabled
+              : ButtonState.disabled
+          }
+        />
       </View>
+      <BAButton
+        state={ButtonState.alert}
+        text="Establecer en perfil"
+        onPress={() => handleProfileBadge()}
+      />
     </View>
   );
 }
@@ -49,17 +121,29 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 10,
     padding: 10,
-    shadowRadius: 15,
+    margin: 5,
+    shadowRadius: 10,
     shadowColor: BAPallete.StrongBlue,
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.1,
+  },
+  badgeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+    gap: 20,
+  },
+  buttonStyle: {
+    width: 50,
+    aspectRatio: 1 / 1,
   },
   modalContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    gap: 25,
   },
   badgeWrapper: {
-    width: "30%",
+    width: "50%",
     aspectRatio: 1 / 1,
     alignItems: "center",
     justifyContent: "center",

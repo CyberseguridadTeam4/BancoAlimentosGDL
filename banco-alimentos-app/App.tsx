@@ -107,7 +107,9 @@ const ViewSwitch = ({
         />
       );
     case 3:
-      return <BAAccountView userData={loggedUser.user} />;
+      return (
+        <BAAccountView userData={loggedUser.user} setUserData={setLoggedUser} />
+      );
     case 4:
       return (
         <BASettingsView userData={loggedUser} setUserData={setLoggedUser} />

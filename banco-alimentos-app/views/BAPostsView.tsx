@@ -108,20 +108,29 @@ export default function BAPostsView({ userData }: PostsProps) {
         {posts.length > 0 &&
           posts.map((item) => {
             return (
-              <>
+              <View key={item.objectId}>
                 {!item.reported && (
                   <Post
                     post={item}
                     key={item.objectId}
-                    onClickPost={() => {setIsCommentsOpen(true); setChosenPost(item)}}
+                    onClickPost={() => {
+                      setIsCommentsOpen(true);
+                      setChosenPost(item);
+                    }}
                   />
                 )}
-              </>
+              </View>
             );
           })}
       </BAView>
-     { isCommentsOpen && <BACommentsSubView isOpen={isCommentsOpen} setIsOpen={setIsCommentsOpen}  userData={userData}
-        post={chosenPost} />}
+      {isCommentsOpen && (
+        <BACommentsSubView
+          isOpen={isCommentsOpen}
+          setIsOpen={setIsCommentsOpen}
+          userData={userData}
+          post={chosenPost}
+        />
+      )}
     </>
   );
 }
@@ -195,9 +204,7 @@ export const Post = ({ post, onClickPost }: PostProps) => {
       </BAText>
       <View style={styles.footer}>
         <View style={[styles.row, { gap: 20 }]}>
-          <TouchableOpacity
-          onPress={onClickPost}
-          >
+          <TouchableOpacity onPress={onClickPost}>
             <BAIcon
               icon={BAIcons.ForoIcon}
               color={BAPallete.Red01}
@@ -205,12 +212,16 @@ export const Post = ({ post, onClickPost }: PostProps) => {
             />
           </TouchableOpacity>
           <TouchableOpacity
-          onPress={ () =>
-            openSheet(
-              <BAReportView closeSheet={closeSheet} type={0} objId={post.objectId}/>,
-              "Reportar"
-            )
-          }
+            onPress={() =>
+              openSheet(
+                <BAReportView
+                  closeSheet={closeSheet}
+                  type={0}
+                  objId={post.objectId}
+                />,
+                "Reportar"
+              )
+            }
           >
             <BAIcon
               icon={BAIcons.FlagIcon}
