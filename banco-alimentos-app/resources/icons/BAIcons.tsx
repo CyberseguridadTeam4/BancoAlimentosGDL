@@ -4,6 +4,9 @@ export default {
   get AddIcon(): ImageSourcePropType {
     return require("./AddIcon.png");
   },
+  get ArrowIcon(): ImageSourcePropType {
+    return require("./ArrowIcon.png");
+  },
   get BackIcon(): ImageSourcePropType {
     return require("./BackIcon.png");
   },
