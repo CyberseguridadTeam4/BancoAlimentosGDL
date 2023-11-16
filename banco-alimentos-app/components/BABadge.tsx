@@ -5,11 +5,12 @@ import {
   StyleProp,
   ImageSourcePropType,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import React from "react";
-import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAPallete from "../resources/BAPallete";
 import { useModal } from "./Modal/BAModalContext";
+import BAButton, { ButtonState } from "./BAButton";
 
 type BadgeProps = {
   image: ImageSourcePropType;
@@ -25,7 +26,12 @@ export default function BABadge({ image, style }: BadgeProps) {
         openModal(<BABadgeModal image={image} />, "");
       }}
     >
-      <BAIcon icon={image} color={BAPallete.Red01} />
+      <Image
+        source={image}
+        style={[
+          { width: 70, height: 70, resizeMode: "contain", borderRadius: 10 },
+        ]}
+      />
     </TouchableOpacity>
   );
 }
@@ -34,8 +40,23 @@ function BABadgeModal({ image }: BadgeProps) {
   return (
     <View style={styles.modalContainer}>
       <View style={styles.badgeWrapper}>
-        <BAIcon icon={image} color={BAPallete.Red01} size={"large"} />
+        <Image
+          source={image}
+          style={[
+            {
+              width: "100%",
+              height: "100%",
+              resizeMode: "contain",
+              borderRadius: 10,
+            },
+          ]}
+        />
       </View>
+      <BAButton
+        state={ButtonState.alert}
+        text="Establecer en perfil"
+        onPress={() => {}}
+      />
     </View>
   );
 }
@@ -49,17 +70,19 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 10,
     padding: 10,
-    shadowRadius: 15,
+    margin: 5,
+    shadowRadius: 10,
     shadowColor: BAPallete.StrongBlue,
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.1,
   },
   modalContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    gap: 25,
   },
   badgeWrapper: {
-    width: "30%",
+    width: "50%",
     aspectRatio: 1 / 1,
     alignItems: "center",
     justifyContent: "center",
