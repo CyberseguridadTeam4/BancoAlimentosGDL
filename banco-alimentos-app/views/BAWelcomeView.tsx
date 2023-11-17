@@ -20,7 +20,7 @@ export default function LogIn() {
   const [username, setUserName] = useState("");
   const [birthday, setBirthday] = useState("");
 
-  const { setUser, logIn } = useUser();
+  const { logIn } = useUser();
 
   const userLogin = () => {
     logIn({ username: email, password: contraseña });
@@ -78,7 +78,7 @@ export default function LogIn() {
       >
         <BASignUpView
           setIsInPasswordPage={setIsInPasswordPage}
-          setUserRoot={setUser}
+          setUserRoot={setUserName}
           serEmailRoot={setTextEmail}
           setBirthDateRoot={setBirthday}
         />

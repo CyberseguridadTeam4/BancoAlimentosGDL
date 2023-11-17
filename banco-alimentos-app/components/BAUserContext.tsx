@@ -101,7 +101,7 @@ export const UserProvider = ({ children }: any) => {
         name: data.name,
       })
       .then(function (response) {
-        setUser(response.data);
+        setUser(response.data.user);
       })
       .catch(function (error) {
         console.log(error);

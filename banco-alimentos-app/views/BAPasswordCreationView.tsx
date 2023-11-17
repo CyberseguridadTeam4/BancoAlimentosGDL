@@ -7,29 +7,24 @@ import BAIcons from "../resources/icons/BAIcons";
 import axios from "../axios";
 import PasswordMeter from "../components/BAPasswordMeter";
 import { useModal } from "../components/Modal/BAModalContext";
+import { useUser } from "../components/BAUserContext";
 
-export default function SignUp({
-  username,
-  email,
-  name,
-  nextStage,
-  setLoggedUser,
-}: any) {
+export default function SignUp({ username, email, name }: any) {
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
   const [seguridad, setSeguridad] = useState(false);
 
   const { openModal } = useModal();
+  const { signUp, setUser } = useUser();
+
   const createUser = async () => {
     if (password !== passwordConf) {
       openModal(
         <BAText>Asegurate de que las contraseñas coincidan</BAText>,
         "Contraseñas no coinciden"
       );
-      console.log("Las contraseñas no coinciden");
     } else {
-      console.log("Crear usuario");
-      axios
+      await axios
         .post("/userSignUp", {
           username: username,
           password: password,
@@ -37,20 +32,13 @@ export default function SignUp({
           name: name,
         })
         .then(function (response) {
-          console.log(response);
-          setLoggedUser(response.data);
+          setUser(response.data.user);
         })
         .catch(function (error) {
           console.log(error);
         });
     }
   };
-
-  if (seguridad) {
-    console.log("bien");
-  } else {
-    console.log("fake");
-  }
 
   return (
     <View style={styles.container}>
@@ -121,7 +109,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: Dimensions.get("window").height,
     gap: 20,
-    paddingHorizontal: 10,
     paddingTop: 20,
   },
   center: {
