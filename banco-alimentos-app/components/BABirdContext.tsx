@@ -5,6 +5,7 @@ import { useLoading } from "./Loading/BALoadingContext";
 import axios from "../axios";
 import { useToast } from "./Toast/BAToastContext";
 import BAText, { TypeText } from "./BAText";
+import { useUser } from "./BAUserContext";
 
 const BirdContext = createContext({
   birdData: null,
@@ -12,7 +13,7 @@ const BirdContext = createContext({
   getData: async () => {},
   dispatchInteraction: (postId: string) => {},
   dispatchFeed: () => {},
-  dispatchEggs: (value: boolean) => {},
+  dispatchEggs: async (value: boolean) => -1,
   hatchEgg: false,
   setHatchEgg: (value: boolean) => {},
 });
@@ -27,6 +28,7 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
   const [hatchEgg, setHatchEgg] = useState(false);
 
   const { openLoading, closeLoading } = useLoading();
+  const { setUserData } = useUser();
   const { openToast } = useToast();
 
   var interactions = 0;
@@ -112,17 +114,16 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
       });
   };
 
-  const dispatchEggs = (increase: boolean) => {
-    patchEgg(increase);
-  };
-
-  const patchEgg = async (increase: boolean) => {
-    await axios
-      .patch(`/eggPollito/${birdData.objectId}`, {
+  const dispatchEggs = async (increase: boolean) => {
+    return await axios
+      .patch(`/eggPollito`, {
         nEggs: increase ? birdData.nEggs + 1 : birdData.nEggs - 1,
       })
       .then((res): any => {
         setBirdData(res.data.pollo);
+        setUserData(res.data.user);
+
+        return res.data.badge;
       });
   };
 

@@ -8,18 +8,12 @@ import { useSheet } from "../components/Sheet/BASheetContext";
 import { useModal } from "../components/Modal/BAModalContext";
 import BATextInput from "../components/BATextInput";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useUser } from "../components/BAUserContext";
 
-type SettingProps = {
-  userData: any;
-  setUserData: (data: any) => void;
-};
-
-export default function BASettingsView({
-  userData,
-  setUserData,
-}: SettingProps) {
+export default function BASettingsView() {
   const { openSheet } = useSheet();
   const { openModal } = useModal();
+  const { setUserData } = useUser();
 
   return (
     <BAView title="Configuración" style={styles.body}>
@@ -38,15 +32,7 @@ export default function BASettingsView({
       <BAButton
         text="Eliminar Cuenta"
         state={ButtonState.alert}
-        onPress={() =>
-          openModal(
-            <DeleteAccountModal
-              userData={userData}
-              setUserData={setUserData}
-            />,
-            "Eliminar cuenta"
-          )
-        }
+        onPress={() => openModal(<DeleteAccountModal />, "Eliminar cuenta")}
         style={{ marginVertical: 20 }}
       />
       <Image
@@ -96,7 +82,7 @@ const LogOutModal = ({ setUserData }: any) => {
   );
 };
 
-const DeleteAccountModal = ({ userData, setUserData }: SettingProps) => {
+const DeleteAccountModal = () => {
   const { openModal, closeModal } = useModal();
 
   return (
@@ -114,13 +100,7 @@ const DeleteAccountModal = ({ userData, setUserData }: SettingProps) => {
         text="Confirmar"
         onPress={() => {
           closeModal();
-          openModal(
-            <ConfirmDeleteModal
-              userData={userData}
-              setUserData={setUserData}
-            />,
-            "Confirmar"
-          );
+          openModal(<ConfirmDeleteModal />, "Confirmar");
         }}
         state={ButtonState.alert}
         style={{ marginTop: 25 }}
@@ -129,7 +109,8 @@ const DeleteAccountModal = ({ userData, setUserData }: SettingProps) => {
   );
 };
 
-const ConfirmDeleteModal = ({ userData, setUserData }: SettingProps) => {
+const ConfirmDeleteModal = () => {
+  const { setUserData } = useUser();
   const { closeModal } = useModal();
   const [name, setName] = useState("");
 

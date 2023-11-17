@@ -6,27 +6,13 @@ import BAText, { TypeText } from "../components/BAText";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAProfilePic from "../components/BAProfilePic";
 import BABadgesView from "./BABadgesView";
+import { useUser } from "../components/BAUserContext";
 
-type UserProps = {
-  userData: {
-    username: string;
-    badges: [];
-    email: string;
-    idProfilePicture: number;
-    visBadge: number;
-    pollo: any;
-    createdAt: string;
-    updatedAt: string;
-    ACL: any;
-    sessionToken: string;
-    objectId: string;
-  };
-  setUserData: (data: any) => void;
-};
-
-export default function BAAcount({ userData, setUserData }: UserProps) {
+export default function BAAcount() {
   const [subpage, setSubpage] = useState(false);
   const [isBadgesOpen, setIsBadgesOpen] = useState(false);
+
+  const { userData, setUserData } = useUser();
 
   const date = new Date(userData.createdAt);
 
@@ -54,7 +40,6 @@ export default function BAAcount({ userData, setUserData }: UserProps) {
       </BAView>
       {isBadgesOpen && (
         <BABadgesView
-          setUserData={setUserData}
           isOpen={isBadgesOpen}
           setIsOpen={setIsBadgesOpen}
           badges={userData.badges}

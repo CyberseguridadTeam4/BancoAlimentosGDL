@@ -18,12 +18,9 @@ import BASubView from "../components/BASubView";
 import BASignUpView from "./BASignUpView";
 import BAPasswordCreationView from "./BAPasswordCreationView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useUser } from "../components/BAUserContext";
 
-type WelcomeProps = {
-  setLoggedUser: (data: any) => void;
-};
-
-export default function LogIn({ setLoggedUser }: WelcomeProps) {
+export default function LogIn() {
   const [isInRegisterPage, setIsInRegisterPage] = useState(false);
   const [isInPasswordPage, setIsInPasswordPage] = useState(false);
   const [email, setTextEmail] = useState("");
@@ -31,6 +28,8 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
 
   const [user, setUser] = useState("");
   const [birthday, setBirthday] = useState("");
+
+  const { setUserData } = useUser();
 
   const userLogin = async () => {
     axios
@@ -41,7 +40,7 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
       .then(function (response) {
         console.log(response.data);
         if (response.status == 200) {
-          setLoggedUser(response.data);
+          setUserData(response.data);
           AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
           axios.defaults.headers.common["Authorization"] =
             response.data.user.sessionToken;
@@ -123,7 +122,7 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
           email={email}
           name={user}
           setIsInBirdPage={() => {}}
-          setLoggedUser={setLoggedUser}
+          setLoggedUser={setUserData}
         />
       </BASubView>
     </>

@@ -36,7 +36,7 @@ type BirdData = {
   };
 };
 
-export default function BABirdView({ birdPointer }: any) {
+export default function BABirdView() {
   const { birdData } = useBird();
 
   return !birdData ? <BABirdName /> : <BABird birdData={birdData} />;

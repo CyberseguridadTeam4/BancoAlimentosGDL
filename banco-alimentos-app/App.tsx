@@ -16,26 +16,24 @@ import axios from "./axios";
 import BASettingsView from "./views/BASettingsView";
 import BALoading from "./components/Loading/BALoading";
 import { BirdProvider } from "./components/BABirdContext";
+import { UserProvider, useUser } from "./components/BAUserContext";
 
 export default function App() {
-  const [loggedUser, setLoggedUser] = useState<UserProps | null>(null);
+  return (
+    <UserProvider>
+      <AppContent />
+    </UserProvider>
+  );
+}
+
+export function AppContent() {
   const [viewIndex, setViewIndex] = useState(2);
+
+  const { getData, userData } = useUser();
 
   useEffect(() => {
     (async () => {
-      const sessionToken = await AsyncStorage.getItem("sessionToken");
-
-      if (sessionToken != null) {
-        await axios
-          .get(`/authSessionToken/${sessionToken}`)
-          .then((res): any => {
-            setLoggedUser(res.data);
-            axios.defaults.headers.common["Authorization"] = sessionToken;
-          })
-          .catch((error): any => {
-            console.log(error);
-          });
-      }
+      getData();
     })();
   }, []);
 
@@ -43,20 +41,16 @@ export default function App() {
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
-        {loggedUser ? (
-          <BirdProvider birdPointer={loggedUser.user.pollo}>
-            <ViewSwitch
-              viewIndex={viewIndex}
-              loggedUser={loggedUser}
-              setLoggedUser={setLoggedUser}
-            />
+        {userData.objectId != "" ? (
+          <BirdProvider birdPointer={userData.pollo}>
+            <ViewSwitch viewIndex={viewIndex} />
             <BALoading />
             <BABottomBar viewIndex={viewIndex} setViewIndex={setViewIndex} />
           </BirdProvider>
         ) : (
           <>
             <BALoading />
-            <BAWelcomeView setLoggedUser={setLoggedUser} />
+            <BAWelcomeView />
           </>
         )}
         <BASheetController />
@@ -69,8 +63,6 @@ export default function App() {
 
 type ViewSwitchProps = {
   viewIndex: number;
-  loggedUser: UserProps;
-  setLoggedUser: (data: any) => void;
 };
 
 type UserProps = {
@@ -89,31 +81,18 @@ type UserProps = {
   };
 };
 
-const ViewSwitch = ({
-  viewIndex,
-  loggedUser,
-  setLoggedUser,
-}: ViewSwitchProps) => {
+const ViewSwitch = ({ viewIndex }: ViewSwitchProps) => {
   switch (viewIndex) {
     case 0:
-      return <BAPostsView userData={loggedUser} />;
+      return <BAPostsView />;
     case 1:
       return <BAMapView />;
     case 2:
-      return (
-        <BABirdView
-          birdPointer={loggedUser.user.pollo}
-          username={loggedUser.user.username}
-        />
-      );
+      return <BABirdView />;
     case 3:
-      return (
-        <BAAccountView userData={loggedUser.user} setUserData={setLoggedUser} />
-      );
+      return <BAAccountView />;
     case 4:
-      return (
-        <BASettingsView userData={loggedUser} setUserData={setLoggedUser} />
-      );
+      return <BASettingsView />;
     default:
       return <BABirdView />;
   }

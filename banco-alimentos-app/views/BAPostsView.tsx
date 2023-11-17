@@ -19,6 +19,7 @@ import BACommentsSubView from "./BACommentsSubView";
 import { useLoading } from "../components/Loading/BALoadingContext";
 import { useBird } from "../components/BABirdContext";
 import BAReportView from "./BAReportView";
+import { useUser } from "../components/BAUserContext";
 
 type PostProps = {
   post: {
@@ -40,17 +41,14 @@ type PostProps = {
   onClickPost: () => void;
 };
 
-type PostsProps = {
-  userData: any;
-};
-
-export default function BAPostsView({ userData }: PostsProps) {
+export default function BAPostsView() {
   const [posts, setPosts] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+  const [chosenPost, setChosenPost] = useState<any>(null);
 
   const { openLoading, closeLoading } = useLoading();
-  const [chosenPost, setChosenPost] = useState<any>(null);
+  const { userData } = useUser();
 
   const getPosts = async () => {
     await axios.get("/getPosts").then((res: any) => {
