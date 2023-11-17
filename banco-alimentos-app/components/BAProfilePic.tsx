@@ -9,7 +9,7 @@ export default function BAProfilePic({ user }: any) {
       <View style={styles.wrapper}>
         <View style={styles.profile}>
           <Image
-            style={{ width: "90%", height: "90%", tintColor:BAPallete.SoftRed}}
+            style={{ width: "100%", height: "100%", tintColor:BAPallete.SoftRed}}
             source={require("../assets/profilePictures/1.png")}
             resizeMode="contain"
           />
@@ -27,14 +27,16 @@ export default function BAProfilePic({ user }: any) {
 const styles = StyleSheet.create({
   wrapper: {
     width: "100%",
-    aspectRatio: 1 / 1,
+     aspectRatio: 1 / 0.8,
     alignItems: "center",
-    justifyContent: "center",
+    alignSelf: "center",
+    justifyContent: "flex-start",
     position: "relative",
+    // backgroundColor: "red"
   },
   profile: {
     width: "60%",
-    height: "60%",
+    aspectRatio: 1 / 1,
     borderRadius: 10,
     backgroundColor: "white",
     justifyContent: 'center',
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     width: "25%",
-    height: "25%",
+    aspectRatio: 1 / 1,
     borderRadius: 10,
     backgroundColor: "white",
     transform: [{ rotate: "45deg" }],
