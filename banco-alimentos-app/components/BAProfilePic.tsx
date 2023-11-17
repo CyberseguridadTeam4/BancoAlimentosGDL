@@ -9,8 +9,9 @@ export default function BAProfilePic({ user }: any) {
       <View style={styles.wrapper}>
         <View style={styles.profile}>
           <Image
-            style={{ width: "100%", height: "100%" }}
-            source={require("../resources/icons/PersonIcon.png")}
+            style={{ width: "90%", height: "90%", tintColor:BAPallete.SoftRed}}
+            source={require("../assets/profilePictures/1.png")}
+            resizeMode="contain"
           />
         </View>
         {user.visBadge != -1 && (
@@ -35,7 +36,12 @@ const styles = StyleSheet.create({
     width: "60%",
     height: "60%",
     borderRadius: 10,
-    backgroundColor: "pink",
+    backgroundColor: "white",
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowRadius: 5,
+    shadowColor: BAPallete.StrongBlue,
+    shadowOpacity: 0.15,
   },
   badge: {
     width: "25%",
@@ -48,6 +54,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     margin: 30,
     justifyContent: "center",
+    shadowRadius: 5,
+    shadowColor: BAPallete.StrongBlue,
+    shadowOpacity: 0.15,
   },
   badgePic: {
     width: "100%",
