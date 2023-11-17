@@ -99,7 +99,7 @@ export default function BASubView({
                 <BAIcon
                   icon={BAIcons.BackIcon}
                   color={BAPallete.Red01}
-                  size={IconSize.large}
+                  size={"large"}
                 />
               </TouchableOpacity>
               <BAText type={TypeText.label0}>{title}</BAText>
@@ -147,7 +147,7 @@ export default function BASubView({
 
 const styles = StyleSheet.create({
   header: {
-    marginBottom: 25,
+    marginBottom: 10,
     marginVertical: 20,
     flexDirection: "row",
     alignContent: "center",

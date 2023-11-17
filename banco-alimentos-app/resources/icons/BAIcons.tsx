@@ -4,6 +4,9 @@ export default {
   get AddIcon(): ImageSourcePropType {
     return require("./AddIcon.png");
   },
+  get ArrowIcon(): ImageSourcePropType {
+    return require("./ArrowIcon.png");
+  },
   get BackIcon(): ImageSourcePropType {
     return require("./BackIcon.png");
   },
@@ -75,6 +78,21 @@ export default {
   },
   get EyeIcon(): ImageSourcePropType {
     return require("./EyeIcon.png");
+  },
+  get PhoneIcon(): ImageSourcePropType {
+    return require("./PhoneIcon.png");
+  },
+  get AppleIcon(): ImageSourcePropType {
+    return require("./AppleIcon.png");
+  },
+  get EggIcon(): ImageSourcePropType {
+    return require("./EggIcon.png");
+  },
+  get LoadingIcon(): ImageSourcePropType {
+    return require("./LoadingIcon.png");
+  },
+  get BAIcon(): ImageSourcePropType {
+    return require("./BancoAlimentosIcon.png");
   },
   get BAMXLogo(): ImageSourcePropType {
     return require("./BAMXLogo.png");

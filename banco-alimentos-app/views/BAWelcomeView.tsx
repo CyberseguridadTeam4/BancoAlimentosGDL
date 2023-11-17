@@ -1,17 +1,29 @@
-import { StyleSheet, View, StatusBar, Alert, Dimensions, Image } from "react-native";
+import {
+  StyleSheet,
+  View,
+  StatusBar,
+  Alert,
+  Dimensions,
+  Image,
+} from "react-native";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
 import BAIcons from "../resources/icons/BAIcons";
 import { useState } from "react";
 import BAView from "../components/BAView";
-import axios from "axios";
+import axios from "../axios";
 import React from "react";
 import BASubView from "../components/BASubView";
 import BASignUpView from "./BASignUpView";
 import BAPasswordCreationView from "./BAPasswordCreationView";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function LogIn({ setLoggedUser }) {
+type WelcomeProps = {
+  setLoggedUser: (data: any) => void;
+};
+
+export default function LogIn({ setLoggedUser }: WelcomeProps) {
   const [isInRegisterPage, setIsInRegisterPage] = useState(false);
   const [isInPasswordPage, setIsInPasswordPage] = useState(false);
   const [email, setTextEmail] = useState("");
@@ -21,14 +33,17 @@ export default function LogIn({ setLoggedUser }) {
 
   const userLogin = async () => {
     axios
-      .post("https://banco-alimentos-api.vercel.app/userLogin", {
+      .post("/userLogin", {
         username: email,
         password: contraseña,
       })
-      .then( function (response) {
-        console.log(response);
+      .then(function (response) {
+        console.log(response.data);
         if (response.status == 200) {
           setLoggedUser(response.data);
+          AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
+          axios.defaults.headers.common["Authorization"] =
+            response.data.user.sessionToken;
           console.log("Usuario logeado");
         } else {
           console.log("Usuario no logeado");
@@ -86,8 +101,10 @@ export default function LogIn({ setLoggedUser }) {
           onPress={() => userLogin()}
         />
 
-        <Image source={require('../resources/icons/BAMXLogo.png')} style={styles.image} />
-
+        <Image
+          source={require("../resources/icons/BAMXLogo.png")}
+          style={styles.image}
+        />
       </BAView>
       <BASubView
         title="Registrate aqui!"
@@ -146,9 +163,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   image: {
-    width:  Dimensions.get("window").width * 0.550,
-    height: Dimensions.get("window").height * 0.106,
     marginTop: 10,
+    width: 200,
+    resizeMode: "contain",
   },
 });
 
