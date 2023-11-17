@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { StyleSheet, Text, View, Dimensions, PixelRatio } from "react-native";
+import { StyleSheet, Text, View, Dimensions, PixelRatio, Modal } from "react-native";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
@@ -8,13 +8,20 @@ import axios from "axios";
 import PasswordMeter from "../components/BAPasswordMeter";
 import { useModal } from "../components/Modal/BAModalContext";
 import Parse from 'parse/react-native';
+import BASubView from "../components/BASubView";
+import BASignUpView from "./BASignUpView";
+import BAWelcomeView from "./BAWelcomeView";
+import BAModal from "../components/Modal/BAModal";
 
 export default function SignUp({
   username,
   email,
   name,
   nextStage,
-  setLoggedUser,
+  setLoggedUser, // Fixed prop name
+  setIsInRegisterPage,
+  setIsInPasswordPage,
+  
 }: any) {
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
@@ -38,6 +45,9 @@ export default function SignUp({
             style={styles.centerConfirmar}
             onPress={() => {
               console.log("IR A LOGIN");
+              setIsInPasswordPage(false);
+              setIsInRegisterPage(false);
+              // closeModal();
             }}
           />
         </View>,
@@ -93,48 +103,49 @@ export default function SignUp({
 
 
   return (
-    <View style={styles.container}>
-      <BAText style={styles.center}>Contraseña:</BAText>
-      { <BATextInput
-        placeholder="Contraseña"
-        icon={BAIcons.PersonIcon}
-        value={password}
-        onChange={setPassword}
-        isPassword={true} // Use secureTextEntry for password input
-      /> }
-      { <BAText type={TypeText.label1} style={styles.center}>
-        Confirmar contraseña:
-      </BAText> }
-      { <BATextInput
-        placeholder="Contraseña"
-        icon={BAIcons.SMSIcon}
-        value={passwordConf}
-        onChange={setPasswordConf}
-        isPassword={true} // Use secureTextEntry for password input
-      /> }
-      <PasswordMeter password={password} confidence={0} setSeguridad={setSeguridad} updatePassword={function (text: string): void {
-        throw new Error("Function not implemented.");
-      } } />
-      {seguridad ? <BAButton
+    <>
+      <View style={styles.container}>
+        <BAText style={styles.center}>Contraseña:</BAText>
+        { <BATextInput
+          placeholder="Contraseña"
+          icon={BAIcons.PersonIcon}
+          value={password}
+          onChange={setPassword}
+          isPassword={true} // Use secureTextEntry for password input
+        /> }
+        { <BAText type={TypeText.label1} style={styles.center}>
+          Confirmar contraseña:
+        </BAText> }
+        { <BATextInput
+          placeholder="Contraseña"
+          icon={BAIcons.SMSIcon}
+          value={passwordConf}
+          onChange={setPasswordConf}
+          isPassword={true} // Use secureTextEntry for password input
+        /> }
+        <PasswordMeter password={password} confidence={0} setSeguridad={setSeguridad} updatePassword={function (text: string): void {
+          throw new Error("Function not implemented.");
+        } } />
+        {seguridad ? <BAButton
+            text="Confirmar"
+            state={ButtonState.alert}
+            style={styles.centerConfirmar}
+            onPress={() => {
+              createUser();
+            }}
+          /> : <BAButton
           text="Confirmar"
           state={ButtonState.alert}
-          style={styles.centerConfirmar}
+          style={styles.centerSiguiente}
           onPress={() => {
-            createUser();
-            // setUserCreated(true);
+            openModal(
+                <BAText>Asegurate de que tu contraseña cumpla con los puntos de seguridad</BAText>,
+                "Contraseña insegura"
+              )
           }}
-        /> : <BAButton
-        text="Confirmar"
-        state={ButtonState.alert}
-        style={styles.centerSiguiente}
-        onPress={() => {
-          openModal(
-              <BAText>Asegurate de que tu contraseña cumpla con los puntos de seguridad</BAText>,
-              "Contraseña insegura"
-            )
-        }}
-      />}
-    </View>
+        />}
+      </View>
+    </>
   );
 }
 

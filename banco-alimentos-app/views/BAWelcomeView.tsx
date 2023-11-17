@@ -88,7 +88,6 @@ export default function LogIn({ setLoggedUser }) {
 
         <Image source={require('../resources/icons/BAMXLogo.png')} style={styles.image} />
 
-        
       </BAView>
       <BASubView
         title="Registrate aqui!"
@@ -115,6 +114,8 @@ export default function LogIn({ setLoggedUser }) {
           name={user}
           setIsInBirdPage={() => {}}
           setLoggedUser={setLoggedUser}
+          setIsInRegisterPage = {setIsInRegisterPage}
+          setIsInPasswordPage = {setIsInPasswordPage}
         />
       </BASubView>
     </>
