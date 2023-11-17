@@ -1,23 +1,14 @@
-import {
-  StyleSheet,
-  View,
-  StatusBar,
-  Alert,
-  Dimensions,
-  Image,
-} from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
 import BAIcons from "../resources/icons/BAIcons";
 import { useState } from "react";
 import BAView from "../components/BAView";
-import axios from "../axios";
 import React from "react";
 import BASubView from "../components/BASubView";
 import BASignUpView from "./BASignUpView";
 import BAPasswordCreationView from "./BAPasswordCreationView";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useUser } from "../components/BAUserContext";
 
 export default function LogIn() {
@@ -26,32 +17,13 @@ export default function LogIn() {
   const [email, setTextEmail] = useState("");
   const [contraseña, setTextContraseña] = useState("");
 
-  const [user, setUser] = useState("");
+  const [username, setUserName] = useState("");
   const [birthday, setBirthday] = useState("");
 
-  const { setUserData } = useUser();
+  const { setUser, logIn } = useUser();
 
-  const userLogin = async () => {
-    axios
-      .post("/userLogin", {
-        username: email,
-        password: contraseña,
-      })
-      .then(function (response) {
-        console.log(response.data);
-        if (response.status == 200) {
-          setUserData(response.data);
-          AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
-          axios.defaults.headers.common["Authorization"] =
-            response.data.user.sessionToken;
-          console.log("Usuario logeado");
-        } else {
-          console.log("Usuario no logeado");
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+  const userLogin = () => {
+    logIn({ username: email, password: contraseña });
   };
 
   return (
@@ -118,11 +90,10 @@ export default function LogIn() {
         onReturn={() => setIsInPasswordPage(false)}
       >
         <BAPasswordCreationView
-          username={user}
+          username={username}
           email={email}
-          name={user}
+          name={username}
           setIsInBirdPage={() => {}}
-          setLoggedUser={setUserData}
         />
       </BASubView>
     </>

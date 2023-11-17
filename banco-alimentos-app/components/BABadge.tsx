@@ -59,7 +59,7 @@ function BABadgeModal({ index, badges, disableArrows }: any) {
   const [badgeIndex, setBadgeIndex] = useState(index);
 
   const { closeModal } = useModal();
-  const { setUserData } = useUser();
+  const { setUser } = useUser();
 
   const handleButton = (value: number) => {
     setBadgeIndex(badgeIndex + value);
@@ -68,7 +68,7 @@ function BABadgeModal({ index, badges, disableArrows }: any) {
   const handleProfileBadge = useCallback(async () => {
     await axios
       .patch(`/profileBadge/${badges[badgeIndex]}`)
-      .then((res) => setUserData(res.data.user));
+      .then((res) => setUser(res.data.user));
     closeModal();
   }, []);
 

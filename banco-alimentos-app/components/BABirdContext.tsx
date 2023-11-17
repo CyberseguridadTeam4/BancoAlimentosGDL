@@ -28,7 +28,7 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
   const [hatchEgg, setHatchEgg] = useState(false);
 
   const { openLoading, closeLoading } = useLoading();
-  const { setUserData } = useUser();
+  const { setUser } = useUser();
   const { openToast } = useToast();
 
   var interactions = 0;
@@ -124,7 +124,7 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
       })
       .then((res): any => {
         setBirdData(res.data.pollo);
-        setUserData(res.data.user);
+        setUser(res.data.user);
 
         return res.data.badge;
       });

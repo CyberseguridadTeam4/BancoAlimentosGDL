@@ -12,9 +12,9 @@ export default function BAAcount() {
   const [subpage, setSubpage] = useState(false);
   const [isBadgesOpen, setIsBadgesOpen] = useState(false);
 
-  const { userData, setUserData } = useUser();
+  const { userData } = useUser();
 
-  const date = new Date(userData.createdAt);
+  const date = new Date(userData ? userData.createdAt : "");
 
   return (
     <>

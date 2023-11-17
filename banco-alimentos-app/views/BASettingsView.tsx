@@ -8,7 +8,7 @@ import { useSheet } from "../components/Sheet/BASheetContext";
 import { useModal } from "../components/Modal/BAModalContext";
 import BATextInput from "../components/BATextInput";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useUser } from "../components/BAUserContext";
+import { emptyUser, useUser } from "../components/BAUserContext";
 
 export default function BASettingsView() {
   const { openSheet } = useSheet();
@@ -58,7 +58,7 @@ export default function BASettingsView() {
 
 const LogOutModal = () => {
   const { closeModal } = useModal();
-  const { setUserData } = useUser();
+  const { logOut } = useUser();
 
   return (
     <View>
@@ -66,10 +66,7 @@ const LogOutModal = () => {
       <BAButton
         text="Cerrar Sesión"
         onPress={() => {
-          (async () => {
-            await AsyncStorage.removeItem("sessionToken");
-          })();
-          setUserData(null);
+          logOut();
           closeModal();
         }}
         state={ButtonState.alert}
@@ -107,7 +104,7 @@ const DeleteAccountModal = () => {
 };
 
 const ConfirmDeleteModal = () => {
-  const { setUserData } = useUser();
+  const { setUser } = useUser();
   const { closeModal } = useModal();
   const [name, setName] = useState("");
 
@@ -125,7 +122,7 @@ const ConfirmDeleteModal = () => {
           })();
 
           closeModal();
-          setUserData(null);
+          setUser(emptyUser);
         }}
         state={ButtonState.alert}
         style={{ marginTop: 25 }}

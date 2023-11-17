@@ -1,5 +1,5 @@
 import { StyleSheet, View, StatusBar } from "react-native";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import BABottomBar from "./components/BABottomBar";
 import React from "react";
 import BABirdView from "./views/BABirdView";
@@ -11,8 +11,6 @@ import BAPostsView from "./views/BAPostsView";
 import BAMapView from "./views/BAMapView";
 import BAAccountView from "./views/BAAccountView";
 import BAWelcomeView from "./views/BAWelcomeView";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "./axios";
 import BASettingsView from "./views/BASettingsView";
 import BALoading from "./components/Loading/BALoading";
 import { BirdProvider } from "./components/BABirdContext";
@@ -29,14 +27,7 @@ export default function App() {
 export function AppContent() {
   const [viewIndex, setViewIndex] = useState(2);
 
-  const { getData, userData } = useUser();
-
-  useEffect(() => {
-    (async () => {
-      getData();
-    })();
-  }, []);
-
+  const { userData } = useUser();
   return (
     <View style={styles.container}>
       <BAContextProviderWrapper>

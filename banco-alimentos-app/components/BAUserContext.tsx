@@ -19,7 +19,19 @@ type UserType = {
   objectId: string;
 };
 
-const emptyUser = {
+type LogInData = {
+  username: string;
+  password: string;
+};
+
+type SignUpData = {
+  username: string;
+  password: string;
+  email: string;
+  name: string;
+};
+
+export const emptyUser = {
   username: "",
   badges: [-1],
   email: "",
@@ -33,24 +45,13 @@ const emptyUser = {
   objectId: "",
 };
 
-type LogInData = {
-  username: string;
-  password: string;
-};
-
-type SignUpData = {
-  username: string;
-  password: string;
-  email: string;
-  name: string;
-};
-
 const UserContext = createContext({
   userData: emptyUser,
-  setUserData: (data: any) => {},
+  setUser: (data: UserType) => {},
   getData: async () => {},
-  signUp: (data: any) => {},
-  logIn: (data: any) => {},
+  signUp: (data: SignUpData) => {},
+  logIn: (data: LogInData) => {},
+  logOut: () => {},
   setBadge: (badgeIndex: number) => {},
 });
 
@@ -65,9 +66,9 @@ export const UserProvider = ({ children }: any) => {
 
   var interactions = 0;
 
-  useEffect(() => {
-    getData();
-  }, []);
+  const setUser = (data: UserType) => {
+    setUserData(data);
+  };
 
   const getData = async () => {
     const sessionToken = await AsyncStorage.getItem("sessionToken");
@@ -76,14 +77,20 @@ export const UserProvider = ({ children }: any) => {
       await axios
         .get(`/authSessionToken/${sessionToken}`)
         .then((res): any => {
-          setUserData(res.data.user);
+          setUser(res.data.user);
           axios.defaults.headers.common["Authorization"] = sessionToken;
         })
         .catch((error): any => {
           console.log(error);
         });
+    } else {
+      setUser(emptyUser);
     }
   };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const signUp = async (data: SignUpData) => {
     await axios
@@ -94,7 +101,7 @@ export const UserProvider = ({ children }: any) => {
         name: data.name,
       })
       .then(function (response) {
-        setUserData(response.data);
+        setUser(response.data);
       })
       .catch(function (error) {
         console.log(error);
@@ -109,16 +116,22 @@ export const UserProvider = ({ children }: any) => {
       })
       .then(function (response) {
         if (response.status == 200) {
-          setUserData(response.data);
+          setUser(response.data.user);
           AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
           axios.defaults.headers.common["Authorization"] =
             response.data.user.sessionToken;
+          getData().then((res) => {});
         } else {
         }
       })
       .catch(function (error) {
         console.log(error);
       });
+  };
+
+  const logOut = async () => {
+    await AsyncStorage.removeItem("sessionToken");
+    setUser(emptyUser);
   };
 
   const setBadge = async (badgeIndex: number) => {
@@ -131,9 +144,10 @@ export const UserProvider = ({ children }: any) => {
     <UserContext.Provider
       value={{
         userData,
-        setUserData,
+        setUser,
         getData,
         logIn,
+        logOut,
         signUp,
         setBadge,
       }}
