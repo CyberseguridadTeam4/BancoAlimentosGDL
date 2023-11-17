@@ -1,11 +1,13 @@
-import { StyleSheet, View } from "react-native";
-import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Image , FlatList, Dimensions} from "react-native";
+import React, { useState, useEffect, useRef } from "react";
 import BAView from "../components/BAView";
 import BASubView from "../components/BASubView";
 import BAText, { TypeText } from "../components/BAText";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAProfilePic from "../components/BAProfilePic";
 import BABadgesView from "./BABadgesView";
+import BAPallete from "../resources/BAPallete";
+import BAProfilePictures from "../assets/profilePictures/BAProfilePictures";
 
 type UserProps = {
   userData: {
@@ -60,13 +62,125 @@ export default function BAAcount({ userData, setUserData }: UserProps) {
           badges={userData.badges}
         />
       )}
-      <BASubView title="Editar perfil" isOpen={subpage} onReturn={setSubpage}>
-        <BAText>Nombre de usuario</BAText>
+      <BASubView title="Editar foto de perfil" isOpen={true} onReturn={setSubpage}>
+        <BAText>Selecciona una foto de perfil</BAText>
+        <ProfilePictures />
+        <BAButton 
+        onPress={() => {}}
+        text = "Guardar"
+        state={ButtonState.alert}
+        />
       </BASubView>
     </>
   );
 }
 
+type ColorButtonProps = {
+  color: string;
+  colorSelected: string;
+  onClick: () => void;
+};
+
+const ProfilePictures = () => {
+  const [colorSelected, setColorSelected] = useState(BAPallete.SoftRed);
+  const [color, setColor] = useState(0);
+  const pictureColors = [
+    [
+      BAPallete.SoftRed,
+      BAPallete.SoftOrange,
+      BAPallete.SoftYellow,
+      BAPallete.SoftGreen,
+    ],
+    [
+      BAPallete.SoftSky,
+      BAPallete.SoftBlue,
+      BAPallete.SoftPurple,
+      BAPallete.SoftPink,
+    ],
+  ];
+
+  const [picSelected, setPicSelected] = useState(BAProfilePictures[0]);
+  const { width } = Dimensions.get('window');
+  const flatListRef = useRef<FlatList>(null);
+
+  const handleViewableItemsChanged = useRef(({ viewableItems }:any) => {
+    if (viewableItems.length > 0) {
+    const selectedIndex = Math.floor(viewableItems.length / 2);
+    setPicSelected(viewableItems[selectedIndex].item);
+    }
+    }).current;
+
+  return (
+    <>
+    <FlatList
+      ref={flatListRef}
+      data={BAProfilePictures}
+      renderItem={({ item }) => (
+        <View
+        style={{
+          width: width / 3.5,
+          justifyContent: 'center',
+          alignItems: 'center', 
+          paddingTop: 20,
+          
+        }}
+        >
+           <Image 
+            source={ item }
+            style={{ width: '100%', height: 100, tintColor: item === picSelected ? colorSelected : 'black' }} 
+            resizeMode="contain"
+            />
+        </View>
+      )}
+      keyExtractor={(item, index) => index.toString()}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={{ width: width }}
+      onViewableItemsChanged={handleViewableItemsChanged}
+      />
+    
+     <View style={styles.colorColumn}>
+     <BAText>Elige el color</BAText>
+      { pictureColors.map((colorsRow, i) => {
+        return(
+          <View style={styles.colorRow} key={i}>
+              {colorsRow.map((color, j) => {
+                return (
+                  <ColorButton
+                    key={color}
+                    color={color}
+                    colorSelected={colorSelected}
+                    onClick={() => {
+                      setColor(i > 0 ? j + 4 : j);
+                      setColorSelected(color);
+                    }}
+                  />
+                );
+              })}
+            </View>
+        );
+      })}
+     </View>
+    </>
+  );
+};
+
+const ColorButton = ({ color, colorSelected, onClick }: ColorButtonProps) => {
+  return (
+    <View style={{ aspectRatio: 1 / 1, width: 65 }}>
+      <BAButton
+        key={color}
+        onPress={onClick}
+        style={{
+          backgroundColor: color,
+          width: "100%",
+          height: "100%",
+        }}
+      />
+      {colorSelected == color && <View style={styles.buttonSelect} />}
+    </View>
+  );
+};
 const styles = StyleSheet.create({
   body: {
     flex: 1,
@@ -81,5 +195,30 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     gap: 20,
     flexDirection: "column",
+  },
+  colorsView: {
+    height: "100%",
+    flexDirection: "column",
+    justifyContent: "center",
+    paddingBottom: 200,
+    gap: 10,
+    marginTop: 20,
+  },
+  colorRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  colorColumn: {
+    flexDirection: "column",
+    gap: 30,
+    marginVertical: 50,
+  },
+  buttonSelect: {
+    position: "absolute",
+    borderColor: BAPallete.Blue01,
+    borderWidth: 5,
+    width: "100%",
+    height: "100%",
+    borderRadius: 10,
   },
 });
