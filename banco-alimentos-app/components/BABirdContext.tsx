@@ -43,16 +43,19 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
 
   const getData = async () => {
     openLoading();
-    await axios
-      .get(`/getPollito/${birdPointer.objectId}`)
-      .then((res): any => {
-        setBirdData(res.data.pollo);
-        console.log(res.data.pollo);
-        closeLoading();
-      })
-      .catch((error) => {
-        closeLoading();
-      });
+    if (birdPointer) {
+      await axios
+        .get(`/getPollito/${birdPointer.objectId}`)
+        .then((res): any => {
+          setBirdData(res.data.pollo);
+          console.log(res.data.pollo);
+          closeLoading();
+        })
+        .catch((error) => {
+          closeLoading();
+        });
+    }
+    closeLoading();
   };
 
   const dispatchInteraction = (postId: string) => {

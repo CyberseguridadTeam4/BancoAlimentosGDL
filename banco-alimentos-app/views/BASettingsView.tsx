@@ -13,7 +13,6 @@ import { useUser } from "../components/BAUserContext";
 export default function BASettingsView() {
   const { openSheet } = useSheet();
   const { openModal } = useModal();
-  const { setUserData } = useUser();
 
   return (
     <BAView title="Configuración" style={styles.body}>
@@ -24,9 +23,7 @@ export default function BASettingsView() {
         />
         <BAButton
           text="Cerrar Sesión"
-          onPress={() =>
-            openModal(<LogOutModal setUserData={setUserData} />, "Confirmar")
-          }
+          onPress={() => openModal(<LogOutModal />, "Confirmar")}
         />
       </View>
       <BAButton
@@ -59,8 +56,9 @@ export default function BASettingsView() {
   );
 }
 
-const LogOutModal = ({ setUserData }: any) => {
+const LogOutModal = () => {
   const { closeModal } = useModal();
+  const { setUserData } = useUser();
 
   return (
     <View>
@@ -71,9 +69,8 @@ const LogOutModal = ({ setUserData }: any) => {
           (async () => {
             await AsyncStorage.removeItem("sessionToken");
           })();
-
-          closeModal();
           setUserData(null);
+          closeModal();
         }}
         state={ButtonState.alert}
         style={{ marginTop: 25 }}
