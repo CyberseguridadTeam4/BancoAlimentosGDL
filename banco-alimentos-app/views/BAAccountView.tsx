@@ -1,5 +1,5 @@
-import { StyleSheet, View, Image , FlatList, Dimensions} from "react-native";
-import React, { useState, useEffect, useRef } from "react";
+import { StyleSheet, View, Image , FlatList, Dimensions, TouchableOpacity} from "react-native";
+import React, { useState, useRef } from "react";
 import BAView from "../components/BAView";
 import BASubView from "../components/BASubView";
 import BAText, { TypeText } from "../components/BAText";
@@ -8,6 +8,8 @@ import BAProfilePic from "../components/BAProfilePic";
 import BABadgesView from "./BABadgesView";
 import BAPallete from "../resources/BAPallete";
 import BAProfilePictures from "../assets/profilePictures/BAProfilePictures";
+import BAIcon, { IconSize } from "../resources/icons/BAIcon";
+import BAIcons from "../resources/icons/BAIcons";
 
 type UserProps = {
   userData: {
@@ -29,12 +31,30 @@ type UserProps = {
 export default function BAAcount({ userData, setUserData }: UserProps) {
   const [subpage, setSubpage] = useState(false);
   const [isBadgesOpen, setIsBadgesOpen] = useState(false);
+  const [isProfilePicOpen, setIsProfilePicOpen] = useState(false);
 
   const date = new Date(userData.createdAt);
+  const EditProfileButton = () => {
+    return (
+      <TouchableOpacity
+          style={{ marginRight: 5 }}
+          onPress={() =>
+            {setIsProfilePicOpen(true)}
+          }
+        >
+        <BAIcon icon={BAIcons.EditIcon} color={BAPallete.Red01} size={"large"} />
+        </TouchableOpacity>
+    );
+  };
 
   return (
     <>
-      <BAView title={"Perfil"} style={styles.body} isScrolling={true}>
+      <BAView 
+        title={"Perfil"} 
+        style={styles.body} 
+        isScrolling={true}
+        rightButtons={EditProfileButton()}
+        >
         <BAProfilePic user={userData} />
         <BAText style={{ marginBottom: 20, width: "100%" }}>
           {userData.username}
@@ -62,15 +82,13 @@ export default function BAAcount({ userData, setUserData }: UserProps) {
           badges={userData.badges}
         />
       )}
-      <BASubView title="Editar foto de perfil" isOpen={true} onReturn={setSubpage}>
-        <BAText>Selecciona una foto de perfil</BAText>
-        <ProfilePictures />
-        <BAButton 
-        onPress={() => {}}
-        text = "Guardar"
-        state={ButtonState.alert}
+      {isProfilePicOpen && (
+        <ProfilePictures 
+          isOpen={isProfilePicOpen}
+          setIsOpen={setIsProfilePicOpen}
         />
-      </BASubView>
+      )}
+      
     </>
   );
 }
@@ -81,86 +99,96 @@ type ColorButtonProps = {
   onClick: () => void;
 };
 
-const ProfilePictures = () => {
+const ProfilePictures = ({isOpen = false,
+  setIsOpen}: {isOpen: boolean;
+    setIsOpen: (value: boolean) => void;}) => {
   const [colorSelected, setColorSelected] = useState(BAPallete.SoftRed);
   const [color, setColor] = useState(0);
   const pictureColors = [
-    [
       BAPallete.SoftRed,
       BAPallete.SoftOrange,
       BAPallete.SoftYellow,
       BAPallete.SoftGreen,
-    ],
-    [
       BAPallete.SoftSky,
       BAPallete.SoftBlue,
       BAPallete.SoftPurple,
       BAPallete.SoftPink,
-    ],
   ];
 
   const [picSelected, setPicSelected] = useState(BAProfilePictures[0]);
   const { width } = Dimensions.get('window');
   const flatListRef = useRef<FlatList>(null);
-
-  const handleViewableItemsChanged = useRef(({ viewableItems }:any) => {
-    if (viewableItems.length > 0) {
-    const selectedIndex = Math.floor(viewableItems.length / 2);
-    setPicSelected(viewableItems[selectedIndex].item);
-    }
-    }).current;
-
+ 
   return (
     <>
+    <BASubView title="Editar foto de perfil" isOpen={isOpen} onReturn={setIsOpen}>
+    <BAText style = {{paddingBottom: 20}}> Selecciona una foto de perfil</BAText>
     <FlatList
       ref={flatListRef}
       data={BAProfilePictures}
       renderItem={({ item }) => (
-        <View
+        <TouchableOpacity
+        onPress={() => {
+          setPicSelected(item)
+        }}
         style={{
           width: width / 3.5,
           justifyContent: 'center',
           alignItems: 'center', 
-          paddingTop: 20,
-          
+          paddingTop: 5,
+          paddingBottom:5,
+          marginRight: item === BAProfilePictures[15] ? 40 : 0, 
+          borderColor: BAPallete.Blue01,
+          borderRadius: 10,
+          borderWidth: item === picSelected ? 5: 0, 
         }}
         >
            <Image 
             source={ item }
-            style={{ width: '100%', height: 100, tintColor: item === picSelected ? colorSelected : 'black' }} 
+            style={{ 
+              width: '100%', 
+              height: 100, 
+              tintColor: item === picSelected ? colorSelected : BAPallete.Gray01,
+            }} 
             resizeMode="contain"
             />
-        </View>
+        </TouchableOpacity>
       )}
       keyExtractor={(item, index) => index.toString()}
       horizontal
       showsHorizontalScrollIndicator={false}
       style={{ width: width }}
-      onViewableItemsChanged={handleViewableItemsChanged}
       />
     
      <View style={styles.colorColumn}>
      <BAText>Elige el color</BAText>
-      { pictureColors.map((colorsRow, i) => {
-        return(
-          <View style={styles.colorRow} key={i}>
-              {colorsRow.map((color, j) => {
-                return (
-                  <ColorButton
-                    key={color}
-                    color={color}
-                    colorSelected={colorSelected}
-                    onClick={() => {
-                      setColor(i > 0 ? j + 4 : j);
-                      setColorSelected(color);
-                    }}
-                  />
-                );
-              })}
-            </View>
-        );
-      })}
+     <FlatList
+        data={pictureColors.flat()}
+        renderItem={({ item, index }) => (
+          <View style = {{marginBottom: 20, paddingRight:20}}>
+          <ColorButton
+            key={item}
+            color={item}
+            colorSelected={colorSelected}
+            onClick={() => {
+              setColor(index > 0 ? index + 3 : index);
+              setColorSelected(item);
+            }}
+          />
+          </View>
+        )}
+        keyExtractor={(item) => item}
+        numColumns={4} 
+        contentContainerStyle={{marginLeft: 10}}
+
+      />
      </View>
+     <BAButton 
+        onPress={() => {}}
+        text = "Guardar"
+        state={ButtonState.alert}
+        />
+    </BASubView>
     </>
   );
 };
@@ -181,6 +209,7 @@ const ColorButton = ({ color, colorSelected, onClick }: ColorButtonProps) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   body: {
     flex: 1,
@@ -196,22 +225,10 @@ const styles = StyleSheet.create({
     gap: 20,
     flexDirection: "column",
   },
-  colorsView: {
-    height: "100%",
-    flexDirection: "column",
-    justifyContent: "center",
-    paddingBottom: 200,
-    gap: 10,
-    marginTop: 20,
-  },
-  colorRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
   colorColumn: {
     flexDirection: "column",
     gap: 30,
-    marginVertical: 50,
+    marginVertical: 30,
   },
   buttonSelect: {
     position: "absolute",
