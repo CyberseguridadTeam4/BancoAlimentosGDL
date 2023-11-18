@@ -180,7 +180,7 @@ const ProfilePictures = ({isOpen = false,
         keyExtractor={(item) => item}
         numColumns={4} 
         contentContainerStyle={{marginLeft: 10}}
-
+        scrollEnabled={false} 
       />
      </View>
      <BAButton 
