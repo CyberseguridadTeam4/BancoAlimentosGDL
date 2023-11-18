@@ -9,7 +9,7 @@ export default function BAProfilePic({ user }: any) {
       <View style={styles.wrapper}>
         <View style={styles.profile}>
           <Image
-            style={{ width: "100%", height: "100%", tintColor:BAPallete.SoftRed}}
+            style={{ width: "90%", height: "90%", tintColor:BAPallete.SoftRed}}
             source={require("../assets/profilePictures/1.png")}
             resizeMode="contain"
           />
