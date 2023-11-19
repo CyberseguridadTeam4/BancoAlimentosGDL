@@ -308,15 +308,16 @@ export const Post = ({
   );
 };
 
-const CreatePostView = ({ userData, closeSheet }: any) => {
+const CreatePostView = ({ closeSheet }: any) => {
   const [text, setText] = useState("");
+
+  const { userData } = useUser();
 
   const publishPost = useCallback(async (textPost: string) => {
     await axios
       .post(`/post`, {
         text: textPost,
-        title: userData.user.username,
-        userId: userData.user,
+        title: userData.username,
       })
       .then((res) => {
         console.log(res);
