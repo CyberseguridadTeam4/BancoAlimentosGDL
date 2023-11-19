@@ -10,6 +10,8 @@ import BAPallete from "../resources/BAPallete";
 import BAProfilePictures from "../assets/profilePictures/BAProfilePictures";
 import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
+import axios from "../axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type UserProps = {
   userData: {
@@ -29,7 +31,6 @@ type UserProps = {
 };
 
 export default function BAAcount({ userData, setUserData }: UserProps) {
-  const [subpage, setSubpage] = useState(false);
   const [isBadgesOpen, setIsBadgesOpen] = useState(false);
   const [isProfilePicOpen, setIsProfilePicOpen] = useState(false);
 
@@ -104,6 +105,7 @@ const ProfilePictures = ({isOpen = false,
     setIsOpen: (value: boolean) => void;}) => {
   const [colorSelected, setColorSelected] = useState(BAPallete.SoftRed);
   const [color, setColor] = useState(0);
+  const [picture, setPicture] = useState(0);
   const pictureColors = [
       BAPallete.SoftRed,
       BAPallete.SoftOrange,
@@ -118,7 +120,16 @@ const ProfilePictures = ({isOpen = false,
   const [picSelected, setPicSelected] = useState(BAProfilePictures[0]);
   const { width } = Dimensions.get('window');
   const flatListRef = useRef<FlatList>(null);
- 
+
+  const changeProfile = async () => {
+    await axios
+    .patch(`/changeProfile/`,{
+      colorProfilePicture: color.toString,
+      idProfilePicture: picture,
+    })
+    .then((res) => {
+    })
+  }
   return (
     <>
     <BASubView title="Editar foto de perfil" isOpen={isOpen} onReturn={setIsOpen}>
@@ -126,10 +137,11 @@ const ProfilePictures = ({isOpen = false,
     <FlatList
       ref={flatListRef}
       data={BAProfilePictures}
-      renderItem={({ item }) => (
+      renderItem={({ item, index }) => (
         <TouchableOpacity
         onPress={() => {
-          setPicSelected(item)
+          setPicSelected(item);
+          setPicture(index);
         }}
         style={{
           width: width / 3.5,
@@ -184,7 +196,10 @@ const ProfilePictures = ({isOpen = false,
       />
      </View>
      <BAButton 
-        onPress={() => {}}
+        onPress={() => {
+          changeProfile();
+          setIsOpen(false);
+        }}
         text = "Guardar"
         state={ButtonState.alert}
         />
