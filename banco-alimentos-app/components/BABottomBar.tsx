@@ -16,6 +16,7 @@ import BAIcons from "../resources/icons/BAIcons";
 import { IconSize } from "../resources/icons/BAIcon";
 import BAToastController from "./Toast/BAToast";
 import { useToast } from "./Toast/BAToastContext";
+import { useLoading } from "./Loading/BALoadingContext";
 
 const BUTTONS_STYLES: ImageSourcePropType[][] = [
   [BAIcons.ForoIcon, BAIcons.ForoActivatedIcon],
@@ -35,6 +36,8 @@ export default function BABottomBar({
   setViewIndex,
 }: BottomBarProps) {
   const [isKeyboardOnScreen, setIsKeyboardOnScreen] = useState(false);
+
+  const { closeLoading } = useLoading();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -75,6 +78,7 @@ export default function BABottomBar({
               index={index}
               optionSelected={viewIndex}
               setOptionSelected={() => {
+                closeLoading();
                 setViewIndex(index);
               }}
             />
@@ -82,6 +86,7 @@ export default function BABottomBar({
             <BAButton
               key={index}
               onPress={() => {
+                closeLoading();
                 setViewIndex(index);
               }}
               icon={viewIndex == index ? item[1] : item[0]}
