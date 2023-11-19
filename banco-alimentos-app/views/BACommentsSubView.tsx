@@ -217,11 +217,11 @@ const Comment = ({ comment }: CommentProps) => {
   const likeComment = useCallback(async (isLike: boolean) => {
     const commentData = comment;
     isLike ? (commentData.nLikes += 1) : (commentData.nLikes -= 1);
+    setCommentData({ ...commentData });
     await axios.patch(
       `/likeComment/${comment.objectId}/${isLike ? 1 : -1}`,
       comment
     );
-    setCommentData({ ...commentData });
   }, []);
 
   return (
@@ -305,9 +305,9 @@ export const Post = ({
     console.log(postData.isliked);
     postData.isliked = isLike;
     console.log(postData.isliked);
-    await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);
     setPostData({ ...postData });
     updatePost(postData);
+    await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);
   }, []);
 
   return (

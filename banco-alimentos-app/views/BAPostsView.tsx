@@ -190,9 +190,9 @@ export const Post = ({
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
     isLike && dispatchInteraction(postData.objectId);
     postData.isliked = isLike;
-    await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);
     updatePost(postData);
     setPostData({ ...postData });
+    await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);
   }, []);
 
   const calculateDate = (postCreation: string): string => {
