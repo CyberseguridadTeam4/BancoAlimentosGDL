@@ -21,6 +21,23 @@ import { useBird } from "../components/BABirdContext";
 import BAReportView from "./BAReportView";
 import { useUser } from "../components/BAUserContext";
 
+type PostType = {
+  text: string;
+  title: string;
+  userId: {
+    __type: string;
+    className: string;
+    objectId: string;
+  };
+  nViews: number;
+  nLikes: number;
+  createdAt: string;
+  updatedAt: string;
+  reported: boolean;
+  objectId: string;
+  isliked: boolean;
+};
+
 type PostProps = {
   post: {
     text: string;
@@ -42,10 +59,11 @@ type PostProps = {
   isReportHide?: boolean;
   isLikeHide?: boolean;
   isShareHide?: boolean;
+  updatePost: (newPost: PostType) => void;
 };
 
 export default function BAPostsView() {
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<PostType[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [chosenPost, setChosenPost] = useState<any>(null);
@@ -79,6 +97,17 @@ export default function BAPostsView() {
         setRefreshing(false);
       });
   }, []);
+
+  const updatePost = (newPost: PostType) => {
+    const postsCopy = posts;
+    const postIndex = posts.findIndex(
+      (post) => post.objectId == newPost.objectId
+    );
+
+    postsCopy[postIndex] = newPost;
+
+    setPosts(postsCopy);
+  };
 
   const AddButton = () => {
     return (
@@ -118,6 +147,7 @@ export default function BAPostsView() {
                       setIsCommentsOpen(true);
                       setChosenPost(item);
                     }}
+                    updatePost={updatePost}
                   />
                 )}
               </View>
@@ -129,6 +159,7 @@ export default function BAPostsView() {
           isOpen={isCommentsOpen}
           setIsOpen={setIsCommentsOpen}
           post={chosenPost}
+          updatePost={updatePost}
         />
       )}
     </>
@@ -141,6 +172,7 @@ export const Post = ({
   isReportHide = false,
   isLikeHide = false,
   isShareHide = false,
+  updatePost,
 }: PostProps) => {
   const [likedPost, setLiketPost] = useState(post.isliked);
   const [postData, setPostData] = useState(post);
@@ -150,13 +182,16 @@ export const Post = ({
 
   useEffect(() => {
     setPostData(post);
-  }, [post]);
+    setLiketPost(post.isliked);
+  }, [post, post.isliked]);
 
   const likePost = useCallback(async (isLike: boolean) => {
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
     isLike && dispatchInteraction(postData.objectId);
+    postData.isliked = isLike;
     await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);
+    updatePost(postData);
     setPostData({ ...postData });
   }, []);
 

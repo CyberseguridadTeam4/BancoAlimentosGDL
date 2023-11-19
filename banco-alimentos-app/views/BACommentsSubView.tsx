@@ -16,6 +16,7 @@ import axios from "../axios";
 import BAReportView from "./BAReportView";
 import { useSheet } from "../components/Sheet/BASheetContext";
 import { useUser } from "../components/BAUserContext";
+import { useBird } from "../components/BABirdContext";
 
 type CommentProps = {
   comment: {
@@ -41,6 +42,7 @@ type CommentsViewProps = {
   isReportHide?: boolean;
   isLikeHide?: boolean;
   isShareHide?: boolean;
+  updatePost: (newPost: any) => void;
 };
 
 export type PostProps = {
@@ -91,6 +93,7 @@ export default function BACommentsSubView({
   isReportHide = false,
   isLikeHide = false,
   isShareHide = false,
+  updatePost,
 }: CommentsViewProps) {
   const [text, setText] = useState("");
   const [comments, setComments] = useState<any[]>([]);
@@ -142,6 +145,7 @@ export default function BACommentsSubView({
         isReportHide={isReportHide}
         isLikeHide={isLikeHide}
         isShareHide={isShareHide}
+        updatePost={updatePost}
       />
       <BAText type={TypeText.label1} style={{ marginTop: 20, height: 40 }}>
         Comments
@@ -286,17 +290,24 @@ export const Post = ({
   isReportHide = false,
   isLikeHide = false,
   isShareHide = false,
+  updatePost,
 }: any) => {
-  const [likedPost, setLiketPost] = useState(false);
+  const [likedPost, setLiketPost] = useState(post.isliked);
   const [postData, setPostData] = useState(post);
 
+  const { dispatchInteraction } = useBird();
   const { openSheet, closeSheet } = useSheet();
 
   const likePost = useCallback(async (isLike: boolean) => {
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
-    await axios.patch(`/like/${post.objectId}/${isLike ? 1 : -1}`, post);
+    isLike && dispatchInteraction(postData.objectId);
+    console.log(postData.isliked);
+    postData.isliked = isLike;
+    console.log(postData.isliked);
+    await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);
     setPostData({ ...postData });
+    updatePost(postData);
   }, []);
 
   return (
