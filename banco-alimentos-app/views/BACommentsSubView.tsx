@@ -15,7 +15,7 @@ import BATextInput from "../components/BATextInput";
 import axios from "../axios";
 import BAReportView from "./BAReportView";
 import { useSheet } from "../components/Sheet/BASheetContext";
-
+import { useUser } from "../components/BAUserContext";
 
 type CommentProps = {
   comment: {
@@ -35,13 +35,15 @@ type CommentProps = {
 };
 
 type CommentsViewProps = {
-  userData: any;
   post: PostProps;
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
+  isReportHide?: boolean;
+  isLikeHide?: boolean;
+  isShareHide?: boolean;
 };
 
-type PostProps = {
+export type PostProps = {
   text: string;
   title: string;
   username: string;
@@ -83,19 +85,23 @@ const calculateDate = (postCreation: string): string => {
 };
 
 export default function BACommentsSubView({
-  userData,
   post,
   isOpen = false,
   setIsOpen,
+  isReportHide = false,
+  isLikeHide = false,
+  isShareHide = false,
 }: CommentsViewProps) {
   const [text, setText] = useState("");
   const [comments, setComments] = useState<any[]>([]);
+
+  const { userData } = useUser();
 
   const publishComment = useCallback(async (textComment: string) => {
     await axios
       .post(`/comment`, {
         text: textComment,
-        userId: userData.user.objectId,
+        userId: userData.objectId,
         postId: post.objectId,
       })
       .then((res) => {
@@ -106,15 +112,11 @@ export default function BACommentsSubView({
   }, []);
 
   const getComments = async () => {
-    await axios
-      .get(
-        `/getComments/${post.objectId}`
-      )
-      .then((res: any) => {
-        const commentData = res.data.comments;
-        commentData.reverse();
-        setComments(commentData);
-      });
+    await axios.get(`/getComments/${post.objectId}`).then((res: any) => {
+      const commentData = res.data.comments;
+      commentData.reverse();
+      setComments(commentData);
+    });
   };
 
   useEffect(() => {
@@ -135,7 +137,12 @@ export default function BACommentsSubView({
       }}
       isScrolling={false}
     >
-      <Post post={post} />
+      <Post
+        post={post}
+        isReportHide={isReportHide}
+        isLikeHide={isLikeHide}
+        isShareHide={isShareHide}
+      />
       <BAText type={TypeText.label1} style={{ marginTop: 20, height: 40 }}>
         Comments
       </BAText>
@@ -193,13 +200,11 @@ const Comment = ({ comment }: CommentProps) => {
 
   const { openSheet, closeSheet } = useSheet();
 
-  const likeComment= useCallback(async (isLike: boolean) => {
+  const likeComment = useCallback(async (isLike: boolean) => {
     const commentData = comment;
     isLike ? (commentData.nLikes += 1) : (commentData.nLikes -= 1);
     await axios.patch(
-      `/likeComment/${comment.objectId}/${
-        isLike ? 1 : -1
-      }`,
+      `/likeComment/${comment.objectId}/${isLike ? 1 : -1}`,
       comment
     );
     setCommentData({ ...commentData });
@@ -216,12 +221,16 @@ const Comment = ({ comment }: CommentProps) => {
         </View>
         <View style={[styles.row, { gap: 15 }]}>
           <TouchableOpacity
-          onPress={ () => 
-            openSheet(
-              <BAReportView closeSheet={closeSheet} type={1} objId={commentData.objectId}/>, 
-              "Reportar"
-            )
-          }
+            onPress={() =>
+              openSheet(
+                <BAReportView
+                  closeSheet={closeSheet}
+                  type={1}
+                  objId={commentData.objectId}
+                />,
+                "Reportar"
+              )
+            }
           >
             <BAIcon
               icon={BAIcons.FlagIcon}
@@ -248,7 +257,9 @@ const Comment = ({ comment }: CommentProps) => {
             <View style={styles.likeContainer}>
               <BAText type={TypeText.label3}>{commentData.nLikes}</BAText>
               <BAIcon
-                icon={likedComment ? BAIcons.HeartIconActivated : BAIcons.HeartIcon}
+                icon={
+                  likedComment ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
+                }
                 color={BAPallete.Red01}
                 size={"small"}
               />
@@ -260,7 +271,12 @@ const Comment = ({ comment }: CommentProps) => {
   );
 };
 
-export const Post = ({ post }: any) => {
+export const Post = ({
+  post,
+  isReportHide = false,
+  isLikeHide = false,
+  isShareHide = false,
+}: any) => {
   const [likedPost, setLiketPost] = useState(false);
   const [postData, setPostData] = useState(post);
 
@@ -269,12 +285,7 @@ export const Post = ({ post }: any) => {
   const likePost = useCallback(async (isLike: boolean) => {
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
-    await axios.patch(
-      `/like/${post.objectId}/${
-        isLike ? 1 : -1
-      }`,
-      post
-    );
+    await axios.patch(`/like/${post.objectId}/${isLike ? 1 : -1}`, post);
     setPostData({ ...postData });
   }, []);
 
@@ -299,46 +310,56 @@ export const Post = ({ post }: any) => {
       </BAText>
       <View style={styles.footer}>
         <View style={[styles.row, { gap: 20 }]}>
-          <TouchableOpacity
-           onPress={ () =>
-            openSheet(
-              <BAReportView closeSheet={closeSheet} type={0} objId={post.objectId}/>,
-              "Reportar"
-            )
-          }
-          >
-            <BAIcon
-              icon={BAIcons.FlagIcon}
-              color={BAPallete.Red01}
-              size={"medium"}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.row, { gap: 20 }]}>
-          <TouchableOpacity
-            onPress={() => {
-              setLiketPost(!likedPost);
-              likePost(!likedPost);
-            }}
-          >
-            <View style={styles.likeContainer}>
-              <BAText type={TypeText.label3}>{postData.nLikes}</BAText>
+          {!isReportHide && (
+            <TouchableOpacity
+              onPress={() =>
+                openSheet(
+                  <BAReportView
+                    closeSheet={closeSheet}
+                    type={0}
+                    objId={post.objectId}
+                  />,
+                  "Reportar"
+                )
+              }
+            >
               <BAIcon
-                icon={
-                  likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
-                }
+                icon={BAIcons.FlagIcon}
                 color={BAPallete.Red01}
                 size={"medium"}
               />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <BAIcon
-              icon={BAIcons.ShareIcon}
-              color={BAPallete.Red01}
-              size={"medium"}
-            />
-          </TouchableOpacity>
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={[styles.row, { gap: 20, marginRight: 10 }]}>
+          {!isLikeHide && (
+            <TouchableOpacity
+              onPress={() => {
+                setLiketPost(!likedPost);
+                likePost(!likedPost);
+              }}
+            >
+              <View style={styles.likeContainer}>
+                <BAText type={TypeText.label3}>{postData.nLikes}</BAText>
+                <BAIcon
+                  icon={
+                    likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
+                  }
+                  color={BAPallete.Red01}
+                  size={"medium"}
+                />
+              </View>
+            </TouchableOpacity>
+          )}
+          {false && (
+            <TouchableOpacity>
+              <BAIcon
+                icon={BAIcons.ShareIcon}
+                color={BAPallete.Red01}
+                size={"medium"}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </View>

@@ -7,10 +7,17 @@ import BAButton, { ButtonState } from "../components/BAButton";
 import BAProfilePic from "../components/BAProfilePic";
 import BABadgesView from "./BABadgesView";
 import { useUser } from "../components/BAUserContext";
+import BAMisPosts from "./BAMisPosts";
+import BACommentsSubView from "./BACommentsSubView";
 
 export default function BAAcount() {
   const [subpage, setSubpage] = useState(false);
   const [isBadgesOpen, setIsBadgesOpen] = useState(false);
+
+  const [isUserPostsOpen, setIsUserPostsOpen] = useState(false);
+
+  const [onPostPress, setOnPostPress] = useState(false);
+  const [postPressed, setPostPressed] = useState<any>(null);
 
   const { userData } = useUser();
 
@@ -31,6 +38,13 @@ export default function BAAcount() {
           }}
           state={ButtonState.alert}
         />
+        <BAButton
+          text="Mis Posts"
+          onPress={() => {
+            setIsUserPostsOpen(true);
+          }}
+          style={{ marginVertical: 25 }}
+        />
         <View style={styles.textContainer}>
           <BAText type={TypeText.label3}>Estas registrado como:</BAText>
           <BAText>{userData.email}</BAText>
@@ -48,6 +62,26 @@ export default function BAAcount() {
       <BASubView title="Editar perfil" isOpen={subpage} onReturn={setSubpage}>
         <BAText>Nombre de usuario</BAText>
       </BASubView>
+      <BASubView
+        title="Mis Posts"
+        isOpen={isUserPostsOpen}
+        onReturn={setIsUserPostsOpen}
+      >
+        <BAMisPosts
+          setOnPostPress={setOnPostPress}
+          setPostPressed={setPostPressed}
+        />
+      </BASubView>
+      {postPressed && (
+        <BACommentsSubView
+          isOpen={onPostPress}
+          setIsOpen={setOnPostPress}
+          post={postPressed}
+          isLikeHide={true}
+          isReportHide={true}
+          isShareHide={true}
+        />
+      )}
     </>
   );
 }

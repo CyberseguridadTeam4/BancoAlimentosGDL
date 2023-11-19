@@ -39,6 +39,9 @@ type PostProps = {
     isliked: boolean;
   };
   onClickPost: () => void;
+  isReportHide?: boolean;
+  isLikeHide?: boolean;
+  isShareHide?: boolean;
 };
 
 export default function BAPostsView() {
@@ -125,7 +128,6 @@ export default function BAPostsView() {
         <BACommentsSubView
           isOpen={isCommentsOpen}
           setIsOpen={setIsCommentsOpen}
-          userData={userData}
           post={chosenPost}
         />
       )}
@@ -133,7 +135,13 @@ export default function BAPostsView() {
   );
 }
 
-export const Post = ({ post, onClickPost }: PostProps) => {
+export const Post = ({
+  post,
+  onClickPost,
+  isReportHide = false,
+  isLikeHide = false,
+  isShareHide = false,
+}: PostProps) => {
   const [likedPost, setLiketPost] = useState(post.isliked);
   const [postData, setPostData] = useState(post);
 
@@ -209,50 +217,56 @@ export const Post = ({ post, onClickPost }: PostProps) => {
               size={"medium"}
             />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() =>
-              openSheet(
-                <BAReportView
-                  closeSheet={closeSheet}
-                  type={0}
-                  objId={post.objectId}
-                />,
-                "Reportar"
-              )
-            }
-          >
-            <BAIcon
-              icon={BAIcons.FlagIcon}
-              color={BAPallete.Red01}
-              size={"medium"}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.row, { gap: 20 }]}>
-          <TouchableOpacity
-            onPress={() => {
-              setLiketPost(!likedPost);
-              likePost(!likedPost);
-            }}
-          >
-            <View style={styles.likeContainer}>
-              <BAText type={TypeText.label3}>{postData.nLikes}</BAText>
+          {!isReportHide && (
+            <TouchableOpacity
+              onPress={() =>
+                openSheet(
+                  <BAReportView
+                    closeSheet={closeSheet}
+                    type={0}
+                    objId={post.objectId}
+                  />,
+                  "Reportar"
+                )
+              }
+            >
               <BAIcon
-                icon={
-                  likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
-                }
+                icon={BAIcons.FlagIcon}
                 color={BAPallete.Red01}
                 size={"medium"}
               />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <BAIcon
-              icon={BAIcons.ShareIcon}
-              color={BAPallete.Red01}
-              size={"medium"}
-            />
-          </TouchableOpacity>
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={[styles.row, { gap: 20, marginRight: 10 }]}>
+          {!isLikeHide && (
+            <TouchableOpacity
+              onPress={() => {
+                setLiketPost(!likedPost);
+                likePost(!likedPost);
+              }}
+            >
+              <View style={styles.likeContainer}>
+                <BAText type={TypeText.label3}>{postData.nLikes}</BAText>
+                <BAIcon
+                  icon={
+                    likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
+                  }
+                  color={BAPallete.Red01}
+                  size={"medium"}
+                />
+              </View>
+            </TouchableOpacity>
+          )}
+          {false && (
+            <TouchableOpacity>
+              <BAIcon
+                icon={BAIcons.ShareIcon}
+                color={BAPallete.Red01}
+                size={"medium"}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </TouchableOpacity>
