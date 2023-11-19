@@ -28,7 +28,6 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
   const [isInPasswordPage, setIsInPasswordPage] = useState(false);
   const [email, setTextEmail] = useState("");
   const [contraseña, setTextContraseña] = useState("");
-
   const [user, setUser] = useState("");
   const [birthday, setBirthday] = useState("");
 
@@ -48,9 +47,17 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
           console.log("Usuario logeado");
         } else {
           console.log("Usuario no logeado");
+          openModal(
+            <BAText>Asegurate de que tu contraseña o correo esten escritos correctamente. Y que tu correo ya este verificado en el email que se te envio.</BAText>,
+            "Ops!!! Hubo un error"
+          )
         }
       })
       .catch(function (error) {
+        openModal(
+            <BAText>Asegurate de que tu contraseña o correo esten escritos correctamente. Y que tu correo ya este verificado en el email que se te envio.</BAText>,
+            "Ops!!! Hubo un error"
+          )
         console.log(error);
       });
   };
@@ -124,6 +131,8 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
           name={user}
           setIsInBirdPage={() => {}}
           setLoggedUser={setLoggedUser}
+          setIsInRegisterPage = {setIsInRegisterPage}
+          setIsInPasswordPage = {setIsInPasswordPage}
         />
       </BASubView>
     </>
@@ -136,7 +145,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F4F5FF",
     alignItems: "center",
-    // height: Dimensions.get("window").height,
     gap: 19,
     paddingHorizontal: 20,
   },
@@ -160,3 +168,8 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
 });
+
+function openModal(arg0: React.JSX.Element, arg1: string) {
+  throw new Error("Function not implemented.");
+}
+

@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
@@ -6,6 +6,7 @@ import BAIcons from "../resources/icons/BAIcons";
 import { useState } from "react";
 import React from "react";
 import { useModal } from "../components/Modal/BAModalContext";
+import DateTimePicker from "../components/Modal/BADatePickerModal"
 
 export default function SignUp({
   setIsInPasswordPage,
@@ -16,6 +17,8 @@ export default function SignUp({
   const [user, setUser] = useState("");
   const [email, setEmail] = useState("");
   const [birthDate, setBirthDate] = useState("");
+
+  // const [open, setOpen] = useState(false);
   const {openModal} = useModal();
 
   function missing () {
@@ -41,7 +44,11 @@ export default function SignUp({
           value={email}
           onChange={setEmail}
         />
+
         <BAText style={styles.center}>Fecha de nacimimento:</BAText>
+
+        {/* <DateTimePicker /> */}
+        
         <BATextInput
           placeholder="dd/mm/yyyy"
           icon={BAIcons.BirdIcon}
