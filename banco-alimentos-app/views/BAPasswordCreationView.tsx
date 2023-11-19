@@ -33,7 +33,6 @@ export default function SignUp({
   useEffect(() => {
     // This effect will run when passwordsEntered changes to true
     const showModal = async () => {
-      console.log("In useEffect");
       openModal(
         <View>
           <BAText>
@@ -44,10 +43,8 @@ export default function SignUp({
             state={ButtonState.alert}
             style={styles.centerConfirmar}
             onPress={() => {
-              console.log("IR A LOGIN");
               setIsInPasswordPage(false);
               setIsInRegisterPage(false);
-              // closeModal();
             }}
           />
         </View>,
@@ -69,9 +66,7 @@ export default function SignUp({
         <BAText>Asegurate de que las contraseñas coincidan</BAText>,
         "Contraseñas no coinciden"
       );
-      console.log("Las contraseñas no coinciden");
     } else {
-      console.log("Crear usuario");
       try {
         const response = await axios.post("https://banco-alimentos-api.vercel.app/userSignUp", {
           username: username,
@@ -80,23 +75,10 @@ export default function SignUp({
           name: name,
         });
         setUserCreated(true);
-        // EMAIL VERIFICATION
-        // Set the user as the current user
-        const user = await Parse.User.currentAsync();
-        if (user) {
-          // Call Cloud Function to send email verification
-          try {
-            await Parse.Cloud.run('sendVerificationEmail');
-            console.log('Email verification request sent successfully');
-          } catch (error: any) {
-            console.log('Error sending email verification request:', error.message);
-          }
-        }
+        await axios.get("/verificationEmail");
         setLoggedUser(response.data);
-        console.log("LoggedUser")
       } catch (error) {
-        console.log(error);
-        console.log("FFFFFFFFFFFFFFFFFFFFF");
+        // console.log(error);
       }
     }
   };

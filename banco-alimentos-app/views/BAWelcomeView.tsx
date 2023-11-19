@@ -18,6 +18,8 @@ import BASubView from "../components/BASubView";
 import BASignUpView from "./BASignUpView";
 import BAPasswordCreationView from "./BAPasswordCreationView";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+// import Parse from 'parse/react-native';
+import Parse from "parse/react-native";
 
 type WelcomeProps = {
   setLoggedUser: (data: any) => void;
@@ -100,6 +102,18 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
           state={ButtonState.alert}
           onPress={() => userLogin()}
         />
+
+        <View style={styles.containerInline}>
+          <BAText type={TypeText.label3}>Olvidaste tu contraseña?</BAText>
+          <BAText
+            type={TypeText.label5}
+            onPress={() => 
+              console.log("Recuperacion Contraseña")
+            }
+          >
+            {" Recuperar"}
+          </BAText>
+        </View>
 
         <Image
           source={require("../resources/icons/BAMXLogo.png")}
