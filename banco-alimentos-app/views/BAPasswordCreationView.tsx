@@ -7,11 +7,6 @@ import BAIcons from "../resources/icons/BAIcons";
 import axios from "../axios";
 import PasswordMeter from "../components/BAPasswordMeter";
 import { useModal } from "../components/Modal/BAModalContext";
-import Parse from 'parse/react-native';
-import BASubView from "../components/BASubView";
-import BASignUpView from "./BASignUpView";
-import BAWelcomeView from "./BAWelcomeView";
-import BAModal from "../components/Modal/BAModal";
 
 export default function SignUp({
   username,

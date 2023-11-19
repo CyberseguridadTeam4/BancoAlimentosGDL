@@ -6,7 +6,6 @@ import BAIcons from "../resources/icons/BAIcons";
 import { useState } from "react";
 import React from "react";
 import { useModal } from "../components/Modal/BAModalContext";
-import DateTimePicker from "../components/Modal/BADatePickerModal"
 
 export default function SignUp({
   setIsInPasswordPage,
