@@ -155,7 +155,7 @@ export const Post = ({
   const likePost = useCallback(async (isLike: boolean) => {
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
-    dispatchInteraction(postData.objectId);
+    isLike && dispatchInteraction(postData.objectId);
     await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);
     setPostData({ ...postData });
   }, []);
