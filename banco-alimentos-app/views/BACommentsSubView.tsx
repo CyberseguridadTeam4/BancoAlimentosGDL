@@ -42,7 +42,7 @@ type CommentsViewProps = {
   isReportHide?: boolean;
   isLikeHide?: boolean;
   isShareHide?: boolean;
-  updatePost: (newPost: any) => void;
+  updatePost?: (newPost: any) => void;
 };
 
 export type PostProps = {

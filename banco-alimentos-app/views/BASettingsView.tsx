@@ -9,6 +9,8 @@ import { useModal } from "../components/Modal/BAModalContext";
 import BATextInput from "../components/BATextInput";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { emptyUser, useUser } from "../components/BAUserContext";
+import BAPallete from "../resources/BAPallete";
+import axios from "../axios";
 
 export default function BASettingsView() {
   const { openSheet } = useSheet();
@@ -104,9 +106,11 @@ const DeleteAccountModal = () => {
 };
 
 const ConfirmDeleteModal = () => {
-  const { setUser } = useUser();
+  const { setUser, userData } = useUser();
   const { closeModal } = useModal();
   const [name, setName] = useState("");
+
+  const [showWarning, setShowWarning] = useState(false);
 
   return (
     <View>
@@ -114,15 +118,28 @@ const ConfirmDeleteModal = () => {
         Escribe tu nombre de usuario para confirmar esta acción
       </BAText>
       <BATextInput value={name} onChange={setName} />
+      {showWarning && (
+        <BAText
+          type={TypeText.label3}
+          style={{ color: BAPallete.Red01, textAlign: "center", marginTop: 15 }}
+        >
+          El texto no coincide con el nombre de usuario
+        </BAText>
+      )}
       <BAButton
         text="Eliminar"
         onPress={() => {
+          if (name != userData.username) {
+            setShowWarning(true);
+            return;
+          }
           (async () => {
             await AsyncStorage.removeItem("sessionToken");
+            await axios.get("/deleteUser");
           })();
 
-          closeModal();
           setUser(emptyUser);
+          closeModal();
         }}
         state={ButtonState.alert}
         style={{ marginTop: 25 }}
