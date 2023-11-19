@@ -157,10 +157,20 @@ export default function BACommentsSubView({
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.columnComments}>
-            {comments.length > 0 &&
+            {comments.length > 0 ? (
               comments.map((item) => {
                 return <Comment comment={item} key={item.objectId} />;
-              })}
+              })
+            ) : (
+              <View style={styles.messageComments}>
+                <BAText type={TypeText.label3} style={{ textAlign: "center" }}>
+                  No hay comentarios aún
+                </BAText>
+                <BAText type={TypeText.label3} style={{ textAlign: "center" }}>
+                  ¡Se el primero!
+                </BAText>
+              </View>
+            )}
           </View>
         </ScrollView>
       </View>
@@ -394,6 +404,12 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  messageComments: {
+    textAlign: "center",
+    marginTop: 75,
+    width: "80%",
+    alignSelf: "center",
   },
   profilePic: {
     width: 40,
