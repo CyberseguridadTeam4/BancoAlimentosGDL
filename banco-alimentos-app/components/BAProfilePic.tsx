@@ -2,15 +2,27 @@ import { StyleSheet, View, Image } from "react-native";
 import React from "react";
 import BAPallete from "../resources/BAPallete";
 import BABadges from "../assets/badges/BABadges";
+import profilePictures from "../assets/profilePictures/BAProfilePictures";
 
 export default function BAProfilePic({ user }: any) {
+const pictureColors = [
+    BAPallete.SoftRed,
+    BAPallete.SoftOrange,
+    BAPallete.SoftYellow,
+    BAPallete.SoftGreen,
+    BAPallete.SoftSky,
+    BAPallete.SoftBlue,
+    BAPallete.SoftPurple,
+    BAPallete.SoftPink,
+];
+
   return (
     <>
       <View style={styles.wrapper}>
         <View style={styles.profile}>
           <Image
-            style={{ width: "90%", height: "90%", tintColor:BAPallete.SoftRed}}
-            source={require("../assets/profilePictures/1.png")}
+            style={{ width: "90%", height: "90%", tintColor:pictureColors[user.colorProfilePicture]}}
+            source={profilePictures[user.idProfilePicture]}
             resizeMode="contain"
           />
         </View>
