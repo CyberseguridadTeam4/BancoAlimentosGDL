@@ -10,6 +10,8 @@ import BASubView from "../components/BASubView";
 import BASignUpView from "./BASignUpView";
 import BAPasswordCreationView from "./BAPasswordCreationView";
 import { useUser } from "../components/BAUserContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "../axios";
 
 export default function LogIn() {
   const [isInRegisterPage, setIsInRegisterPage] = useState(false);
@@ -17,8 +19,10 @@ export default function LogIn() {
   const [email, setTextEmail] = useState("");
   const [contraseña, setTextContraseña] = useState("");
 
-  const [user, setUser] = useState("");
+  const [username, setUsername] = useState("");
   const [birthday, setBirthday] = useState("");
+
+  const { setUser } = useUser();
 
   const userLogin = async () => {
     axios
@@ -29,7 +33,7 @@ export default function LogIn() {
       .then(function (response) {
         console.log(response.data);
         if (response.status == 200) {
-          setLoggedUser(response.data);
+          setUser(response.data);
           AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
           axios.defaults.headers.common["Authorization"] =
             response.data.user.sessionToken;
@@ -37,16 +41,24 @@ export default function LogIn() {
         } else {
           console.log("Usuario no logeado");
           openModal(
-            <BAText>Asegurate de que tu contraseña o correo esten escritos correctamente. Y que tu correo ya este verificado en el email que se te envio.</BAText>,
+            <BAText>
+              Asegurate de que tu contraseña o correo esten escritos
+              correctamente. Y que tu correo ya este verificado en el email que
+              se te envio.
+            </BAText>,
             "Ops!!! Hubo un error"
-          )
+          );
         }
       })
       .catch(function (error) {
         openModal(
-            <BAText>Asegurate de que tu contraseña o correo esten escritos correctamente. Y que tu correo ya este verificado en el email que se te envio.</BAText>,
-            "Ops!!! Hubo un error"
-          )
+          <BAText>
+            Asegurate de que tu contraseña o correo esten escritos
+            correctamente. Y que tu correo ya este verificado en el email que se
+            te envio.
+          </BAText>,
+          "Ops!!! Hubo un error"
+        );
         console.log(error);
       });
   };
@@ -94,9 +106,7 @@ export default function LogIn() {
           <BAText type={TypeText.label3}>Olvidaste tu contraseña?</BAText>
           <BAText
             type={TypeText.label5}
-            onPress={() => 
-              console.log("Recuperacion Contraseña")
-            }
+            onPress={() => console.log("Recuperacion Contraseña")}
           >
             {" Recuperar"}
           </BAText>
@@ -115,7 +125,7 @@ export default function LogIn() {
       >
         <BASignUpView
           setIsInPasswordPage={setIsInPasswordPage}
-          setUserRoot={setUserName}
+          setUserRoot={setUsername}
           serEmailRoot={setTextEmail}
           setBirthDateRoot={setBirthday}
         />
@@ -131,9 +141,8 @@ export default function LogIn() {
           email={email}
           name={username}
           setIsInBirdPage={() => {}}
-          setLoggedUser={setLoggedUser}
-          setIsInRegisterPage = {setIsInRegisterPage}
-          setIsInPasswordPage = {setIsInPasswordPage}
+          setIsInRegisterPage={setIsInRegisterPage}
+          setIsInPasswordPage={setIsInPasswordPage}
         />
       </BASubView>
     </>
@@ -173,4 +182,3 @@ const styles = StyleSheet.create({
 function openModal(arg0: React.JSX.Element, arg1: string) {
   throw new Error("Function not implemented.");
 }
-
