@@ -17,13 +17,38 @@ export default function LogIn() {
   const [email, setTextEmail] = useState("");
   const [contraseña, setTextContraseña] = useState("");
 
-  const [username, setUserName] = useState("");
+  const [user, setUser] = useState("");
   const [birthday, setBirthday] = useState("");
 
-  const { logIn } = useUser();
-
-  const userLogin = () => {
-    logIn({ username: email, password: contraseña });
+  const userLogin = async () => {
+    axios
+      .post("/userLogin", {
+        username: email,
+        password: contraseña,
+      })
+      .then(function (response) {
+        console.log(response.data);
+        if (response.status == 200) {
+          setLoggedUser(response.data);
+          AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
+          axios.defaults.headers.common["Authorization"] =
+            response.data.user.sessionToken;
+          console.log("Usuario logeado");
+        } else {
+          console.log("Usuario no logeado");
+          openModal(
+            <BAText>Asegurate de que tu contraseña o correo esten escritos correctamente. Y que tu correo ya este verificado en el email que se te envio.</BAText>,
+            "Ops!!! Hubo un error"
+          )
+        }
+      })
+      .catch(function (error) {
+        openModal(
+            <BAText>Asegurate de que tu contraseña o correo esten escritos correctamente. Y que tu correo ya este verificado en el email que se te envio.</BAText>,
+            "Ops!!! Hubo un error"
+          )
+        console.log(error);
+      });
   };
 
   return (
@@ -65,6 +90,18 @@ export default function LogIn() {
           onPress={() => userLogin()}
         />
 
+        <View style={styles.containerInline}>
+          <BAText type={TypeText.label3}>Olvidaste tu contraseña?</BAText>
+          <BAText
+            type={TypeText.label5}
+            onPress={() => 
+              console.log("Recuperacion Contraseña")
+            }
+          >
+            {" Recuperar"}
+          </BAText>
+        </View>
+
         <Image
           source={require("../resources/icons/BAMXLogo.png")}
           style={styles.image}
@@ -94,6 +131,9 @@ export default function LogIn() {
           email={email}
           name={username}
           setIsInBirdPage={() => {}}
+          setLoggedUser={setLoggedUser}
+          setIsInRegisterPage = {setIsInRegisterPage}
+          setIsInPasswordPage = {setIsInPasswordPage}
         />
       </BASubView>
     </>
@@ -106,7 +146,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F4F5FF",
     alignItems: "center",
-    // height: Dimensions.get("window").height,
     gap: 19,
     paddingHorizontal: 20,
   },
@@ -130,3 +169,8 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
 });
+
+function openModal(arg0: React.JSX.Element, arg1: string) {
+  throw new Error("Function not implemented.");
+}
+

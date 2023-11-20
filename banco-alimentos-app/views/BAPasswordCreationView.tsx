@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import { StyleSheet, Text, View, Dimensions, PixelRatio } from "react-native";
+import React, { useCallback, useState, useEffect } from "react";
+import { StyleSheet, Text, View, Dimensions, PixelRatio, Modal } from "react-native";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
@@ -9,13 +9,52 @@ import PasswordMeter from "../components/BAPasswordMeter";
 import { useModal } from "../components/Modal/BAModalContext";
 import { useUser } from "../components/BAUserContext";
 
-export default function SignUp({ username, email, name }: any) {
+export default function SignUp({
+  username,
+  email,
+  name,
+  nextStage,
+  setLoggedUser, // Fixed prop name
+  setIsInRegisterPage,
+  setIsInPasswordPage,
+  
+}: any) {
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
   const [seguridad, setSeguridad] = useState(false);
+  const [userCreated, setUserCreated] = useState(false);
 
   const { openModal } = useModal();
   const { signUp, setUser } = useUser();
+
+  useEffect(() => {
+    // This effect will run when passwordsEntered changes to true
+    const showModal = async () => {
+      openModal(
+        <View>
+          <BAText>
+            Usuario creado exitosamente.             Por favor confirma tu correo en el email enviado.
+          </BAText>
+          <BAButton
+            text="OK"
+            state={ButtonState.alert}
+            style={styles.centerConfirmar}
+            onPress={() => {
+              setIsInPasswordPage(false);
+              setIsInRegisterPage(false);
+            }}
+          />
+        </View>,
+        "Cuenta creada!"
+      );
+    };
+
+    // Call the function only when passwords have been entered
+    if (userCreated) {
+      showModal();
+    }
+
+  }, [userCreated]); // Dependency array updated
 
   const createUser = async () => {
     if (password !== passwordConf) {
@@ -41,10 +80,10 @@ export default function SignUp({ username, email, name }: any) {
   };
 
   return (
-    <View style={styles.container}>
-      <BAText style={styles.center}>Contraseña:</BAText>
-      {
-        <BATextInput
+    <>
+      <View style={styles.container}>
+        <BAText style={styles.center}>Contraseña:</BAText>
+        { <BATextInput
           placeholder="Contraseña"
           icon={BAIcons.PersonIcon}
           value={password}
@@ -64,41 +103,39 @@ export default function SignUp({ username, email, name }: any) {
           value={passwordConf}
           onChange={setPasswordConf}
           isPassword={true} // Use secureTextEntry for password input
-        />
-      }
-      <PasswordMeter
-        password={password}
-        confidence={0}
-        setSeguridad={setSeguridad}
-        updatePassword={function (text: string): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
-
-      {seguridad ? (
-        <BAButton
-          text="Confirmar"
-          state={ButtonState.alert}
-          style={styles.centerConfirmar}
-          onPress={() => createUser()}
-        />
-      ) : (
-        <BAButton
-          text="Siguiente"
-          state={ButtonState.alert}
-          style={styles.centerSiguiente}
-          onPress={() => {
-            openModal(
-              <BAText>
-                Asegurate de que tu contraseña cumpla con los puntos de
-                seguridad
-              </BAText>,
-              "Contraseña insegura"
-            );
+        /> }
+        <PasswordMeter
+          password={password}
+          confidence={0}
+          setSeguridad={setSeguridad}
+          updatePassword={function (text: string): void {
+            throw new Error("Function not implemented.");
           }}
-        />
-      )}
-    </View>
+      />
+        {seguridad ? 
+          <BAButton
+            text="Confirmar"
+            state={ButtonState.alert}
+            style={styles.centerConfirmar}
+            onPress={() => {
+              createUser();
+            }}
+          /> : 
+          <BAButton
+            text="Confirmar"
+            state={ButtonState.alert}
+            style={styles.centerSiguiente}
+            onPress={() => {
+              openModal(
+                  <BAText>Asegurate de que tu contraseña cumpla con los puntos de seguridad</BAText>,
+                  "Contraseña insegura"
+                )
+              }
+            }
+          />
+        }
+      </View>
+    </>
   );
 }
 
@@ -122,6 +159,9 @@ const styles = StyleSheet.create({
     marginTop: 150,
   },
 });
+
 function openSheet(arg0: React.JSX.Element, arg1: string) {
   throw new Error("Function not implemented.");
 }
+
+
