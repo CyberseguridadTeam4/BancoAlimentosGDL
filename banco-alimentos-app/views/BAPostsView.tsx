@@ -317,10 +317,8 @@ const CreatePostView = ({ closeSheet }: any) => {
     await axios
       .post(`/post`, {
         text: textPost,
-        title: userData.username,
       })
       .then((res) => {
-        console.log(res);
         closeSheet();
       })
       .catch((error) => console.log(error));
