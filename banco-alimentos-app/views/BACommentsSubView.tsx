@@ -108,7 +108,6 @@ export default function BACommentsSubView({
         postId: post.objectId,
       })
       .then((res) => {
-        console.log(res);
         setText("");
       })
       .catch((error) => console.log(error));
@@ -302,9 +301,7 @@ export const Post = ({
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
     isLike && dispatchInteraction(postData.objectId);
-    console.log(postData.isliked);
     postData.isliked = isLike;
-    console.log(postData.isliked);
     setPostData({ ...postData });
     updatePost(postData);
     await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);

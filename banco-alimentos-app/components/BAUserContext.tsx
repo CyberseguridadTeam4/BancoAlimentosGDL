@@ -135,9 +135,7 @@ export const UserProvider = ({ children }: any) => {
   };
 
   const setBadge = async (badgeIndex: number) => {
-    await axios
-      .patch(`/profileBadge/${badgeIndex}`)
-      .then((res) => console.log(res.data.suer));
+    await axios.patch(`/profileBadge/${badgeIndex}`);
   };
 
   return (
