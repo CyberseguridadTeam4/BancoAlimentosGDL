@@ -14,18 +14,19 @@ import BAButton, { ButtonState } from "./BAButton";
 import BABadges from "../assets/badges/BABadges";
 import BAIcons from "../resources/icons/BAIcons";
 import axios from "../axios";
+import { useUser } from "./BAUserContext";
 
 type BadgeProps = {
   image: ImageSourcePropType;
   badges: any[];
-  setUserData: (data: any) => void;
+  disableArrows: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
 export default function BABadge({
   image,
   badges,
-  setUserData,
+  disableArrows = false,
   style,
 }: BadgeProps) {
   const { openModal } = useModal();
@@ -38,7 +39,7 @@ export default function BABadge({
           <BABadgeModal
             index={badges.indexOf(BABadges.indexOf(image))}
             badges={badges}
-            setUserData={setUserData}
+            disableArrows={disableArrows}
           />,
           ""
         );
@@ -54,10 +55,11 @@ export default function BABadge({
   );
 }
 
-function BABadgeModal({ index, badges, setUserData }: any) {
+function BABadgeModal({ index, badges, disableArrows }: any) {
   const [badgeIndex, setBadgeIndex] = useState(index);
 
   const { closeModal } = useModal();
+  const { setUser } = useUser();
 
   const handleButton = (value: number) => {
     setBadgeIndex(badgeIndex + value);
@@ -66,19 +68,21 @@ function BABadgeModal({ index, badges, setUserData }: any) {
   const handleProfileBadge = useCallback(async () => {
     await axios
       .patch(`/profileBadge/${badges[badgeIndex]}`)
-      .then((res) => setUserData(res.data));
+      .then((res) => setUser(res.data.user));
     closeModal();
   }, []);
 
   return (
     <View style={styles.modalContainer}>
       <View style={styles.badgeContainer}>
-        <BAButton
-          style={[styles.buttonStyle, { transform: [{ scaleX: -1 }] }]}
-          icon={BAIcons.ArrowIcon}
-          onPress={() => handleButton(-1)}
-          state={badgeIndex > 0 ? ButtonState.enabled : ButtonState.disabled}
-        />
+        {!disableArrows && (
+          <BAButton
+            style={[styles.buttonStyle, { transform: [{ scaleX: -1 }] }]}
+            icon={BAIcons.ArrowIcon}
+            onPress={() => handleButton(-1)}
+            state={badgeIndex > 0 ? ButtonState.enabled : ButtonState.disabled}
+          />
+        )}
         <View style={styles.badgeWrapper}>
           <Image
             source={BABadges[badges[badgeIndex]]}
@@ -92,16 +96,18 @@ function BABadgeModal({ index, badges, setUserData }: any) {
             ]}
           />
         </View>
-        <BAButton
-          style={styles.buttonStyle}
-          icon={BAIcons.ArrowIcon}
-          onPress={() => handleButton(1)}
-          state={
-            badgeIndex < badges.length - 1
-              ? ButtonState.enabled
-              : ButtonState.disabled
-          }
-        />
+        {!disableArrows && (
+          <BAButton
+            style={styles.buttonStyle}
+            icon={BAIcons.ArrowIcon}
+            onPress={() => handleButton(1)}
+            state={
+              badgeIndex < badges.length - 1
+                ? ButtonState.enabled
+                : ButtonState.disabled
+            }
+          />
+        )}
       </View>
       <BAButton
         state={ButtonState.alert}

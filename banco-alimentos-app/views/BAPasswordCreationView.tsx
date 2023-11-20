@@ -7,6 +7,7 @@ import BAIcons from "../resources/icons/BAIcons";
 import axios from "../axios";
 import PasswordMeter from "../components/BAPasswordMeter";
 import { useModal } from "../components/Modal/BAModalContext";
+import { useUser } from "../components/BAUserContext";
 
 export default function SignUp({
   username,
@@ -24,6 +25,7 @@ export default function SignUp({
   const [userCreated, setUserCreated] = useState(false);
 
   const { openModal } = useModal();
+  const { signUp, setUser } = useUser();
 
   useEffect(() => {
     // This effect will run when passwordsEntered changes to true
@@ -54,7 +56,6 @@ export default function SignUp({
 
   }, [userCreated]); // Dependency array updated
 
-
   const createUser = async () => {
     if (password !== passwordConf) {
       openModal(
@@ -62,22 +63,21 @@ export default function SignUp({
         "Contraseñas no coinciden"
       );
     } else {
-      try {
-        const response = await axios.post("https://banco-alimentos-api.vercel.app/userSignUp", {
+      await axios
+        .post("/userSignUp", {
           username: username,
           password: password,
           email: email,
           name: name,
+        })
+        .then(function (response) {
+          setUser(response.data.user);
+        })
+        .catch(function (error) {
+          console.log(error);
         });
-        setUserCreated(true);
-        await axios.get("/verificationEmail");
-        setLoggedUser(response.data);
-      } catch (error) {
-        // console.log(error);
-      }
     }
   };
-
 
   return (
     <>
@@ -146,7 +146,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: Dimensions.get("window").height,
     gap: 20,
-    paddingHorizontal: 10,
     paddingTop: 20,
   },
   center: {

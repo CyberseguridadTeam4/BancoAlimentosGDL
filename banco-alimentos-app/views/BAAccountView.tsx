@@ -6,29 +6,22 @@ import BAText, { TypeText } from "../components/BAText";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAProfilePic from "../components/BAProfilePic";
 import BABadgesView from "./BABadgesView";
+import { useUser } from "../components/BAUserContext";
+import BAMisPosts from "./BAMisPosts";
+import BACommentsSubView from "./BACommentsSubView";
 
-type UserProps = {
-  userData: {
-    username: string;
-    badges: [];
-    email: string;
-    idProfilePicture: number;
-    visBadge: number;
-    pollo: any;
-    createdAt: string;
-    updatedAt: string;
-    ACL: any;
-    sessionToken: string;
-    objectId: string;
-  };
-  setUserData: (data: any) => void;
-};
-
-export default function BAAcount({ userData, setUserData }: UserProps) {
+export default function BAAcount() {
   const [subpage, setSubpage] = useState(false);
   const [isBadgesOpen, setIsBadgesOpen] = useState(false);
 
-  const date = new Date(userData.createdAt);
+  const [isUserPostsOpen, setIsUserPostsOpen] = useState(false);
+
+  const [onPostPress, setOnPostPress] = useState(false);
+  const [postPressed, setPostPressed] = useState<any>(null);
+
+  const { userData } = useUser();
+
+  const date = new Date(userData ? userData.createdAt : "");
 
   return (
     <>
@@ -45,6 +38,13 @@ export default function BAAcount({ userData, setUserData }: UserProps) {
           }}
           state={ButtonState.alert}
         />
+        <BAButton
+          text="Mis Posts"
+          onPress={() => {
+            setIsUserPostsOpen(true);
+          }}
+          style={{ marginVertical: 25 }}
+        />
         <View style={styles.textContainer}>
           <BAText type={TypeText.label3}>Estas registrado como:</BAText>
           <BAText>{userData.email}</BAText>
@@ -54,7 +54,6 @@ export default function BAAcount({ userData, setUserData }: UserProps) {
       </BAView>
       {isBadgesOpen && (
         <BABadgesView
-          setUserData={setUserData}
           isOpen={isBadgesOpen}
           setIsOpen={setIsBadgesOpen}
           badges={userData.badges}
@@ -63,6 +62,26 @@ export default function BAAcount({ userData, setUserData }: UserProps) {
       <BASubView title="Editar perfil" isOpen={subpage} onReturn={setSubpage}>
         <BAText>Nombre de usuario</BAText>
       </BASubView>
+      <BASubView
+        title="Mis Posts"
+        isOpen={isUserPostsOpen}
+        onReturn={setIsUserPostsOpen}
+      >
+        <BAMisPosts
+          setOnPostPress={setOnPostPress}
+          setPostPressed={setPostPressed}
+        />
+      </BASubView>
+      {postPressed && (
+        <BACommentsSubView
+          isOpen={onPostPress}
+          setIsOpen={setOnPostPress}
+          post={postPressed}
+          isLikeHide={true}
+          isReportHide={true}
+          isShareHide={true}
+        />
+      )}
     </>
   );
 }

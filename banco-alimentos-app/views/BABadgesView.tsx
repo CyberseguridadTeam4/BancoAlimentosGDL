@@ -11,26 +11,22 @@ interface BAAccountBadgesProps {
   badges: number[] | null;
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
-  setUserData: (data: any) => void;
 }
 
 function DynamicBadge({
   image,
   badges,
-  setUserData,
 }: {
   image: ImageSourcePropType;
   badges: any[];
-  setUserData: (data: any) => void;
 }) {
-  return <BABadge image={image} badges={badges} setUserData={setUserData} />;
+  return <BABadge image={image} badges={badges} disableArrows={false} />;
 }
 
 export default function BAAccountBadges({
   badges,
   isOpen = false,
   setIsOpen,
-  setUserData,
 }: BAAccountBadgesProps) {
   return (
     <BASubView
@@ -51,11 +47,7 @@ export default function BAAccountBadges({
         renderItem={({ item }) => (
           <View style={styles.badgeItem} key={item}>
             {badges?.includes(BABadges.indexOf(item)) ? (
-              <DynamicBadge
-                image={item}
-                badges={badges}
-                setUserData={setUserData}
-              />
+              <DynamicBadge image={item} badges={badges} />
             ) : (
               <View style={styles.lockBadge}>
                 <BAIcon

@@ -1,33 +1,22 @@
-import {
-  StyleSheet,
-  View,
-  StatusBar,
-  Alert,
-  Dimensions,
-  Image,
-} from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
 import BAIcons from "../resources/icons/BAIcons";
 import { useState } from "react";
 import BAView from "../components/BAView";
-import axios from "../axios";
 import React from "react";
 import BASubView from "../components/BASubView";
 import BASignUpView from "./BASignUpView";
 import BAPasswordCreationView from "./BAPasswordCreationView";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useUser } from "../components/BAUserContext";
 
-type WelcomeProps = {
-  setLoggedUser: (data: any) => void;
-};
-
-export default function LogIn({ setLoggedUser }: WelcomeProps) {
+export default function LogIn() {
   const [isInRegisterPage, setIsInRegisterPage] = useState(false);
   const [isInPasswordPage, setIsInPasswordPage] = useState(false);
   const [email, setTextEmail] = useState("");
   const [contraseña, setTextContraseña] = useState("");
+
   const [user, setUser] = useState("");
   const [birthday, setBirthday] = useState("");
 
@@ -126,7 +115,7 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
       >
         <BASignUpView
           setIsInPasswordPage={setIsInPasswordPage}
-          setUserRoot={setUser}
+          setUserRoot={setUserName}
           serEmailRoot={setTextEmail}
           setBirthDateRoot={setBirthday}
         />
@@ -138,9 +127,9 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
         onReturn={() => setIsInPasswordPage(false)}
       >
         <BAPasswordCreationView
-          username={user}
+          username={username}
           email={email}
-          name={user}
+          name={username}
           setIsInBirdPage={() => {}}
           setLoggedUser={setLoggedUser}
           setIsInRegisterPage = {setIsInRegisterPage}
