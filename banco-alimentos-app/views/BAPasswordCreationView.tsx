@@ -7,11 +7,7 @@ import BAIcons from "../resources/icons/BAIcons";
 import axios from "../axios";
 import PasswordMeter from "../components/BAPasswordMeter";
 import { useModal } from "../components/Modal/BAModalContext";
-import Parse from 'parse/react-native';
-import BASubView from "../components/BASubView";
-import BASignUpView from "./BASignUpView";
-import BAWelcomeView from "./BAWelcomeView";
-import BAModal from "../components/Modal/BAModal";
+import { useUser } from "../components/BAUserContext";
 
 export default function SignUp({
   username,
@@ -29,11 +25,11 @@ export default function SignUp({
   const [userCreated, setUserCreated] = useState(false);
 
   const { openModal } = useModal();
+  const { signUp, setUser } = useUser();
 
   useEffect(() => {
     // This effect will run when passwordsEntered changes to true
     const showModal = async () => {
-      console.log("In useEffect");
       openModal(
         <View>
           <BAText>
@@ -44,10 +40,8 @@ export default function SignUp({
             state={ButtonState.alert}
             style={styles.centerConfirmar}
             onPress={() => {
-              console.log("IR A LOGIN");
               setIsInPasswordPage(false);
               setIsInRegisterPage(false);
-              // closeModal();
             }}
           />
         </View>,
@@ -62,45 +56,28 @@ export default function SignUp({
 
   }, [userCreated]); // Dependency array updated
 
-
   const createUser = async () => {
     if (password !== passwordConf) {
       openModal(
         <BAText>Asegurate de que las contraseñas coincidan</BAText>,
         "Contraseñas no coinciden"
       );
-      console.log("Las contraseñas no coinciden");
     } else {
-      console.log("Crear usuario");
-      try {
-        const response = await axios.post("https://banco-alimentos-api.vercel.app/userSignUp", {
+      await axios
+        .post("/userSignUp", {
           username: username,
           password: password,
           email: email,
           name: name,
+        })
+        .then(function (response) {
+          setUser(response.data.user);
+        })
+        .catch(function (error) {
+          console.log(error);
         });
-        setUserCreated(true);
-        // EMAIL VERIFICATION
-        // Set the user as the current user
-        const user = await Parse.User.currentAsync();
-        if (user) {
-          // Call Cloud Function to send email verification
-          try {
-            await Parse.Cloud.run('sendVerificationEmail');
-            console.log('Email verification request sent successfully');
-          } catch (error: any) {
-            console.log('Error sending email verification request:', error.message);
-          }
-        }
-        setLoggedUser(response.data);
-        console.log("LoggedUser")
-      } catch (error) {
-        console.log(error);
-        console.log("FFFFFFFFFFFFFFFFFFFFF");
-      }
     }
   };
-
 
   return (
     <>
@@ -169,7 +146,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: Dimensions.get("window").height,
     gap: 20,
-    paddingHorizontal: 10,
     paddingTop: 20,
   },
   center: {

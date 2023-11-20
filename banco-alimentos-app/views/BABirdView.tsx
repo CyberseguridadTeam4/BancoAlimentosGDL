@@ -36,7 +36,7 @@ type BirdData = {
   };
 };
 
-export default function BABirdView({ birdPointer }: any) {
+export default function BABirdView() {
   const { birdData } = useBird();
 
   return !birdData ? <BABirdName /> : <BABird birdData={birdData} />;
@@ -109,7 +109,6 @@ function BABirdColor({ name }: ColorSelectionProps) {
   const { setBird } = useBird();
 
   const createPollo = useCallback(async () => {
-    console.log(color);
     const sessionToken = await AsyncStorage.getItem("sessionToken");
     await axios
       .post("/pollo", {

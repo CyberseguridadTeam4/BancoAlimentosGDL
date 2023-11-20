@@ -75,6 +75,7 @@ export default function BABird({ birdData }: BirdData | any) {
   const [winkEye, setWinkEye] = useState(false);
   const [heartReaction, setHeartReaction] = useState(false);
   const [openEgg, setOpenEgg] = useState(false);
+  const [nextBadge, setNextBadge] = useState(-1);
 
   const birdPositionRef = useRef(new Animated.Value(0)).current;
   const birdBodyPositionRef = useRef(new Animated.Value(0)).current;
@@ -496,7 +497,9 @@ export default function BABird({ birdData }: BirdData | any) {
 
   return (
     <>
-      {openEgg && <BAEgg onClose={() => setOpenEgg(false)} />}
+      {openEgg && (
+        <BAEgg nextBadge={nextBadge} onClose={() => setOpenEgg(false)} />
+      )}
       <BAView
         title={`Cuarto de ${birdData.name}`}
         style={styles.body}
@@ -571,10 +574,12 @@ export default function BABird({ birdData }: BirdData | any) {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.birdButtons}
-            onPress={() => {
+            onPress={async () => {
               if (birdData.nEggs > 0) {
-                dispatchEggs(false);
-                setOpenEgg(true);
+                await dispatchEggs(false).then((res) => {
+                  setNextBadge(res);
+                  setOpenEgg(true);
+                });
               }
             }}
             disabled={animIsPlaying || hatchEgg}
