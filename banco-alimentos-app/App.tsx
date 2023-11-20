@@ -46,7 +46,6 @@ export function AppContent() {
         )}
         <BASheetController />
         <BAModalController />
-        <BAToastController />
       </BAContextProviderWrapper>
     </View>
   );
