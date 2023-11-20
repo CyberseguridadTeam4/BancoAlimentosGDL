@@ -13,8 +13,8 @@ export default function BAMisPosts({ setOnPostPress, setPostPressed }: any) {
   useEffect(() => {
     openLoading();
     (async () => {
-      axios.get("/getUserPosts").then((res) => {
-        setPosts(res.data.userPosts);
+      axios.get("/getUserPosts").then((res): any => {
+        setPosts(res.data.userPosts.reverse());
         closeLoading();
       });
     })();
