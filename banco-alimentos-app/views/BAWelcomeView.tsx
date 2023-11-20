@@ -33,7 +33,7 @@ export default function LogIn() {
       .then(function (response) {
         console.log(response.data);
         if (response.status == 200) {
-          setUser(response.data);
+          setUser(response.data.user);
           AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
           axios.defaults.headers.common["Authorization"] =
             response.data.user.sessionToken;
