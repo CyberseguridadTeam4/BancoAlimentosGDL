@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   RefreshControl,
+  Image,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import BAView from "../components/BAView";
@@ -20,6 +21,7 @@ import { useLoading } from "../components/Loading/BALoadingContext";
 import { useBird } from "../components/BABirdContext";
 import BAReportView from "./BAReportView";
 import { useUser } from "../components/BAUserContext";
+import BAProfilePictures from "../assets/profilePictures/BAProfilePictures";
 
 type PostType = {
   text: string;
@@ -228,7 +230,13 @@ export const Post = ({
     <TouchableOpacity style={styles.postBox} onPress={onClickPost}>
       <View style={styles.header}>
         <View style={styles.row}>
-          <View style={styles.profilePic} />
+          <View style={styles.profilePic}>
+            <Image 
+            style={{ width: "90%", height: "90%", tintColor:BAPallete.Red01}}
+            source={BAProfilePictures[0]}
+            resizeMode="contain"
+            />
+          </View>
           <BAText type={TypeText.label3} style={{ fontSize: 16 }}>
             {postData.title}
           </BAText>
@@ -382,6 +390,8 @@ const styles = StyleSheet.create({
     shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.15,
     marginRight: 15,
+    alignItems: "center",
+    justifyContent: "center",
   },
   footer: {
     flexDirection: "row",
