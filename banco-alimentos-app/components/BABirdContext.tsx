@@ -48,7 +48,6 @@ export const BirdProvider = ({ children, birdPointer }: any) => {
         .get(`/getPollito/${birdPointer.objectId}`)
         .then((res): any => {
           setBirdData(res.data.pollo);
-          console.log(res.data.pollo);
           closeLoading();
         })
         .catch((error) => {

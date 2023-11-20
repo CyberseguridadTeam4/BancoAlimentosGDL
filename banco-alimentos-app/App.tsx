@@ -56,22 +56,6 @@ type ViewSwitchProps = {
   viewIndex: number;
 };
 
-type UserProps = {
-  user: {
-    username: string;
-    badges: [];
-    email: string;
-    idProfilePicture: number;
-    visBadge: number;
-    pollo: any;
-    createdAt: string;
-    updatedAt: string;
-    ACL: any;
-    sessionToken: string;
-    objectId: string;
-  };
-};
-
 const ViewSwitch = ({ viewIndex }: ViewSwitchProps) => {
   switch (viewIndex) {
     case 0:
