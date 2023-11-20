@@ -56,7 +56,7 @@ export default function BAAcount() {
         <BABadgesView
           isOpen={isBadgesOpen}
           setIsOpen={setIsBadgesOpen}
-          badges={userData.badges}
+          badges={userData.badges.sort()}
         />
       )}
       <BASubView title="Editar perfil" isOpen={subpage} onReturn={setSubpage}>
