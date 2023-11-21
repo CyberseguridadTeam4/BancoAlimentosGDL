@@ -70,7 +70,7 @@ function BABadgeModal({ index, badges, disableArrows }: any) {
       .patch(`/profileBadge/${badges[badgeIndex]}`)
       .then((res) => setUser(res.data.user));
     closeModal();
-  }, []);
+  }, [badgeIndex]);
 
   return (
     <View style={styles.modalContainer}>
