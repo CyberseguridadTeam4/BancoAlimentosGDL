@@ -99,5 +99,8 @@ export default {
   },
   get EditIcon(): ImageSourcePropType {
     return require("./EditIcon.png");
+  },
+  get TrashIcon(): ImageSourcePropType {
+    return require("./TrashCanIcon.png");
   }
 };
