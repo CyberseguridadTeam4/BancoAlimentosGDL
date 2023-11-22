@@ -1,4 +1,9 @@
-import { StyleSheet, View } from "react-native";
+import { 
+  Pressable,
+  StyleSheet,
+  View 
+} from "react-native";
+
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
@@ -6,6 +11,7 @@ import BAIcons from "../resources/icons/BAIcons";
 import { useState } from "react";
 import React from "react";
 import { useModal } from "../components/Modal/BAModalContext";
+import DateTimePicker from "@react-native-community/datetimepicker"; 
 
 export default function SignUp({
   setIsInPasswordPage,
@@ -15,11 +21,41 @@ export default function SignUp({
 }: any) {
   const [user, setUser] = useState("");
   const [email, setEmail] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const {openModal} = useModal();
+  const {openModal} = useModal(); 
+
+  const [date, setDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
 
   function missing () {
-    return user === "" || email === "" || birthDate === ""
+    return user === "" || email === "" 
+  }
+
+  const toggleDatePicker = () => {
+    setShowPicker(!showPicker);
+  };
+
+  const formatDate = (date: Date) => {
+    const day = String(date.getDate()).padStart(2,'0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`; 
+  };
+
+  const onChangeText = (text: string) => {
+    const [day, month, year] = text.split('/').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
+    setDate(selectedDate);
+   };
+
+   
+
+  const dateString = formatDate(date);
+
+  const onChange = (event: any, selectedDate: any) => {
+    const currentDate = selectedDate || date;
+    setDate(currentDate);
+    toggleDatePicker();
   }
 
   return (
@@ -40,14 +76,35 @@ export default function SignUp({
           icon={BAIcons.SMSIcon}
           value={email}
           onChange={setEmail}
+          editable={false}
         />
         <BAText style={styles.center}>Fecha de nacimimento:</BAText>
-        <BATextInput
-          placeholder="dd/mm/yyyy"
-          icon={BAIcons.BirdIcon}
-          value={birthDate}
-          onChange={setBirthDate}
-        />
+
+        {showPicker && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="calendar"
+            onChange={onChange}
+
+
+
+          />
+        )}
+
+        <Pressable onPress={() => {
+          toggleDatePicker();
+        }}>
+          <BATextInput
+            placeholder={dateString}
+            icon={BAIcons.BirdIcon}
+            value={formatDate(date)}
+            onChange={onChangeText}
+            editable={false}
+          />
+        </Pressable>
+
+
         {missing() ? <BAButton
           text="Siguiente"
           state={ButtonState.alert}
@@ -65,7 +122,7 @@ export default function SignUp({
         onPress={() => {
           setUserRoot(user);
           serEmailRoot(email);
-          setBirthDateRoot(birthDate);
+          setBirthDateRoot(date);
           setIsInPasswordPage(true);
         }}
       />}
