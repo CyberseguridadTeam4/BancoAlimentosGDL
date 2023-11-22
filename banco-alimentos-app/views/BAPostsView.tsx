@@ -22,11 +22,13 @@ import { useBird } from "../components/BABirdContext";
 import BAReportView from "./BAReportView";
 import { useUser } from "../components/BAUserContext";
 import BAProfilePictures from "../assets/profilePictures/BAProfilePictures";
+import { useModal } from "../components/Modal/BAModalContext";
+
 
 type PostType = {
   text: string;
   title: string;
-  userId: {
+  userPointer: {
     __type: string;
     className: string;
     objectId: string;
@@ -44,7 +46,7 @@ type PostProps = {
   post: {
     text: string;
     title: string;
-    userId: {
+    userPointer: {
       __type: string;
       className: string;
       objectId: string;
@@ -178,9 +180,16 @@ export const Post = ({
 }: PostProps) => {
   const [likedPost, setLiketPost] = useState(post.isliked);
   const [postData, setPostData] = useState(post);
+  const [isUser, setIsUser] = useState(false);
 
   const { dispatchInteraction } = useBird();
   const { openSheet, closeSheet } = useSheet();
+  const { userData } = useUser();
+  const { openModal } = useModal();
+
+  useEffect(() => {
+    setIsUser(postData.userPointer?.objectId == userData.objectId);
+  }, []);
 
   useEffect(() => {
     setPostData(post);
@@ -241,9 +250,27 @@ export const Post = ({
             {postData.title}
           </BAText>
         </View>
+        <View style={[styles.row, { gap: 20 }]}>
         <BAText type={TypeText.label3} style={{ fontSize: 14 }}>
           {calculateDate(postData.createdAt)}
         </BAText>
+        {isUser && (
+            <TouchableOpacity
+            onPress={() => {
+              openModal(
+                <DeleteModal objId={post.objectId}/>, 
+                "Confirmar"
+              );
+            }}
+            >
+              <BAIcon
+                icon={BAIcons.TrashIcon}
+                color={BAPallete.Red01}
+                size={"medium"}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
       <BAText
         style={{ marginVertical: 20, fontSize: 18 }}
@@ -344,6 +371,31 @@ const CreatePostView = ({ closeSheet }: any) => {
         state={ButtonState.alert}
         onPress={() => publishPost(text)}
         text="Send"
+      />
+    </View>
+  );
+};
+
+const DeleteModal =  ({objId} : any) => {
+  const { closeModal } = useModal();
+  
+  const deletePost = async () => {
+    await axios
+    .patch(`/deletePost/${objId}`);
+  }
+  return (
+    <View>
+      <BAText type={TypeText.label3} style={{ marginBottom: 20 }}>
+        ¿Quieres eliminar este post? 
+        Esta acción no es reversible
+      </BAText>
+      <BAButton
+        onPress={() => {
+          deletePost();
+          closeModal();
+        }}
+        state={ButtonState.alert}
+        text="Aceptar"
       />
     </View>
   );
