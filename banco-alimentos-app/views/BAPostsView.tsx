@@ -252,6 +252,7 @@ export const Post = ({
               size={"medium"}
             />
           </TouchableOpacity>
+
           {!isReportHide && (
             <TouchableOpacity
               onPress={() =>
@@ -272,6 +273,7 @@ export const Post = ({
               />
             </TouchableOpacity>
           )}
+        
         </View>
         <View style={[styles.row, { gap: 20, marginRight: 10 }]}>
           {!isLikeHide && (
