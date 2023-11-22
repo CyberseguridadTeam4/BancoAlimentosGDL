@@ -155,12 +155,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F4F5FF",
     alignItems: "center",
-    gap: 19,
+    gap: 10,
     paddingHorizontal: 20,
   },
   containerInline: {
     flexDirection: "row",
-    marginBottom: 30,
+    marginBottom: 20,
   },
   center: {
     width: "100%",
@@ -173,7 +173,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   image: {
-    marginTop: 10,
     width: 200,
     resizeMode: "contain",
   },

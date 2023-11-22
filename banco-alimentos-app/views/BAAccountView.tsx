@@ -90,7 +90,7 @@ export default function BAAcount() {
         <BABadgesView
           isOpen={isBadgesOpen}
           setIsOpen={setIsBadgesOpen}
-          badges={userData.badges.sort()}
+          badges={userData.badges.sort((a, b) => a - b)}
         />
       )}
       {isProfilePicOpen && (
