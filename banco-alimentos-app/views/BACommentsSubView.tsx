@@ -12,11 +12,13 @@ import BAPallete from "../resources/BAPallete";
 import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
 import BATextInput from "../components/BATextInput";
+import BAButton, {ButtonState} from "../components/BAButton";
 import axios from "../axios";
 import BAReportView from "./BAReportView";
 import { useSheet } from "../components/Sheet/BASheetContext";
 import { useUser } from "../components/BAUserContext";
 import { useBird } from "../components/BABirdContext";
+import { useModal } from "../components/Modal/BAModalContext";
 
 type CommentProps = {
   comment: {
@@ -32,6 +34,11 @@ type CommentProps = {
     createdAt: string;
     updatedAt: string;
     objectId: string;
+    userId: {
+      __type: string;
+      className: string;
+      objectId: string;
+    };
   };
 };
 
@@ -48,13 +55,18 @@ type CommentsViewProps = {
 export type PostProps = {
   text: string;
   title: string;
-  username: string;
+  userPointer: {
+    __type: string;
+    className: string;
+    objectId: string;
+  };
   nViews: number;
   nLikes: number;
   createdAt: string;
   updatedAt: string;
   reported: boolean;
   objectId: string;
+  isliked: boolean;
 };
 
 const calculateDate = (postCreation: string): string => {
@@ -100,14 +112,14 @@ export default function BACommentsSubView({
 
   const { userData } = useUser();
 
-  const publishComment = useCallback(async (textComment: string) => {
+  const publishComment = useCallback(async (text: string) => {
+    const postId = post.objectId;
     await axios
       .post(`/comment`, {
-        text: textComment,
-        userId: userData.objectId,
-        postId: post.objectId,
+        postId,
+        text
       })
-      .then((res) => {
+      .then(() => {
         setText("");
       })
       .catch((error) => console.log(error));
@@ -206,10 +218,18 @@ export default function BACommentsSubView({
 const Comment = ({ comment }: CommentProps) => {
   const [likedComment, setLiketComment] = useState(false);
   const [commentData, setCommentData] = useState(comment);
+  const [isUser, setIsUser] = useState(false);
+
+  const { openModal } = useModal();
+  const { userData } = useUser();
 
   useEffect(() => {
     setCommentData(comment);
   }, [comment]);
+
+  useEffect(() => {
+    setIsUser(commentData.userId?.objectId == userData.objectId);
+  }, []);
 
   const { openSheet, closeSheet } = useSheet();
 
@@ -233,7 +253,33 @@ const Comment = ({ comment }: CommentProps) => {
           </BAText>
         </View>
         <View style={[styles.row, { gap: 15 }]}>
-          <TouchableOpacity
+         
+          {isUser && (
+              <TouchableOpacity
+              onPress={() => {
+                openModal(
+                  <DeleteModal objId={commentData.objectId} type={1}/>, 
+                  "Confirmar"
+                );
+              }}
+              >
+                <BAIcon
+                  icon={BAIcons.TrashIcon}
+                  color={BAPallete.Red01}
+                  size={"medium"}
+                />
+              </TouchableOpacity>
+            )}
+          <BAText type={TypeText.label3} style={{ fontSize: 12 }}>
+            {calculateDate(commentData.createdAt)}
+          </BAText>
+        </View>
+      </View>
+      <BAText style={{ marginVertical: 20, fontSize: 16 }}>
+        {commentData.text}
+      </BAText>
+      <View style={styles.footer}>
+      <TouchableOpacity
             onPress={() =>
               openSheet(
                 <BAReportView
@@ -251,16 +297,7 @@ const Comment = ({ comment }: CommentProps) => {
               size={"medium"}
             />
           </TouchableOpacity>
-          <BAText type={TypeText.label3} style={{ fontSize: 12 }}>
-            {calculateDate(commentData.createdAt)}
-          </BAText>
-        </View>
-      </View>
-      <BAText style={{ marginVertical: 20, fontSize: 16 }}>
-        {commentData.text}
-      </BAText>
-      <View style={styles.footer}>
-        <View style={[styles.row, { gap: 15 }]}>
+        <View style={[styles.row, { gap: 20, marginRight: 10 }]}>
           <TouchableOpacity
             onPress={() => {
               setLiketComment(!likedComment);
@@ -293,9 +330,12 @@ export const Post = ({
 }: any) => {
   const [likedPost, setLiketPost] = useState(post.isliked);
   const [postData, setPostData] = useState(post);
+  const [isUser, setIsUser] = useState(false);
 
   const { dispatchInteraction } = useBird();
   const { openSheet, closeSheet } = useSheet();
+  const { openModal } = useModal();
+  const { userData } = useUser();
 
   const likePost = useCallback(async (isLike: boolean) => {
     const postData = post;
@@ -307,6 +347,11 @@ export const Post = ({
     await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);
   }, []);
 
+  useEffect(() => {
+    setIsUser(postData.userPointer?.objectId == userData.objectId);
+  }, []);
+
+
   return (
     <View style={styles.postBox}>
       <View style={styles.header}>
@@ -316,9 +361,27 @@ export const Post = ({
             {postData.title}
           </BAText>
         </View>
-        <BAText type={TypeText.label3} style={{ fontSize: 14 }}>
-          {calculateDate(postData.createdAt)}
-        </BAText>
+        <View style={[styles.row, { gap: 20 }]}>
+          <BAText type={TypeText.label3} style={{ fontSize: 14 }}>
+            {calculateDate(postData.createdAt)}
+          </BAText>
+          {isUser && (
+              <TouchableOpacity
+              onPress={() => {
+                openModal(
+                  <DeleteModal objId={post.objectId} type={0}/>, 
+                  "Confirmar"
+                );
+              }}
+              >
+                <BAIcon
+                  icon={BAIcons.TrashIcon}
+                  color={BAPallete.Red01}
+                  size={"medium"}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
       </View>
       <BAText
         style={{ marginVertical: 20, fontSize: 22 }}
@@ -380,6 +443,41 @@ export const Post = ({
           )}
         </View>
       </View>
+    </View>
+  );
+};
+
+const DeleteModal =  ({objId, type} : any) => {
+  const { closeModal } = useModal();
+  
+  const deletePost = async () => {
+    await axios
+    .patch(`/deletePost/${objId}`);
+  };
+
+  const deleteComment = async () => {
+    await axios
+    .patch(`/deleteComment/${objId}`);
+  }; 
+
+  return (
+    <View>
+      <BAText type={TypeText.label3} style={{ marginBottom: 20 }}>
+        ¿Quieres eliminarlo? 
+        Esta acción no es reversible
+      </BAText>
+      <BAButton
+        onPress={() => {
+          if(type == 0){
+            deletePost();
+          } else if (type == 1){
+            deleteComment();
+          }
+          closeModal();
+        }}
+        state={ButtonState.alert}
+        text="Aceptar"
+      />
     </View>
   );
 };
