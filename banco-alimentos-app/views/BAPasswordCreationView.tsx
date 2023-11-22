@@ -48,12 +48,11 @@ export default function SignUp({
         "Cuenta creada!"
       );
     };
-
+    
     // Call the function only when passwords have been entered
     if (userCreated) {
       showModal();
     }
-
   }, [userCreated]); // Dependency array updated
 
   const createUser = async () => {
@@ -71,7 +70,8 @@ export default function SignUp({
           name: name,
         })
         .then(function (response) {
-          setUser(response.data.user);
+          setUserCreated(true);
+          // setUser(response.data.user);
         })
         .catch(function (error) {
           console.log(error);
