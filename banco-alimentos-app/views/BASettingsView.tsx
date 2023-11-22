@@ -8,16 +8,11 @@ import { useSheet } from "../components/Sheet/BASheetContext";
 import { useModal } from "../components/Modal/BAModalContext";
 import BATextInput from "../components/BATextInput";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { emptyUser, useUser } from "../components/BAUserContext";
+import BAPallete from "../resources/BAPallete";
+import axios from "../axios";
 
-type SettingProps = {
-  userData: any;
-  setUserData: (data: any) => void;
-};
-
-export default function BASettingsView({
-  userData,
-  setUserData,
-}: SettingProps) {
+export default function BASettingsView() {
   const { openSheet } = useSheet();
   const { openModal } = useModal();
 
@@ -30,23 +25,13 @@ export default function BASettingsView({
         />
         <BAButton
           text="Cerrar Sesión"
-          onPress={() =>
-            openModal(<LogOutModal setUserData={setUserData} />, "Confirmar")
-          }
+          onPress={() => openModal(<LogOutModal />, "Confirmar")}
         />
       </View>
       <BAButton
         text="Eliminar Cuenta"
         state={ButtonState.alert}
-        onPress={() =>
-          openModal(
-            <DeleteAccountModal
-              userData={userData}
-              setUserData={setUserData}
-            />,
-            "Eliminar cuenta"
-          )
-        }
+        onPress={() => openModal(<DeleteAccountModal />, "Eliminar cuenta")}
         style={{ marginVertical: 20 }}
       />
       <Image
@@ -73,8 +58,9 @@ export default function BASettingsView({
   );
 }
 
-const LogOutModal = ({ setUserData }: any) => {
+const LogOutModal = () => {
   const { closeModal } = useModal();
+  const { logOut } = useUser();
 
   return (
     <View>
@@ -82,12 +68,8 @@ const LogOutModal = ({ setUserData }: any) => {
       <BAButton
         text="Cerrar Sesión"
         onPress={() => {
-          (async () => {
-            await AsyncStorage.removeItem("sessionToken");
-          })();
-
+          logOut();
           closeModal();
-          setUserData(null);
         }}
         state={ButtonState.alert}
         style={{ marginTop: 25 }}
@@ -96,7 +78,7 @@ const LogOutModal = ({ setUserData }: any) => {
   );
 };
 
-const DeleteAccountModal = ({ userData, setUserData }: SettingProps) => {
+const DeleteAccountModal = () => {
   const { openModal, closeModal } = useModal();
 
   return (
@@ -114,13 +96,7 @@ const DeleteAccountModal = ({ userData, setUserData }: SettingProps) => {
         text="Confirmar"
         onPress={() => {
           closeModal();
-          openModal(
-            <ConfirmDeleteModal
-              userData={userData}
-              setUserData={setUserData}
-            />,
-            "Confirmar"
-          );
+          openModal(<ConfirmDeleteModal />, "Confirmar");
         }}
         state={ButtonState.alert}
         style={{ marginTop: 25 }}
@@ -129,9 +105,12 @@ const DeleteAccountModal = ({ userData, setUserData }: SettingProps) => {
   );
 };
 
-const ConfirmDeleteModal = ({ userData, setUserData }: SettingProps) => {
+const ConfirmDeleteModal = () => {
+  const { setUser, userData } = useUser();
   const { closeModal } = useModal();
   const [name, setName] = useState("");
+
+  const [showWarning, setShowWarning] = useState(false);
 
   return (
     <View>
@@ -139,15 +118,28 @@ const ConfirmDeleteModal = ({ userData, setUserData }: SettingProps) => {
         Escribe tu nombre de usuario para confirmar esta acción
       </BAText>
       <BATextInput value={name} onChange={setName} />
+      {showWarning && (
+        <BAText
+          type={TypeText.label3}
+          style={{ color: BAPallete.Red01, textAlign: "center", marginTop: 15 }}
+        >
+          El texto no coincide con el nombre de usuario
+        </BAText>
+      )}
       <BAButton
         text="Eliminar"
         onPress={() => {
+          if (name != userData.username) {
+            setShowWarning(true);
+            return;
+          }
           (async () => {
             await AsyncStorage.removeItem("sessionToken");
+            await axios.get("/deleteUser");
           })();
 
+          setUser(emptyUser);
           closeModal();
-          setUserData(null);
         }}
         state={ButtonState.alert}
         style={{ marginTop: 25 }}

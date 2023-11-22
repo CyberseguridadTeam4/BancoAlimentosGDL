@@ -5,8 +5,11 @@ import BAPallete from "../resources/BAPallete";
 import BABadge from "./BABadge";
 import BAIcons from "../resources/icons/BAIcons";
 import BAButton, { ButtonState } from "./BAButton";
+import BABadges from "../assets/badges/BABadges";
+import { useUser } from "./BAUserContext";
 
 type EggProps = {
+  nextBadge: number;
   onClose: () => void;
 };
 
@@ -14,7 +17,7 @@ type PartsEggProps = {
   positionYRef: Animated.AnimatedInterpolation<string | number>;
 };
 
-export default function BAEgg({ onClose }: EggProps) {
+export default function BAEgg({ nextBadge, onClose }: EggProps) {
   const backgroundOpacity = useRef(new Animated.Value(1)).current;
   const rotationEggRef = useRef(new Animated.Value(0)).current;
   const scaleEggRef = useRef(new Animated.Value(0)).current;
@@ -22,6 +25,8 @@ export default function BAEgg({ onClose }: EggProps) {
   const positionYRef = useRef(new Animated.Value(0)).current;
 
   const [isAnimationFinished, setIsAnimationFinished] = useState(false);
+
+  const { userData } = useUser();
 
   useEffect(() => {
     Animated.sequence([
@@ -157,7 +162,11 @@ export default function BAEgg({ onClose }: EggProps) {
                 { transform: [{ scale: scaleEggRef }] },
               ]}
             >
-              <BABadge image={BAIcons.BirdActivatedIcon} />
+              <BABadge
+                badges={userData.badges}
+                image={BABadges[nextBadge]}
+                disableArrows={true}
+              />
             </Animated.View>
           )}
           <Animated.View
@@ -171,7 +180,11 @@ export default function BAEgg({ onClose }: EggProps) {
           </Animated.View>
           {isAnimationFinished && (
             <View style={styles.badgeWrapper}>
-              <BABadge image={BAIcons.BirdActivatedIcon} />
+              <BABadge
+                image={BABadges[nextBadge]}
+                badges={userData.badges}
+                disableArrows={true}
+              />
             </View>
           )}
         </View>
