@@ -1,9 +1,9 @@
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, Alert } from "react-native";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
 import BAIcons from "../resources/icons/BAIcons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BAView from "../components/BAView";
 import React from "react";
 import BASubView from "../components/BASubView";
@@ -12,6 +12,7 @@ import BAPasswordCreationView from "./BAPasswordCreationView";
 import { useUser } from "../components/BAUserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "../axios";
+import { useModal } from "../components/Modal/BAModalContext";
 
 export default function LogIn() {
   const [isInRegisterPage, setIsInRegisterPage] = useState(false);
@@ -22,6 +23,7 @@ export default function LogIn() {
   const [username, setUsername] = useState("");
   const [birthday, setBirthday] = useState("");
 
+  const {openModal} = useModal();
   const { setUser } = useUser();
 
   const userLogin = async () => {
@@ -62,6 +64,43 @@ export default function LogIn() {
         console.log(error);
       });
   };
+
+
+  const resetPassword = async () => {
+    axios
+    .post("/resetPassword", {
+      email: email,
+    })
+    .then(function (response) {
+      console.log(response.data);
+      if (response.status == 200) {
+        console.log("resetPassword");
+        openModal(
+          <BAText>
+            {email}
+          </BAText>,
+          "Restablecimiento enviado a:"
+        );
+      } else {
+        console.log("Correo no existe");
+        openModal(
+          <BAText>
+            Verifica que tu email este bien escrito. 
+          </BAText>,
+          "Ops!!! Hubo un error"
+        );
+      }
+    })
+    .catch(function (error) {
+      console.error(error); 
+      openModal(
+        <BAText>
+          Escribe el correo de tu cuenta!
+        </BAText>,
+        "Ops!!! Hubo un error"
+      );
+    });
+  }
 
   return (
     <>
@@ -106,9 +145,9 @@ export default function LogIn() {
           <BAText type={TypeText.label3}>Olvidaste tu contraseña?</BAText>
           <BAText
             type={TypeText.label5}
-            onPress={() => console.log("Recuperacion Contraseña")}
+            onPress={() => resetPassword()}
           >
-            {" Recuperar"}
+            {"Recuperar"}
           </BAText>
         </View>
 
