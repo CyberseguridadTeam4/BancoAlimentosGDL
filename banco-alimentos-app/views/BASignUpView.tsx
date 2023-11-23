@@ -19,6 +19,7 @@ export default function SignUp({
   serEmailRoot,
   setBirthDateRoot,
 }: any) {
+
   const [user, setUser] = useState("");
   const [email, setEmail] = useState(""); 
   const {openModal} = useModal(); 
@@ -26,13 +27,24 @@ export default function SignUp({
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
 
-  function missing () {
-    return user === "" || email === "" 
-  }
 
-  const toggleDatePicker = () => {
-    setShowPicker(!showPicker);
-  };
+  const calculateAge = (date: Date) => {
+    const today = new Date();
+    let age = today.getFullYear() - date.getFullYear();
+    const m = today.getMonth() - date.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < date.getDate())) {
+      age--;
+    }
+    return age;
+   };   
+
+  function incorrect () {
+    if(user === "" || email === "" || date === null) {
+      return true;
+    } else {
+      let age = calculateAge(date) < 18 ? true : false;
+    }
+  }
 
   const formatDate = (date: Date) => {
     const day = String(date.getDate()).padStart(2,'0');
@@ -42,21 +54,28 @@ export default function SignUp({
     return `${day}/${month}/${year}`; 
   };
 
+
+
+  const toggleDatePicker = () => {
+    setShowPicker(!showPicker);
+  };
+
   const onChangeText = (text: string) => {
     const [day, month, year] = text.split('/').map(Number);
     const selectedDate = new Date(year, month - 1, day);
     setDate(selectedDate);
    };
 
-  const dateString = formatDate(date);
+    
+   const onChange = (event: any, selectedDate: any) => {
+     const currentDate = selectedDate || date;
+     setDate(currentDate);
+     toggleDatePicker();
+    }
+    
+    const dateString = formatDate(date);
 
-  const onChange = (event: any, selectedDate: any) => {
-    const currentDate = selectedDate || date;
-    setDate(currentDate);
-    toggleDatePicker();
-  }
-
-  return (
+    return (
     <>
       <View style={styles.container}>
         <BAText style={styles.center}>Usuario:</BAText>
@@ -66,9 +85,11 @@ export default function SignUp({
           value={user}
           onChange={setUser}
         />
+
         <BAText type={TypeText.label1} style={styles.center}>
           Email:
         </BAText>
+
         <BATextInput
           placeholder="Email"
           icon={BAIcons.SMSIcon}
@@ -103,27 +124,27 @@ export default function SignUp({
         </Pressable>
 
 
-        {missing() ? <BAButton
+          {incorrect() ? <BAButton
+            text="Siguiente"
+            state={ButtonState.alert}
+            style={styles.centerSiguiente}
+            onPress={() => {
+              openModal(
+                <BAText>Asegurate de escribir correctamente la informacion en todos los campos</BAText>,
+                "Campos incompletos"
+              )
+            }}
+          /> : <BAButton
           text="Siguiente"
           state={ButtonState.alert}
           style={styles.centerSiguiente}
           onPress={() => {
-            openModal(
-              <BAText>Asegurate de escribir correctamente la informacion en todos los campos</BAText>,
-              "Campos incompletos"
-            )
+            setUserRoot(user);
+            serEmailRoot(email);
+            setBirthDateRoot(date);
+            setIsInPasswordPage(true);
           }}
-        /> : <BAButton
-        text="Siguiente"
-        state={ButtonState.alert}
-        style={styles.centerSiguiente}
-        onPress={() => {
-          setUserRoot(user);
-          serEmailRoot(email);
-          setBirthDateRoot(date);
-          setIsInPasswordPage(true);
-        }}
-      />}
+        />}
       </View>
     </>
   );
