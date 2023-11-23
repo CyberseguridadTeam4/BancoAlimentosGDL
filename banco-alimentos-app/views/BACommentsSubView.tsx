@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  Image
 } from "react-native";
 import BASubView from "../components/BASubView";
 import BAText, { TypeText } from "../components/BAText";
@@ -19,6 +20,8 @@ import { useSheet } from "../components/Sheet/BASheetContext";
 import { useUser } from "../components/BAUserContext";
 import { useBird } from "../components/BABirdContext";
 import { useModal } from "../components/Modal/BAModalContext";
+import BAProfilePictures from "../assets/profilePictures/BAProfilePictures";
+
 
 type CommentProps = {
   comment: {
@@ -34,11 +37,12 @@ type CommentProps = {
     createdAt: string;
     updatedAt: string;
     objectId: string;
-    userId: {
-      __type: string;
-      className: string;
-      objectId: string;
-    };
+    userData: [
+      username: string, 
+      colorProfilePicture: number, 
+      idProfilePicture: number, 
+      visBadge: number
+    ];
   };
 };
 
@@ -55,11 +59,12 @@ type CommentsViewProps = {
 export type PostProps = {
   text: string;
   title: string;
-  userPointer: {
-    __type: string;
-    className: string;
-    objectId: string;
-  };
+  userData: [
+    username: string, 
+    colorProfilePicture: number, 
+    idProfilePicture: number, 
+    visBadge: number
+  ];
   nViews: number;
   nLikes: number;
   createdAt: string;
@@ -97,6 +102,17 @@ const calculateDate = (postCreation: string): string => {
 
   return result.trim().replace(/,\s*$/, ""); // remove trailing comma
 };
+
+const pictureColors = [
+  BAPallete.SoftRed,
+  BAPallete.SoftOrange,
+  BAPallete.SoftYellow,
+  BAPallete.SoftGreen,
+  BAPallete.SoftSky,
+  BAPallete.SoftBlue,
+  BAPallete.SoftPurple,
+  BAPallete.SoftPink,
+];
 
 export default function BACommentsSubView({
   post,
@@ -228,7 +244,7 @@ const Comment = ({ comment }: CommentProps) => {
   }, [comment]);
 
   useEffect(() => {
-    setIsUser(commentData.userId?.objectId == userData.objectId);
+    setIsUser(commentData.userData[0] == userData.objectId);
   }, []);
 
   const { openSheet, closeSheet } = useSheet();
@@ -247,13 +263,18 @@ const Comment = ({ comment }: CommentProps) => {
     <View style={styles.commentsBox}>
       <View style={styles.header}>
         <View style={styles.row}>
-          <View style={styles.profilePic} />
+        <View style={styles.profilePic}>
+            <Image 
+            style={{ width: "90%", height: "90%", tintColor:pictureColors[commentData.userData[1]]}}
+            source={BAProfilePictures[commentData.userData[2]]}
+            resizeMode="contain"
+            />
+          </View>
           <BAText type={TypeText.label3} style={{ fontSize: 18 }}>
             {commentData.username}
           </BAText>
         </View>
         <View style={[styles.row, { gap: 15 }]}>
-         
           {isUser && (
               <TouchableOpacity
               onPress={() => {
@@ -356,7 +377,13 @@ export const Post = ({
     <View style={styles.postBox}>
       <View style={styles.header}>
         <View style={styles.row}>
-          <View style={styles.profilePic} />
+        <View style={styles.profilePic}>
+            <Image 
+            style={{ width: "90%", height: "90%", tintColor:pictureColors[postData.userData[1]]}}
+            source={BAProfilePictures[postData.userData[2]]}
+            resizeMode="contain"
+            />
+          </View>
           <BAText type={TypeText.label3} style={{ fontSize: 20 }}>
             {postData.title}
           </BAText>
@@ -526,6 +553,8 @@ const styles = StyleSheet.create({
     shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.15,
     marginRight: 15,
+    alignItems: "center",
+    justifyContent: "center",
   },
   footer: {
     flexDirection: "row",
