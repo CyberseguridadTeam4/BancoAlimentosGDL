@@ -28,11 +28,12 @@ import { useModal } from "../components/Modal/BAModalContext";
 type PostType = {
   text: string;
   title: string;
-  userPointer: {
-    __type: string;
-    className: string;
-    objectId: string;
-  };
+  userData: [
+    username: string, 
+    colorProfilePicture: number, 
+    idProfilePicture: number, 
+    visBadge: number
+  ];
   nViews: number;
   nLikes: number;
   createdAt: string;
@@ -46,11 +47,12 @@ type PostProps = {
   post: {
     text: string;
     title: string;
-    userPointer: {
-      __type: string;
-      className: string;
-      objectId: string;
-    };
+    userData: [
+      username: string, 
+      colorProfilePicture: number, 
+      idProfilePicture: number, 
+      visBadge: number
+    ];
     nViews: number;
     nLikes: number;
     createdAt: string;
@@ -74,9 +76,10 @@ export default function BAPostsView() {
 
   const { openLoading, closeLoading } = useLoading();
   const { userData } = useUser();
+  const index = 0;
 
   const getPosts = async () => {
-    await axios.get("/getPosts").then((res: any) => {
+    await axios.get(`/getPosts/${index}`).then((res: any) => {
       const postsData = res.data.posts;
       postsData.reverse();
       setPosts(postsData);
@@ -187,8 +190,19 @@ export const Post = ({
   const { userData } = useUser();
   const { openModal } = useModal();
 
+  const pictureColors = [
+    BAPallete.SoftRed,
+    BAPallete.SoftOrange,
+    BAPallete.SoftYellow,
+    BAPallete.SoftGreen,
+    BAPallete.SoftSky,
+    BAPallete.SoftBlue,
+    BAPallete.SoftPurple,
+    BAPallete.SoftPink,
+  ];
+
   useEffect(() => {
-    setIsUser(postData.userPointer?.objectId == userData.objectId);
+    setIsUser(postData.userData[0]== userData.username);
   }, []);
 
   useEffect(() => {
@@ -241,8 +255,8 @@ export const Post = ({
         <View style={styles.row}>
           <View style={styles.profilePic}>
             <Image 
-            style={{ width: "90%", height: "90%", tintColor:BAPallete.Red01}}
-            source={BAProfilePictures[0]}
+            style={{ width: "90%", height: "90%", tintColor:pictureColors[postData.userData[1]]}}
+            source={BAProfilePictures[postData.userData[2]]}
             resizeMode="contain"
             />
           </View>
@@ -349,11 +363,12 @@ const CreatePostView = ({ closeSheet }: any) => {
   const [text, setText] = useState("");
 
   const { userData } = useUser();
-
   const publishPost = useCallback(async (textPost: string) => {
+    
     await axios
       .post(`/post`, {
         text: textPost,
+        title: userData.username,
       })
       .then((res) => {
         closeSheet();
