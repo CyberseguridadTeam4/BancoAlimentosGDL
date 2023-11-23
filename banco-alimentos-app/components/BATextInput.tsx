@@ -74,21 +74,21 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   textInput: {
-    width: "100%",
+    flex: 1,
     textAlignVertical: "center",
-    borderColor: "transparent", // Set to your background color
+    borderColor: "transparent",
     borderWidth: 1,
   },
   shadow: {
-    // Apply shadow styles for Android
-    elevation: 4, // Adjust the elevation value as needed
+    elevation: 10,
+    backgroundColor: "#0000",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.2,
-    shadowRadius: 4, // Adjust the shadow radius as needed
+    shadowRadius: 4,
   },
 });
 
