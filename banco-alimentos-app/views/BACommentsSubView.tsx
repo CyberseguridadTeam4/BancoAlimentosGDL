@@ -244,7 +244,7 @@ const Comment = ({ comment }: CommentProps) => {
   }, [comment]);
 
   useEffect(() => {
-    setIsUser(commentData.userData[0] == userData.objectId);
+    setIsUser(commentData.userData[0] == userData.username);
   }, []);
 
   const { openSheet, closeSheet } = useSheet();
@@ -271,7 +271,7 @@ const Comment = ({ comment }: CommentProps) => {
             />
           </View>
           <BAText type={TypeText.label3} style={{ fontSize: 18 }}>
-            {commentData.username}
+            {commentData.userData[0]}
           </BAText>
         </View>
         <View style={[styles.row, { gap: 15 }]}>
@@ -369,7 +369,7 @@ export const Post = ({
   }, []);
 
   useEffect(() => {
-    setIsUser(postData.userPointer?.objectId == userData.objectId);
+    setIsUser(postData.userData[0]== userData.username);
   }, []);
 
 
