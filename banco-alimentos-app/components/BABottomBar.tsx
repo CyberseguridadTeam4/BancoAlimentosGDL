@@ -185,6 +185,8 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
     shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.25,
+    elevation: 10,
+    backgroundColor: "#0000",
   },
   buttonContainer: {
     flex: 1,
