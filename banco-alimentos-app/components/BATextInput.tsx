@@ -23,10 +23,8 @@ type Props = {
   placeholder?: string;
   value: string;
   onChange: (input: string) => void;
-  isPassword?: boolean;
+  isPassword?: boolean;// New prop to indicate if it's a password input
   editable?: boolean; 
-  onFocus?: boolean;
-  onBlur?: boolean;// New prop to indicate if it's a password input
 };
 
 function BATextInput({
@@ -36,8 +34,6 @@ function BATextInput({
   onChange,
   isPassword = false,
   editable = true,
-  onFocus = true,
-  onBlur = false,
 }: Props): JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
 

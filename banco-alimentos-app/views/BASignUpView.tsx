@@ -20,7 +20,7 @@ export default function SignUp({
   setBirthDateRoot,
 }: any) {
   const [user, setUser] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(""); 
   const {openModal} = useModal(); 
 
   const [date, setDate] = useState(new Date());
@@ -48,8 +48,6 @@ export default function SignUp({
     setDate(selectedDate);
    };
 
-   
-
   const dateString = formatDate(date);
 
   const onChange = (event: any, selectedDate: any) => {
@@ -76,7 +74,7 @@ export default function SignUp({
           icon={BAIcons.SMSIcon}
           value={email}
           onChange={setEmail}
-          editable={false}
+
         />
         <BAText style={styles.center}>Fecha de nacimimento:</BAText>
 
@@ -86,15 +84,15 @@ export default function SignUp({
             mode="date"
             display="calendar"
             onChange={onChange}
-
-
-
           />
         )}
 
-        <Pressable onPress={() => {
+        <Pressable style={styles.pressable}
+        
+        onPress={() => {
           toggleDatePicker();
-        }}>
+        }}
+        >
           <BATextInput
             placeholder={dateString}
             icon={BAIcons.BirdIcon}
@@ -147,4 +145,10 @@ const styles = StyleSheet.create({
   centerSiguiente: {
     marginTop: 150,
   },
+  pressable: {
+    width: "100%",
+    textAlignVertical: "center",
+    borderColor: "transparent", // Set to your background color
+    borderWidth: 1,
+  }
 });
