@@ -2,15 +2,28 @@ import { StyleSheet, View, Image } from "react-native";
 import React from "react";
 import BAPallete from "../resources/BAPallete";
 import BABadges from "../assets/badges/BABadges";
+import profilePictures from "../assets/profilePictures/BAProfilePictures";
 
 export default function BAProfilePic({ user }: any) {
+const pictureColors = [
+    BAPallete.SoftRed,
+    BAPallete.SoftOrange,
+    BAPallete.SoftYellow,
+    BAPallete.SoftGreen,
+    BAPallete.SoftSky,
+    BAPallete.SoftBlue,
+    BAPallete.SoftPurple,
+    BAPallete.SoftPink,
+];
+
   return (
     <>
       <View style={styles.wrapper}>
         <View style={styles.profile}>
           <Image
-            style={{ width: "100%", height: "100%" }}
-            source={require("../resources/icons/PersonIcon.png")}
+            style={{ width: "90%", height: "90%", tintColor:pictureColors[user.colorProfilePicture]}}
+            source={profilePictures[user.idProfilePicture]}
+            resizeMode="contain"
           />
         </View>
         {user.visBadge != -1 && (
@@ -26,20 +39,27 @@ export default function BAProfilePic({ user }: any) {
 const styles = StyleSheet.create({
   wrapper: {
     width: "100%",
-    aspectRatio: 1 / 1,
+     aspectRatio: 1 / 0.8,
     alignItems: "center",
-    justifyContent: "center",
+    alignSelf: "center",
+    justifyContent: "flex-start",
     position: "relative",
+    // backgroundColor: "red"
   },
   profile: {
     width: "60%",
-    height: "60%",
+    aspectRatio: 1 / 1,
     borderRadius: 10,
-    backgroundColor: "pink",
+    backgroundColor: "white",
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowRadius: 5,
+    shadowColor: BAPallete.StrongBlue,
+    shadowOpacity: 0.15,
   },
   badge: {
     width: "25%",
-    height: "25%",
+    aspectRatio: 1 / 1,
     borderRadius: 10,
     backgroundColor: "white",
     transform: [{ rotate: "45deg" }],
@@ -48,6 +68,9 @@ const styles = StyleSheet.create({
     bottom: 0,
     margin: 30,
     justifyContent: "center",
+    shadowRadius: 5,
+    shadowColor: BAPallete.StrongBlue,
+    shadowOpacity: 0.15,
   },
   badgePic: {
     width: "100%",

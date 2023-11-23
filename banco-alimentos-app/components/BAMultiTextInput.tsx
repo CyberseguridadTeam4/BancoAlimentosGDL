@@ -40,6 +40,8 @@ function BATextInput({
         placeholder={"Type something..."}
         value={value}
         onChangeText={onChange}
+        autoCorrect={false}
+        spellCheck={false}
       />
     </View>
   );

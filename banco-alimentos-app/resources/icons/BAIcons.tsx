@@ -97,4 +97,10 @@ export default {
   get BAMXLogo(): ImageSourcePropType {
     return require("./BAMXLogo.png");
   },
+  get EditIcon(): ImageSourcePropType {
+    return require("./EditIcon.png");
+  },
+  get TrashIcon(): ImageSourcePropType {
+    return require("./TrashCanIcon.png");
+  }
 };

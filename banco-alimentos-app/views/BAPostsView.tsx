@@ -3,6 +3,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   RefreshControl,
+  Image,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import BAView from "../components/BAView";
@@ -20,15 +21,19 @@ import { useLoading } from "../components/Loading/BALoadingContext";
 import { useBird } from "../components/BABirdContext";
 import BAReportView from "./BAReportView";
 import { useUser } from "../components/BAUserContext";
+import BAProfilePictures from "../assets/profilePictures/BAProfilePictures";
+import { useModal } from "../components/Modal/BAModalContext";
+
 
 type PostType = {
   text: string;
   title: string;
-  userId: {
-    __type: string;
-    className: string;
-    objectId: string;
-  };
+  userData: [
+    username: string, 
+    colorProfilePicture: number, 
+    idProfilePicture: number, 
+    visBadge: number
+  ];
   nViews: number;
   nLikes: number;
   createdAt: string;
@@ -42,11 +47,12 @@ type PostProps = {
   post: {
     text: string;
     title: string;
-    userId: {
-      __type: string;
-      className: string;
-      objectId: string;
-    };
+    userData: [
+      username: string, 
+      colorProfilePicture: number, 
+      idProfilePicture: number, 
+      visBadge: number
+    ];
     nViews: number;
     nLikes: number;
     createdAt: string;
@@ -70,9 +76,10 @@ export default function BAPostsView() {
 
   const { openLoading, closeLoading } = useLoading();
   const { userData } = useUser();
+  const index = 0;
 
   const getPosts = async () => {
-    await axios.get("/getPosts").then((res: any) => {
+    await axios.get(`/getPosts/${index}`).then((res: any) => {
       const postsData = res.data.posts;
       postsData.reverse();
       setPosts(postsData);
@@ -176,9 +183,27 @@ export const Post = ({
 }: PostProps) => {
   const [likedPost, setLiketPost] = useState(post.isliked);
   const [postData, setPostData] = useState(post);
+  const [isUser, setIsUser] = useState(false);
 
   const { dispatchInteraction } = useBird();
   const { openSheet, closeSheet } = useSheet();
+  const { userData } = useUser();
+  const { openModal } = useModal();
+
+  const pictureColors = [
+    BAPallete.SoftRed,
+    BAPallete.SoftOrange,
+    BAPallete.SoftYellow,
+    BAPallete.SoftGreen,
+    BAPallete.SoftSky,
+    BAPallete.SoftBlue,
+    BAPallete.SoftPurple,
+    BAPallete.SoftPink,
+  ];
+
+  useEffect(() => {
+    setIsUser(postData.userData[0]== userData.username);
+  }, []);
 
   useEffect(() => {
     setPostData(post);
@@ -228,14 +253,38 @@ export const Post = ({
     <TouchableOpacity style={styles.postBox} onPress={onClickPost}>
       <View style={styles.header}>
         <View style={styles.row}>
-          <View style={styles.profilePic} />
+          <View style={styles.profilePic}>
+            <Image 
+            style={{ width: "90%", height: "90%", tintColor:pictureColors[postData.userData[1]]}}
+            source={BAProfilePictures[postData.userData[2]]}
+            resizeMode="contain"
+            />
+          </View>
           <BAText type={TypeText.label3} style={{ fontSize: 16 }}>
             {postData.title}
           </BAText>
         </View>
+        <View style={[styles.row, { gap: 20 }]}>
         <BAText type={TypeText.label3} style={{ fontSize: 14 }}>
           {calculateDate(postData.createdAt)}
         </BAText>
+        {isUser && (
+            <TouchableOpacity
+            onPress={() => {
+              openModal(
+                <DeleteModal objId={post.objectId}/>, 
+                "Confirmar"
+              );
+            }}
+            >
+              <BAIcon
+                icon={BAIcons.TrashIcon}
+                color={BAPallete.Red01}
+                size={"medium"}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
       <BAText
         style={{ marginVertical: 20, fontSize: 18 }}
@@ -314,11 +363,12 @@ const CreatePostView = ({ closeSheet }: any) => {
   const [text, setText] = useState("");
 
   const { userData } = useUser();
-
   const publishPost = useCallback(async (textPost: string) => {
+    
     await axios
       .post(`/post`, {
         text: textPost,
+        title: userData.username,
       })
       .then((res) => {
         closeSheet();
@@ -338,6 +388,31 @@ const CreatePostView = ({ closeSheet }: any) => {
         state={ButtonState.alert}
         onPress={() => publishPost(text)}
         text="Send"
+      />
+    </View>
+  );
+};
+
+const DeleteModal =  ({objId} : any) => {
+  const { closeModal } = useModal();
+  
+  const deletePost = async () => {
+    await axios
+    .patch(`/deletePost/${objId}`);
+  }
+  return (
+    <View>
+      <BAText type={TypeText.label3} style={{ marginBottom: 20 }}>
+        ¿Quieres eliminar este post? 
+        Esta acción no es reversible
+      </BAText>
+      <BAButton
+        onPress={() => {
+          deletePost();
+          closeModal();
+        }}
+        state={ButtonState.alert}
+        text="Aceptar"
       />
     </View>
   );
@@ -384,6 +459,8 @@ const styles = StyleSheet.create({
     shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.15,
     marginRight: 15,
+    alignItems: "center",
+    justifyContent: "center",
   },
   footer: {
     flexDirection: "row",
