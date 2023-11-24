@@ -1,7 +1,8 @@
 import { 
   Pressable,
   StyleSheet,
-  View 
+  View,
+  Platform
 } from "react-native";
 
 import BAButton, { ButtonState } from "../components/BAButton";
@@ -70,6 +71,9 @@ export default function SignUp({
    const onChange = (event: any, selectedDate: any) => {
      const currentDate = selectedDate || date;
      setDate(currentDate);
+     if(Platform.OS === 'android') {
+      setShowPicker(false);
+     }
      toggleDatePicker();
     }
     
@@ -103,13 +107,12 @@ export default function SignUp({
           <DateTimePicker
             value={date}
             mode="date"
-            display="calendar"
-            onChange={onChange}
+            display={Platform.OS === 'ios' ? "spinner" : "calendar"}
+              onChange={onChange}
           />
         )}
 
-        <Pressable style={styles.pressable}
-        
+        <Pressable style={styles.pressable}        
         onPress={() => {
           toggleDatePicker();
         }}
