@@ -508,14 +508,14 @@ export default function BABird({ birdData }: BirdData | any) {
     openModal(
       <BAText>
         Interactua con usuarios en la sección Posts para obtener manzanas y
-        alimentar a tu pollito
+        alimentar a tu pajarito
       </BAText>,
       "No tienes manzanas"
     );
   };
   const noEggs = () => {
     openModal(
-      <BAText>Alimenta a tu pollito para obtener huevos</BAText>,
+      <BAText>Alimenta a tu pajarito para obtener huevos</BAText>,
       "No tienes huevos"
     );
   };
