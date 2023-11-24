@@ -28,6 +28,9 @@ export default function SignUp({
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
 
+  const validAge = new Date();
+  validAge.setFullYear(validAge.getFullYear() - 18);
+
 
   const calculateAge = (date: Date) => {
     const today = new Date();
@@ -39,12 +42,8 @@ export default function SignUp({
     return age;
    };   
 
-  function incorrect () {
-    if(user === "" || email === "" || date === null) {
-      return true;
-    } else {
-      let age = calculateAge(date) < 18 ? true : false;
-    }
+  function missing () {
+    return user === ""  || email === "" || date === null;
   }
 
   const formatDate = (date: Date) => {
@@ -68,13 +67,21 @@ export default function SignUp({
    };
 
     
-   const onChange = (event: any, selectedDate: any) => {
+   const onChange = (event: any, selectedDate: Date) => {
      const currentDate = selectedDate || date;
      setDate(currentDate);
-     if(Platform.OS === 'android') {
-      setShowPicker(false);
+
+     if(selectedDate){
+      if(selectedDate.getTime() < validAge.getTime()){
+        alert('Tienes que tener mas de 18 años para usar la aplicacion');
+      } else {
+        setDate(selectedDate);
+        if(Platform.OS === 'android') {
+          setShowPicker(false);
+        }
+      }
      }
-     toggleDatePicker();
+    toggleDatePicker();
     }
     
     const dateString = formatDate(date);
@@ -108,7 +115,9 @@ export default function SignUp({
             value={date}
             mode="date"
             display={Platform.OS === 'ios' ? "spinner" : "calendar"}
-              onChange={onChange}
+            onChange={() => {onChange}}
+            minimumDate={validAge}
+            
           />
         )}
 
@@ -127,7 +136,7 @@ export default function SignUp({
         </Pressable>
 
 
-          {incorrect() ? <BAButton
+          {missing() ? <BAButton
             text="Siguiente"
             state={ButtonState.alert}
             style={styles.centerSiguiente}
