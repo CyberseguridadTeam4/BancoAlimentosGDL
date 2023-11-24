@@ -54,8 +54,6 @@ export default function SignUp({
     return `${day}/${month}/${year}`; 
   };
 
-
-
   const toggleDatePicker = () => {
     setShowPicker(!showPicker);
   };
@@ -116,8 +114,7 @@ export default function SignUp({
             mode="date"
             display={Platform.OS === 'ios' ? "spinner" : "calendar"}
             onChange={() => {onChange}}
-            minimumDate={validAge}
-            
+            maximumDate={validAge}
           />
         )}
 
@@ -126,11 +123,13 @@ export default function SignUp({
           toggleDatePicker();
         }}
         >
+          
           <BATextInput
-            placeholder={dateString}
+            placeholder={"dd/mm/yyyy"}
             icon={BAIcons.BirdIcon}
-            value={formatDate(date)}
-            onChange={onChangeText}
+            value={(date.getFullYear() <= validAge.getFullYear()) ? formatDate(date) : "dd/mm/yyyy"}
+            onChange={() => 
+              {onChangeText}}
             editable={false}
           />
         </Pressable>
