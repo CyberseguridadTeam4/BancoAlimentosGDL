@@ -166,6 +166,7 @@ export default function BACommentsSubView({
         flex: 1,
         height: "100%",
         justifyContent: "space-between",
+        paddingTop: 20,
       }}
       isScrolling={false}
     >
@@ -265,13 +266,11 @@ const Comment = ({ comment }: CommentProps) => {
     <View style={styles.commentsBox}>
       <View style={styles.header}>
         <View style={styles.row}>
-        <View style={styles.profilePic}>
         <ProfilePicture 
             color = {commentData.userData[1]} 
             pic = {commentData.userData[2]} 
             badge = {commentData.userData[3]}
           />
-          </View>
           <View style={[styles.row, { gap: 15 }]}>
           <BAText type={TypeText.label3} style={{ fontSize: 18 }}>
             {commentData.userData[0]}
@@ -381,13 +380,11 @@ export const Post = ({
     <View style={styles.postBox}>
       <View style={styles.header}>
         <View style={styles.row}>
-        <View style={styles.profilePic}>
           <ProfilePicture 
             color = {postData.userData[1]} 
             pic = {postData.userData[2]} 
             badge = {postData.userData[3]}
           />
-        </View>
           <BAText type={TypeText.label3} style={{ fontSize: 20 }}>
             {postData.title}
           </BAText>
@@ -531,12 +528,7 @@ export const ProfilePicture = ({color, pic, badge}: any) => {
   
   return (
     <>
-    <Image 
-      style={{ width: "90%", height: "90%", tintColor:pictureColors[color]}}
-      source={BAProfilePictures[pic]}
-      resizeMode="contain"
-      />
-    <TouchableOpacity
+     <TouchableOpacity
       onPress={ () => {
         openModal(
           <ProfilePictureModal color = {color} pic = {pic} badge = {badge}/>, 
@@ -544,6 +536,12 @@ export const ProfilePicture = ({color, pic, badge}: any) => {
         );
       }}
       >
+    <View style={styles.profilePic}>
+    <Image 
+      style={{ width: "90%", height: "90%", tintColor:pictureColors[color]}}
+      source={BAProfilePictures[pic]}
+      resizeMode="contain"
+      />
       {badge != -1 && (
           <View style={styles.badge}>
           <Image 
@@ -551,6 +549,7 @@ export const ProfilePicture = ({color, pic, badge}: any) => {
           />
           </View>
         )}
+        </View>
       </TouchableOpacity>
     </>
   );
@@ -644,7 +643,7 @@ const styles = StyleSheet.create({
   badgePic: {
     width: "100%",
     height: "100%",
-    borderRadius: 200,
+    borderRadius: 500,
     alignSelf: "center",
     transform: [{ rotate: "-45deg" }],
     // margin: 12
@@ -656,7 +655,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     transform: [{ rotate: "45deg" }],
     position: "absolute",
-    right: -30,
+    right: -10,
     bottom: -10,
     justifyContent: "center",
     shadowRadius: 5,
