@@ -103,7 +103,6 @@ export default function BABird({ birdData }: BirdData | any) {
       if (!isNotificationSet || isNotificationSet != "true") {
         await schedulePushNotification(birdData.name);
         await AsyncStorage.setItem("notificationsSet", "true");
-        console.log("notifications set");
       }
     })();
   }, [hatchAnimControl]);
