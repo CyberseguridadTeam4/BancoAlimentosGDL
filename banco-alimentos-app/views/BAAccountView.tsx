@@ -60,7 +60,11 @@ export default function BAAcount() {
         isScrolling={true}
         rightButtons={EditProfileButton()}
       >
-        <BAProfilePic user={userData} />
+        <BAProfilePic  
+        colorProfilePicture={userData.colorProfilePicture}
+        idProfilePicture={userData.idProfilePicture} 
+        visBadge = {userData.visBadge}
+       />
         <BAText style={{ marginBottom: 20, width: "100%" }}>
           {userData.username}
         </BAText>
