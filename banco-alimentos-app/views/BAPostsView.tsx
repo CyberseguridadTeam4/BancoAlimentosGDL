@@ -242,13 +242,11 @@ export const Post = ({
     <TouchableOpacity style={styles.postBox} onPress={onClickPost}>
       <View style={styles.header}>
         <View style={styles.row}>
-          <View style={styles.profilePic}>
             <ProfilePicture 
               color = {postData.userData[1]} 
               pic = {postData.userData[2]} 
               badge = {postData.userData[3]}
             />
-          </View>
           <BAText type={TypeText.label3} style={{ fontSize: 16 }}>
             {postData.title}
           </BAText>
@@ -438,18 +436,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginRight: 5,
-  },
-  profilePic: {
-    width: 40,
-    aspectRatio: 1 / 1,
-    borderRadius: 10,
-    backgroundColor: "white",
-    shadowRadius: 5,
-    shadowColor: BAPallete.StrongBlue,
-    shadowOpacity: 0.15,
-    marginRight: 15,
-    alignItems: "center",
-    justifyContent: "center",
   },
   footer: {
     flexDirection: "row",
