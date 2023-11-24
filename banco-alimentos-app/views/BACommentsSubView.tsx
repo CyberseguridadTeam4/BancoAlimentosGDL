@@ -21,6 +21,8 @@ import { useUser } from "../components/BAUserContext";
 import { useBird } from "../components/BABirdContext";
 import { useModal } from "../components/Modal/BAModalContext";
 import BAProfilePictures from "../assets/profilePictures/BAProfilePictures";
+import BABadges from "../assets/badges/BABadges";
+import BAProfilePic from "../components/BAProfilePic";
 
 
 type CommentProps = {
@@ -264,15 +266,17 @@ const Comment = ({ comment }: CommentProps) => {
       <View style={styles.header}>
         <View style={styles.row}>
         <View style={styles.profilePic}>
-            <Image 
-            style={{ width: "90%", height: "90%", tintColor:pictureColors[commentData.userData[1]]}}
-            source={BAProfilePictures[commentData.userData[2]]}
-            resizeMode="contain"
-            />
+        <ProfilePicture 
+            color = {commentData.userData[1]} 
+            pic = {commentData.userData[2]} 
+            badge = {commentData.userData[3]}
+          />
           </View>
+          <View style={[styles.row, { gap: 15 }]}>
           <BAText type={TypeText.label3} style={{ fontSize: 18 }}>
             {commentData.userData[0]}
           </BAText>
+          </View>
         </View>
         <View style={[styles.row, { gap: 15 }]}>
           {isUser && (
@@ -378,12 +382,12 @@ export const Post = ({
       <View style={styles.header}>
         <View style={styles.row}>
         <View style={styles.profilePic}>
-            <Image 
-            style={{ width: "90%", height: "90%", tintColor:pictureColors[postData.userData[1]]}}
-            source={BAProfilePictures[postData.userData[2]]}
-            resizeMode="contain"
-            />
-          </View>
+          <ProfilePicture 
+            color = {postData.userData[1]} 
+            pic = {postData.userData[2]} 
+            badge = {postData.userData[3]}
+          />
+        </View>
           <BAText type={TypeText.label3} style={{ fontSize: 20 }}>
             {postData.title}
           </BAText>
@@ -509,6 +513,49 @@ const DeleteModal =  ({objId, type} : any) => {
   );
 };
 
+export const ProfilePictureModal = ({color, pic, badge}: any) => {
+
+  return (
+    <>
+      <BAProfilePic 
+      colorProfilePicture={color}
+      idProfilePicture={pic} 
+      visBadge = {badge}
+      />
+    </>
+  );
+}
+
+export const ProfilePicture = ({color, pic, badge}: any) => {
+  const {openModal} = useModal();
+  
+  return (
+    <>
+    <Image 
+      style={{ width: "90%", height: "90%", tintColor:pictureColors[color]}}
+      source={BAProfilePictures[pic]}
+      resizeMode="contain"
+      />
+    <TouchableOpacity
+      onPress={ () => {
+        openModal(
+          <ProfilePictureModal color = {color} pic = {pic} badge = {badge}/>, 
+          ""
+        );
+      }}
+      >
+      {badge != -1 && (
+          <View style={styles.badge}>
+          <Image 
+          style={styles.badgePic} source={BABadges[badge]}
+          />
+          </View>
+        )}
+      </TouchableOpacity>
+    </>
+  );
+};
+
 const styles = StyleSheet.create({
   body: {
     flex: 1,
@@ -593,5 +640,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
+  },
+  badgePic: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 200,
+    alignSelf: "center",
+    transform: [{ rotate: "-45deg" }],
+    // margin: 12
+  },
+  badge: {
+    width: "60%",
+    aspectRatio: 1 / 1,
+    borderRadius: 10,
+    backgroundColor: "white",
+    transform: [{ rotate: "45deg" }],
+    position: "absolute",
+    right: -30,
+    bottom: -10,
+    justifyContent: "center",
+    shadowRadius: 5,
+    shadowColor: BAPallete.StrongBlue,
+    shadowOpacity: 0.15,
   },
 });
