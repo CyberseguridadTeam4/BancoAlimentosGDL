@@ -4,22 +4,20 @@ import {
   StyleSheet,
   Easing,
   TouchableOpacity,
-  Image,
 } from "react-native";
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import Svg, { Path, Ellipse } from "react-native-svg";
-import BAButton, { ButtonState } from "./BAButton";
 import BAPallete from "../resources/BAPallete";
 import BAView from "./BAView";
-import { useSheet } from "./Sheet/BASheetContext";
 import BAText, { TypeText } from "./BAText";
 import { useModal } from "./Modal/BAModalContext";
-import BASubView from "./BASubView";
 import { useToast } from "./Toast/BAToastContext";
 import BAEgg from "./BAEgg";
 import BAIcons from "../resources/icons/BAIcons";
 import BAIcon from "../resources/icons/BAIcon";
 import { useBird } from "./BABirdContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { schedulePushNotification } from "../App";
 
 const BIRD_COLORS: [string, string][] = [
   [BAPallete.SoftRed, BAPallete.WingRed],
@@ -98,6 +96,16 @@ export default function BABird({ birdData }: BirdData | any) {
     } else {
       setHatchAnimControl(false);
     }
+
+    (async () => {
+      const isNotificationSet = await AsyncStorage.getItem("notificationsSet");
+
+      if (!isNotificationSet || isNotificationSet != "true") {
+        await schedulePushNotification(birdData.name);
+        await AsyncStorage.setItem("notificationsSet", "true");
+        console.log("notifications set");
+      }
+    })();
   }, [hatchAnimControl]);
 
   const FeedAnimation = useCallback(() => {
