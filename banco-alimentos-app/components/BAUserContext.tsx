@@ -10,6 +10,7 @@ type UserType = {
   badges: number[];
   email: string;
   idProfilePicture: number;
+  colorProfilePicture: number;
   visBadge: number;
   pollo: any;
   createdAt: string;
@@ -36,6 +37,7 @@ export const emptyUser = {
   badges: [-1],
   email: "",
   idProfilePicture: 0,
+  colorProfilePicture: 0,
   visBadge: 0,
   pollo: {},
   createdAt: "",
