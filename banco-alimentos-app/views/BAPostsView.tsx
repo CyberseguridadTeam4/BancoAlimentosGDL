@@ -16,7 +16,7 @@ import BASubView from "../components/BASubView";
 import BAButton, { ButtonState } from "../components/BAButton";
 import { useSheet } from "../components/Sheet/BASheetContext";
 import BAMultiTextInput from "../components/BAMultiTextInput";
-import BACommentsSubView from "./BACommentsSubView";
+import BACommentsSubView, {ProfilePicture} from "./BACommentsSubView";
 import { useLoading } from "../components/Loading/BALoadingContext";
 import { useBird } from "../components/BABirdContext";
 import BAReportView from "./BAReportView";
@@ -190,17 +190,6 @@ export const Post = ({
   const { userData } = useUser();
   const { openModal } = useModal();
 
-  const pictureColors = [
-    BAPallete.SoftRed,
-    BAPallete.SoftOrange,
-    BAPallete.SoftYellow,
-    BAPallete.SoftGreen,
-    BAPallete.SoftSky,
-    BAPallete.SoftBlue,
-    BAPallete.SoftPurple,
-    BAPallete.SoftPink,
-  ];
-
   useEffect(() => {
     setIsUser(postData.userData[0]== userData.username);
   }, []);
@@ -254,10 +243,10 @@ export const Post = ({
       <View style={styles.header}>
         <View style={styles.row}>
           <View style={styles.profilePic}>
-            <Image 
-            style={{ width: "90%", height: "90%", tintColor:pictureColors[postData.userData[1]]}}
-            source={BAProfilePictures[postData.userData[2]]}
-            resizeMode="contain"
+            <ProfilePicture 
+              color = {postData.userData[1]} 
+              pic = {postData.userData[2]} 
+              badge = {postData.userData[3]}
             />
           </View>
           <BAText type={TypeText.label3} style={{ fontSize: 16 }}>
