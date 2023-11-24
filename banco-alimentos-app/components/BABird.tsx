@@ -503,6 +503,24 @@ export default function BABird({ birdData }: BirdData | any) {
     extrapolate: "identity",
   });
 
+  const { openModal } = useModal();
+
+  const noApples = () => {
+    openModal(
+      <BAText>
+        Interactua con usuarios en la sección Posts para obtener manzanas y
+        alimentar a tu pollito
+      </BAText>,
+      "No tienes manzanas"
+    );
+  };
+  const noEggs = () => {
+    openModal(
+      <BAText>Alimenta a tu pollito para obtener huevos</BAText>,
+      "No tienes huevos"
+    );
+  };
+
   return (
     <>
       {openEgg && (
@@ -565,6 +583,8 @@ export default function BABird({ birdData }: BirdData | any) {
               if (birdData.nApple > 0) {
                 dispatchFeed();
                 FeedAnimation();
+              } else {
+                noApples();
               }
             }}
             disabled={animIsPlaying || hatchEgg}
@@ -588,6 +608,8 @@ export default function BABird({ birdData }: BirdData | any) {
                   setNextBadge(res);
                   setOpenEgg(true);
                 });
+              } else {
+                noEggs();
               }
             }}
             disabled={animIsPlaying || hatchEgg}
