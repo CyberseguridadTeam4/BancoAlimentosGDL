@@ -4,31 +4,42 @@ import BAPallete from "../resources/BAPallete";
 import BABadges from "../assets/badges/BABadges";
 import profilePictures from "../assets/profilePictures/BAProfilePictures";
 
-export default function BAProfilePic({ user }: any) {
-const pictureColors = [
-    BAPallete.SoftRed,
-    BAPallete.SoftOrange,
-    BAPallete.SoftYellow,
-    BAPallete.SoftGreen,
-    BAPallete.SoftSky,
-    BAPallete.SoftBlue,
-    BAPallete.SoftPurple,
-    BAPallete.SoftPink,
-];
+type userProps = {
+  colorProfilePicture: number, 
+  idProfilePicture: number, 
+  visBadge: number
+}; 
+
+export default function BAProfilePic({ 
+  colorProfilePicture,
+  idProfilePicture,
+  visBadge
+ }: userProps) {
+
+  const pictureColors = [
+      BAPallete.SoftRed,
+      BAPallete.SoftOrange,
+      BAPallete.SoftYellow,
+      BAPallete.SoftGreen,
+      BAPallete.SoftSky,
+      BAPallete.SoftBlue,
+      BAPallete.SoftPurple,
+      BAPallete.SoftPink,
+  ];
 
   return (
     <>
       <View style={styles.wrapper}>
         <View style={styles.profile}>
           <Image
-            style={{ width: "90%", height: "90%", tintColor:pictureColors[user.colorProfilePicture]}}
-            source={profilePictures[user.idProfilePicture]}
+            style={{ width: "90%", height: "90%", tintColor:pictureColors[colorProfilePicture]}}
+            source={profilePictures[idProfilePicture]}
             resizeMode="contain"
           />
         </View>
-        {user.visBadge != -1 && (
+        {visBadge != -1 && (
           <View style={styles.badge}>
-            <Image style={styles.badgePic} source={BABadges[user.visBadge]} />
+            <Image style={styles.badgePic} source={BABadges[visBadge]} />
           </View>
         )}
       </View>
