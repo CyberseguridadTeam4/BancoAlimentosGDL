@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
-  Image
+  Image,
+  RefreshControl,
 } from "react-native";
 import BASubView from "../components/BASubView";
 import BAText, { TypeText } from "../components/BAText";
@@ -13,7 +14,7 @@ import BAPallete from "../resources/BAPallete";
 import BAIcon, { IconSize } from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
 import BATextInput from "../components/BATextInput";
-import BAButton, {ButtonState} from "../components/BAButton";
+import BAButton, { ButtonState } from "../components/BAButton";
 import axios from "../axios";
 import BAReportView from "./BAReportView";
 import { useSheet } from "../components/Sheet/BASheetContext";
@@ -23,7 +24,7 @@ import { useModal } from "../components/Modal/BAModalContext";
 import BAProfilePictures from "../assets/profilePictures/BAProfilePictures";
 import BABadges from "../assets/badges/BABadges";
 import BAProfilePic from "../components/BAProfilePic";
-
+import { useLoading } from "../components/Loading/BALoadingContext";
 
 type CommentProps = {
   comment: {
@@ -40,12 +41,13 @@ type CommentProps = {
     updatedAt: string;
     objectId: string;
     userData: [
-      username: string, 
-      colorProfilePicture: number, 
-      idProfilePicture: number, 
+      username: string,
+      colorProfilePicture: number,
+      idProfilePicture: number,
       visBadge: number
     ];
   };
+  fetchComments?: () => {};
 };
 
 type CommentsViewProps = {
@@ -62,9 +64,9 @@ export type PostProps = {
   text: string;
   title: string;
   userData: [
-    username: string, 
-    colorProfilePicture: number, 
-    idProfilePicture: number, 
+    username: string,
+    colorProfilePicture: number,
+    idProfilePicture: number,
     visBadge: number
   ];
   nViews: number;
@@ -127,29 +129,44 @@ export default function BACommentsSubView({
 }: CommentsViewProps) {
   const [text, setText] = useState("");
   const [comments, setComments] = useState<any[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const { userData } = useUser();
+  const { openLoading, closeLoading } = useLoading();
+
+  const getComments = async () => {
+    openLoading();
+    await axios.get(`/getComments/${post.objectId}`).then((res: any) => {
+      const commentData = res.data.comments;
+      commentData.reverse();
+      setComments(commentData);
+      closeLoading();
+    });
+  };
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    getComments()
+      .then(() => {
+        setRefreshing(false);
+      })
+      .catch((error) => {
+        setRefreshing(false);
+      });
+  }, []);
 
   const publishComment = useCallback(async (text: string) => {
     const postId = post.objectId;
     await axios
       .post(`/comment`, {
         postId,
-        text
+        text,
       })
       .then(() => {
         setText("");
+        getComments();
       })
       .catch((error) => console.log(error));
   }, []);
-
-  const getComments = async () => {
-    await axios.get(`/getComments/${post.objectId}`).then((res: any) => {
-      const commentData = res.data.comments;
-      commentData.reverse();
-      setComments(commentData);
-    });
-  };
 
   useEffect(() => {
     getComments();
@@ -170,30 +187,39 @@ export default function BACommentsSubView({
       }}
       isScrolling={false}
     >
-      <Post
-        post={post}
-        isReportHide={isReportHide}
-        isLikeHide={isLikeHide}
-        isShareHide={isShareHide}
-        updatePost={updatePost}
-      />
-      <BAText type={TypeText.label1} style={{ marginTop: 20, height: 40 }}>
-        Comments
-      </BAText>
-      <View style={{ flex: 1 }}>
-        <ScrollView
-          style={{
-            flex: 1,
-          }}
-          contentContainerStyle={{
-            flexGrow: 1,
-          }}
-          showsVerticalScrollIndicator={false}
-        >
+      <ScrollView
+        style={{
+          flex: 1,
+        }}
+        contentContainerStyle={{
+          flexGrow: 1,
+        }}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <Post
+          post={post}
+          isReportHide={isReportHide}
+          isLikeHide={isLikeHide}
+          isShareHide={isShareHide}
+          updatePost={updatePost}
+        />
+        <BAText type={TypeText.label1} style={{ marginTop: 20, height: 40 }}>
+          Comments
+        </BAText>
+        <View style={{ flex: 1 }}>
           <View style={styles.columnComments}>
             {comments.length > 0 ? (
               comments.map((item) => {
-                return <Comment comment={item} key={item.objectId} />;
+                return (
+                  <Comment
+                    comment={item}
+                    key={item.objectId}
+                    fetchComments={getComments}
+                  />
+                );
               })
             ) : (
               <View style={styles.messageComments}>
@@ -206,8 +232,8 @@ export default function BACommentsSubView({
               </View>
             )}
           </View>
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
       <View style={styles.input}>
         <View style={{ width: "88%", marginRight: 10 }}>
           <BATextInput
@@ -234,7 +260,7 @@ export default function BACommentsSubView({
   );
 }
 
-const Comment = ({ comment }: CommentProps) => {
+const Comment = ({ comment, fetchComments }: CommentProps) => {
   const [likedComment, setLiketComment] = useState(false);
   const [commentData, setCommentData] = useState(comment);
   const [isUser, setIsUser] = useState(false);
@@ -266,34 +292,38 @@ const Comment = ({ comment }: CommentProps) => {
     <View style={styles.commentsBox}>
       <View style={styles.header}>
         <View style={styles.row}>
-        <ProfilePicture 
-            color = {commentData.userData[1]} 
-            pic = {commentData.userData[2]} 
-            badge = {commentData.userData[3]}
+          <ProfilePicture
+            color={commentData.userData[1]}
+            pic={commentData.userData[2]}
+            badge={commentData.userData[3]}
           />
           <View style={[styles.row, { gap: 15 }]}>
-          <BAText type={TypeText.label3} style={{ fontSize: 18 }}>
-            {commentData.userData[0]}
-          </BAText>
+            <BAText type={TypeText.label3} style={{ fontSize: 18 }}>
+              {commentData.userData[0]}
+            </BAText>
           </View>
         </View>
         <View style={[styles.row, { gap: 15 }]}>
           {isUser && (
-              <TouchableOpacity
+            <TouchableOpacity
               onPress={() => {
                 openModal(
-                  <DeleteModal objId={commentData.objectId} type={1}/>, 
+                  <DeleteModal
+                    objId={commentData.objectId}
+                    type={1}
+                    fetchData={fetchComments}
+                  />,
                   "Confirmar"
                 );
               }}
-              >
-                <BAIcon
-                  icon={BAIcons.TrashIcon}
-                  color={BAPallete.Red01}
-                  size={"medium"}
-                />
-              </TouchableOpacity>
-            )}
+            >
+              <BAIcon
+                icon={BAIcons.TrashIcon}
+                color={BAPallete.Red01}
+                size={"medium"}
+              />
+            </TouchableOpacity>
+          )}
           <BAText type={TypeText.label3} style={{ fontSize: 12 }}>
             {calculateDate(commentData.createdAt)}
           </BAText>
@@ -303,24 +333,24 @@ const Comment = ({ comment }: CommentProps) => {
         {commentData.text}
       </BAText>
       <View style={styles.footer}>
-      <TouchableOpacity
-            onPress={() =>
-              openSheet(
-                <BAReportView
-                  closeSheet={closeSheet}
-                  type={1}
-                  objId={commentData.objectId}
-                />,
-                "Reportar"
-              )
-            }
-          >
-            <BAIcon
-              icon={BAIcons.FlagIcon}
-              color={BAPallete.Red01}
-              size={"medium"}
-            />
-          </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            openSheet(
+              <BAReportView
+                closeSheet={closeSheet}
+                type={1}
+                objId={commentData.objectId}
+              />,
+              "Reportar"
+            )
+          }
+        >
+          <BAIcon
+            icon={BAIcons.FlagIcon}
+            color={BAPallete.Red01}
+            size={"medium"}
+          />
+        </TouchableOpacity>
         <View style={[styles.row, { gap: 20, marginRight: 10 }]}>
           <TouchableOpacity
             onPress={() => {
@@ -372,18 +402,17 @@ export const Post = ({
   }, []);
 
   useEffect(() => {
-    setIsUser(postData.userData[0]== userData.username);
+    setIsUser(postData.userData[0] == userData.username);
   }, []);
-
 
   return (
     <View style={styles.postBox}>
       <View style={styles.header}>
         <View style={styles.row}>
-          <ProfilePicture 
-            color = {postData.userData[1]} 
-            pic = {postData.userData[2]} 
-            badge = {postData.userData[3]}
+          <ProfilePicture
+            color={postData.userData[1]}
+            pic={postData.userData[2]}
+            badge={postData.userData[3]}
           />
           <BAText type={TypeText.label3} style={{ fontSize: 20 }}>
             {postData.title}
@@ -394,22 +423,22 @@ export const Post = ({
             {calculateDate(postData.createdAt)}
           </BAText>
           {isUser && (
-              <TouchableOpacity
+            <TouchableOpacity
               onPress={() => {
                 openModal(
-                  <DeleteModal objId={post.objectId} type={0}/>, 
+                  <DeleteModal objId={post.objectId} type={0} />,
                   "Confirmar"
                 );
               }}
-              >
-                <BAIcon
-                  icon={BAIcons.TrashIcon}
-                  color={BAPallete.Red01}
-                  size={"medium"}
-                />
-              </TouchableOpacity>
-            )}
-          </View>
+            >
+              <BAIcon
+                icon={BAIcons.TrashIcon}
+                color={BAPallete.Red01}
+                size={"medium"}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
       <BAText
         style={{ marginVertical: 20, fontSize: 22 }}
@@ -475,30 +504,29 @@ export const Post = ({
   );
 };
 
-const DeleteModal =  ({objId, type} : any) => {
+const DeleteModal = ({ objId, type, fetchData }: any) => {
   const { closeModal } = useModal();
-  
+
   const deletePost = async () => {
-    await axios
-    .patch(`/deletePost/${objId}`);
+    await axios.patch(`/deletePost/${objId}`);
   };
 
   const deleteComment = async () => {
-    await axios
-    .patch(`/deleteComment/${objId}`);
-  }; 
+    await axios.patch(`/deleteComment/${objId}`).then(() => {
+      fetchData();
+    });
+  };
 
   return (
     <View>
       <BAText type={TypeText.label3} style={{ marginBottom: 20 }}>
-        ¿Quieres eliminarlo? 
-        Esta acción no es reversible
+        ¿Quieres eliminarlo? Esta acción no es reversible
       </BAText>
       <BAButton
         onPress={() => {
-          if(type == 0){
+          if (type == 0) {
             deletePost();
-          } else if (type == 1){
+          } else if (type == 1) {
             deleteComment();
           }
           closeModal();
@@ -510,45 +538,46 @@ const DeleteModal =  ({objId, type} : any) => {
   );
 };
 
-export const ProfilePictureModal = ({color, pic, badge}: any) => {
-
+export const ProfilePictureModal = ({ color, pic, badge }: any) => {
   return (
     <>
-      <BAProfilePic 
-      colorProfilePicture={color}
-      idProfilePicture={pic} 
-      visBadge = {badge}
+      <BAProfilePic
+        colorProfilePicture={color}
+        idProfilePicture={pic}
+        visBadge={badge}
       />
     </>
   );
-}
+};
 
-export const ProfilePicture = ({color, pic, badge}: any) => {
-  const {openModal} = useModal();
-  
+export const ProfilePicture = ({ color, pic, badge }: any) => {
+  const { openModal } = useModal();
+
   return (
     <>
-     <TouchableOpacity
-      onPress={ () => {
-        openModal(
-          <ProfilePictureModal color = {color} pic = {pic} badge = {badge}/>, 
-          ""
-        );
-      }}
+      <TouchableOpacity
+        onPress={() => {
+          openModal(
+            <ProfilePictureModal color={color} pic={pic} badge={badge} />,
+            ""
+          );
+        }}
       >
-    <View style={styles.profilePic}>
-    <Image 
-      style={{ width: "90%", height: "90%", tintColor:pictureColors[color]}}
-      source={BAProfilePictures[pic]}
-      resizeMode="contain"
-      />
-      {badge != -1 && (
-          <View style={styles.badge}>
-          <Image 
-          style={styles.badgePic} source={BABadges[badge]}
+        <View style={styles.profilePic}>
+          <Image
+            style={{
+              width: "90%",
+              height: "90%",
+              tintColor: pictureColors[color],
+            }}
+            source={BAProfilePictures[pic]}
+            resizeMode="contain"
           />
-          </View>
-        )}
+          {badge != -1 && (
+            <View style={styles.badge}>
+              <Image style={styles.badgePic} source={BABadges[badge]} />
+            </View>
+          )}
         </View>
       </TouchableOpacity>
     </>
