@@ -129,19 +129,6 @@ export default function BACommentsSubView({
   const [comments, setComments] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
-  const publishComment = useCallback(async (text: string) => {
-    const postId = post.objectId;
-    await axios
-      .post(`/comment`, {
-        postId,
-        text,
-      })
-      .then(() => {
-        setText("");
-      })
-      .catch((error) => console.log(error));
-  }, []);
-
   const getComments = async () => {
     await axios.get(`/getComments/${post.objectId}`).then((res: any) => {
       const commentData = res.data.comments;
@@ -159,6 +146,20 @@ export default function BACommentsSubView({
       .catch((error) => {
         setRefreshing(false);
       });
+  }, []);
+
+  const publishComment = useCallback(async (text: string) => {
+    const postId = post.objectId;
+    await axios
+      .post(`/comment`, {
+        postId,
+        text,
+      })
+      .then(() => {
+        setText("");
+        getComments();
+      })
+      .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
