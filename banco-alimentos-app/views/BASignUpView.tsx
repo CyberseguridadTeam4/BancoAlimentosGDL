@@ -23,10 +23,12 @@ export default function SignUp({
 
   const [user, setUser] = useState("");
   const [email, setEmail] = useState(""); 
+  const [dateOfBirth, setDateOfBirth] = useState("");
+
   const {openModal} = useModal(); 
 
   const [date, setDate] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
+  const [isPickerShow, setIsPickerShow] = useState(false);
 
   const validAge = new Date();
   validAge.setFullYear(validAge.getFullYear() - 18);
@@ -54,35 +56,32 @@ export default function SignUp({
     return `${day}/${month}/${year}`; 
   };
 
+  const dateString = formatDate(date);
+
   const toggleDatePicker = () => {
-    setShowPicker(!showPicker);
+    setIsPickerShow(!isPickerShow);
   };
 
   const onChangeText = (text: string) => {
     const [day, month, year] = text.split('/').map(Number);
     const selectedDate = new Date(year, month - 1, day);
-    setDate(selectedDate);
-   };
+    setDate(selectedDate);  
+   }; 
 
     
-   const onChange = (event: any, selectedDate: Date) => {
-     const currentDate = selectedDate || date;
-     setDate(currentDate);
-
-     if(selectedDate){
-      if(selectedDate.getTime() < validAge.getTime()){
-        alert('Tienes que tener mas de 18 años para usar la aplicacion');
-      } else {
-        setDate(selectedDate);
-        if(Platform.OS === 'android') {
-          setShowPicker(false);
-        }
-      }
-     }
-    toggleDatePicker();
+   const onChangeValue = (event: any, selectedDate?: Date) => {
+      const currentDate = selectedDate || date;
+      setIsPickerShow(Platform.OS === 'ios');
+      setDate(currentDate);
+      setDateOfBirth(currentDate.toLocaleDateString());
     }
+
+    const showMode = () => {
+      setIsPickerShow(true);
+    };
+   
     
-    const dateString = formatDate(date);
+
 
     return (
     <>
@@ -104,16 +103,17 @@ export default function SignUp({
           icon={BAIcons.SMSIcon}
           value={email}
           onChange={setEmail}
-
         />
         <BAText style={styles.center}>Fecha de nacimimento:</BAText>
 
-        {showPicker && (
+
+        {isPickerShow && (
           <DateTimePicker
+            testID="dateTimePicker"
             value={date}
-            mode="date"
-            display={Platform.OS === 'ios' ? "spinner" : "calendar"}
-            onChange={() => {onChange}}
+            mode={'date'}
+            display="default"
+            onChange={onChangeValue}
             maximumDate={validAge}
           />
         )}
@@ -123,16 +123,15 @@ export default function SignUp({
           toggleDatePicker();
         }}
         >
-          
           <BATextInput
-            placeholder={"dd/mm/yyyy"}
+            placeholder={dateOfBirth || "dd/mm/yyyy"}
             icon={BAIcons.BirdIcon}
-            value={(date.getFullYear() <= validAge.getFullYear()) ? formatDate(date) : "dd/mm/yyyy"}
-            onChange={() => 
-              {onChangeText}}
+            value={dateOfBirth}
+            onChange={(text) => setDateOfBirth(text)}
             editable={false}
           />
         </Pressable>
+
 
 
           {missing() ? <BAButton
