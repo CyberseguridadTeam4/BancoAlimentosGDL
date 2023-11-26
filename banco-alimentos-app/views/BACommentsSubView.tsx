@@ -183,13 +183,14 @@ export default function BACommentsSubView({
         flex: 1,
         height: "100%",
         justifyContent: "space-between",
-        paddingTop: 20,
       }}
       isScrolling={false}
     >
       <ScrollView
         style={{
           flex: 1,
+          paddingTop: 15,
+          overflow: "visible",
         }}
         contentContainerStyle={{
           flexGrow: 1,
@@ -209,29 +210,27 @@ export default function BACommentsSubView({
         <BAText type={TypeText.label1} style={{ marginTop: 20, height: 40 }}>
           Comments
         </BAText>
-        <View style={{ flex: 1 }}>
-          <View style={styles.columnComments}>
-            {comments.length > 0 ? (
-              comments.map((item) => {
-                return (
-                  <Comment
-                    comment={item}
-                    key={item.objectId}
-                    fetchComments={getComments}
-                  />
-                );
-              })
-            ) : (
-              <View style={styles.messageComments}>
-                <BAText type={TypeText.label3} style={{ textAlign: "center" }}>
-                  No hay comentarios aún
-                </BAText>
-                <BAText type={TypeText.label3} style={{ textAlign: "center" }}>
-                  ¡Se el primero!
-                </BAText>
-              </View>
-            )}
-          </View>
+        <View style={styles.columnComments}>
+          {comments.length > 0 ? (
+            comments.map((item) => {
+              return (
+                <Comment
+                  comment={item}
+                  key={item.objectId}
+                  fetchComments={getComments}
+                />
+              );
+            })
+          ) : (
+            <View style={styles.messageComments}>
+              <BAText type={TypeText.label3} style={{ textAlign: "center" }}>
+                No hay comentarios aún
+              </BAText>
+              <BAText type={TypeText.label3} style={{ textAlign: "center" }}>
+                ¡Se el primero!
+              </BAText>
+            </View>
+          )}
         </View>
       </ScrollView>
       <View style={styles.input}>
@@ -604,7 +603,6 @@ const styles = StyleSheet.create({
   columnComments: {
     flex: 1,
     gap: 20,
-    overflow: "hidden",
   },
   header: {
     flexDirection: "row",
