@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.iker8av.piopio",
@@ -33,7 +31,8 @@
     "extra": {
       "eas": {
         "projectId": "c929d78c-0f35-471a-8116-bac036639952"
-      }
+      },
+      "owner": "ikerochoa"
     }
   }
 }
