@@ -296,6 +296,7 @@ const Comment = ({ comment, fetchComments }: CommentProps) => {
             color={commentData.userData[1]}
             pic={commentData.userData[2]}
             badge={commentData.userData[3]}
+            username={commentData.userData[0]}
           />
           <View style={[styles.row, { gap: 15 }]}>
             <BAText type={TypeText.label3} style={{ fontSize: 18 }}>
@@ -413,6 +414,7 @@ export const Post = ({
             color={postData.userData[1]}
             pic={postData.userData[2]}
             badge={postData.userData[3]}
+            username={postData.userData[0]}
           />
           <BAText type={TypeText.label3} style={{ fontSize: 20 }}>
             {postData.title}
@@ -550,7 +552,7 @@ export const ProfilePictureModal = ({ color, pic, badge }: any) => {
   );
 };
 
-export const ProfilePicture = ({ color, pic, badge }: any) => {
+export const ProfilePicture = ({ color, pic, badge, username }: any) => {
   const { openModal } = useModal();
 
   return (
@@ -559,7 +561,7 @@ export const ProfilePicture = ({ color, pic, badge }: any) => {
         onPress={() => {
           openModal(
             <ProfilePictureModal color={color} pic={pic} badge={badge} />,
-            ""
+            username
           );
         }}
       >
