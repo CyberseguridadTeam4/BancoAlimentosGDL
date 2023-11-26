@@ -243,6 +243,7 @@ export const Post = ({
             color={postData.userData[1]}
             pic={postData.userData[2]}
             badge={postData.userData[3]}
+            username={postData.userData[0]}
           />
           <BAText type={TypeText.label3} style={{ fontSize: 16 }}>
             {postData.title}
