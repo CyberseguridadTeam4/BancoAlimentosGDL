@@ -23,7 +23,7 @@ export default function LogIn() {
   const [username, setUsername] = useState("");
   const [birthday, setBirthday] = useState("");
 
-  const {openModal} = useModal();
+  const { openModal } = useModal();
   const { setUser } = useUser();
 
   const userLogin = async () => {
@@ -33,15 +33,12 @@ export default function LogIn() {
         password: contraseña,
       })
       .then(function (response) {
-        console.log(response.data);
         if (response.status == 200) {
           setUser(response.data.user);
           AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
           axios.defaults.headers.common["Authorization"] =
             response.data.user.sessionToken;
-          console.log("Usuario logeado");
         } else {
-          console.log("Usuario no logeado");
           openModal(
             <BAText>
               Asegurate de que tu contraseña o correo esten escritos
@@ -65,42 +62,29 @@ export default function LogIn() {
       });
   };
 
-
   const resetPassword = async () => {
     axios
-    .post("/resetPassword", {
-      email: email,
-    })
-    .then(function (response) {
-      console.log(response.data);
-      if (response.status == 200) {
-        console.log("resetPassword");
+      .post("/resetPassword", {
+        email: email,
+      })
+      .then(function (response) {
+        if (response.status == 200) {
+          openModal(<BAText>{email}</BAText>, "Restablecimiento enviado a:");
+        } else {
+          openModal(
+            <BAText>Verifica que tu email este bien escrito.</BAText>,
+            "Ops!!! Hubo un error"
+          );
+        }
+      })
+      .catch(function (error) {
+        console.error(error);
         openModal(
-          <BAText>
-            {email}
-          </BAText>,
-          "Restablecimiento enviado a:"
-        );
-      } else {
-        console.log("Correo no existe");
-        openModal(
-          <BAText>
-            Verifica que tu email este bien escrito. 
-          </BAText>,
+          <BAText>Escribe el correo de tu cuenta!</BAText>,
           "Ops!!! Hubo un error"
         );
-      }
-    })
-    .catch(function (error) {
-      console.error(error); 
-      openModal(
-        <BAText>
-          Escribe el correo de tu cuenta!
-        </BAText>,
-        "Ops!!! Hubo un error"
-      );
-    });
-  }
+      });
+  };
 
   return (
     <>
@@ -143,10 +127,7 @@ export default function LogIn() {
 
         <View style={styles.containerInline}>
           <BAText type={TypeText.label3}>Olvidaste tu contraseña?</BAText>
-          <BAText
-            type={TypeText.label5}
-            onPress={() => resetPassword()}
-          >
+          <BAText type={TypeText.label5} onPress={() => resetPassword()}>
             {"Recuperar"}
           </BAText>
         </View>

@@ -4,22 +4,20 @@ import {
   StyleSheet,
   Easing,
   TouchableOpacity,
-  Image,
 } from "react-native";
 import React, { useRef, useState, useCallback, useEffect } from "react";
 import Svg, { Path, Ellipse } from "react-native-svg";
-import BAButton, { ButtonState } from "./BAButton";
 import BAPallete from "../resources/BAPallete";
 import BAView from "./BAView";
-import { useSheet } from "./Sheet/BASheetContext";
 import BAText, { TypeText } from "./BAText";
 import { useModal } from "./Modal/BAModalContext";
-import BASubView from "./BASubView";
 import { useToast } from "./Toast/BAToastContext";
 import BAEgg from "./BAEgg";
 import BAIcons from "../resources/icons/BAIcons";
 import BAIcon from "../resources/icons/BAIcon";
 import { useBird } from "./BABirdContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { schedulePushNotification } from "../App";
 
 const BIRD_COLORS: [string, string][] = [
   [BAPallete.SoftRed, BAPallete.WingRed],
@@ -98,6 +96,15 @@ export default function BABird({ birdData }: BirdData | any) {
     } else {
       setHatchAnimControl(false);
     }
+
+    (async () => {
+      const isNotificationSet = await AsyncStorage.getItem("notificationsSet");
+
+      if (!isNotificationSet || isNotificationSet != "true") {
+        await schedulePushNotification(birdData.name);
+        await AsyncStorage.setItem("notificationsSet", "true");
+      }
+    })();
   }, [hatchAnimControl]);
 
   const FeedAnimation = useCallback(() => {
@@ -495,6 +502,24 @@ export default function BABird({ birdData }: BirdData | any) {
     extrapolate: "identity",
   });
 
+  const { openModal } = useModal();
+
+  const noApples = () => {
+    openModal(
+      <BAText>
+        Interactua con usuarios en la sección Posts para obtener manzanas y
+        alimentar a tu pajarito
+      </BAText>,
+      "No tienes manzanas"
+    );
+  };
+  const noEggs = () => {
+    openModal(
+      <BAText>Alimenta a tu pajarito para obtener huevos</BAText>,
+      "No tienes huevos"
+    );
+  };
+
   return (
     <>
       {openEgg && (
@@ -557,6 +582,8 @@ export default function BABird({ birdData }: BirdData | any) {
               if (birdData.nApple > 0) {
                 dispatchFeed();
                 FeedAnimation();
+              } else {
+                noApples();
               }
             }}
             disabled={animIsPlaying || hatchEgg}
@@ -580,6 +607,8 @@ export default function BABird({ birdData }: BirdData | any) {
                   setNextBadge(res);
                   setOpenEgg(true);
                 });
+              } else {
+                noEggs();
               }
             }}
             disabled={animIsPlaying || hatchEgg}
