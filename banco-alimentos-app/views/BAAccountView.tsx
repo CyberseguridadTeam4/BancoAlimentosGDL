@@ -220,13 +220,14 @@ const ProfilePictures = ({
           showsHorizontalScrollIndicator={false}
           style={{ width: width }}
         />
-
+        <BAText style = {{marginTop: 30}}>
+          Elige el color
+        </BAText>
         <View style={styles.colorColumn}>
-          <BAText>Elige el color</BAText>
           <FlatList
             data={pictureColors.flat()}
             renderItem={({ item, index }) => (
-              <View style={{ marginBottom: 20, paddingRight: 20 }}>
+              <View style={{ marginBottom: 20, paddingRight: 20}}>
                 <ColorButton
                   key={item}
                   color={item}
@@ -297,9 +298,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   colorColumn: {
-    flexDirection: "column",
     gap: 30,
     marginVertical: 30,
+    alignItems: 'center'
   },
   buttonSelect: {
     position: "absolute",
