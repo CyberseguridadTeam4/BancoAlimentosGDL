@@ -60,11 +60,11 @@ export default function BAAcount() {
         isScrolling={true}
         rightButtons={EditProfileButton()}
       >
-        <BAProfilePic  
-        colorProfilePicture={userData.colorProfilePicture}
-        idProfilePicture={userData.idProfilePicture} 
-        visBadge = {userData.visBadge}
-       />
+        <BAProfilePic
+          colorProfilePicture={userData.colorProfilePicture}
+          idProfilePicture={userData.idProfilePicture}
+          visBadge={userData.visBadge}
+        />
         <BAText style={{ marginBottom: 20, width: "100%" }}>
           {userData.username}
         </BAText>
@@ -161,7 +161,7 @@ const ProfilePictures = ({
 
   const { setUser } = useUser();
 
-  const {openToast} = useToast();
+  const { openToast } = useToast();
 
   const changeProfile = async () => {
     await axios
@@ -247,7 +247,7 @@ const ProfilePictures = ({
         <BAButton
           onPress={() => {
             changeProfile();
-            openToast( <ProfileToast/>, 1000)
+            openToast(<ProfileToast />, 2000);
           }}
           text="Guardar"
           state={ButtonState.alert}
@@ -258,11 +258,11 @@ const ProfilePictures = ({
 };
 
 const ProfileToast = () => {
-  
   return (
-    <BAText> Foto de perfil ha sido editada exitosamente </BAText>
+    <BAText type={TypeText.label3} style={{ textAlign: "center" }}>
+      Foto de perfil ha sido editada exitosamente
+    </BAText>
   );
-
 };
 const ColorButton = ({ color, colorSelected, onClick }: ColorButtonProps) => {
   return (
