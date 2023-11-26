@@ -24,6 +24,7 @@ import { useModal } from "../components/Modal/BAModalContext";
 import BAProfilePictures from "../assets/profilePictures/BAProfilePictures";
 import BABadges from "../assets/badges/BABadges";
 import BAProfilePic from "../components/BAProfilePic";
+import { useLoading } from "../components/Loading/BALoadingContext";
 
 type CommentProps = {
   comment: {
@@ -46,6 +47,7 @@ type CommentProps = {
       visBadge: number
     ];
   };
+  fetchComments?: () => {};
 };
 
 type CommentsViewProps = {
@@ -129,11 +131,15 @@ export default function BACommentsSubView({
   const [comments, setComments] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
+  const { openLoading, closeLoading } = useLoading();
+
   const getComments = async () => {
+    openLoading();
     await axios.get(`/getComments/${post.objectId}`).then((res: any) => {
       const commentData = res.data.comments;
       commentData.reverse();
       setComments(commentData);
+      closeLoading();
     });
   };
 
@@ -207,7 +213,13 @@ export default function BACommentsSubView({
           <View style={styles.columnComments}>
             {comments.length > 0 ? (
               comments.map((item) => {
-                return <Comment comment={item} key={item.objectId} />;
+                return (
+                  <Comment
+                    comment={item}
+                    key={item.objectId}
+                    fetchComments={getComments}
+                  />
+                );
               })
             ) : (
               <View style={styles.messageComments}>
@@ -248,7 +260,7 @@ export default function BACommentsSubView({
   );
 }
 
-const Comment = ({ comment }: CommentProps) => {
+const Comment = ({ comment, fetchComments }: CommentProps) => {
   const [likedComment, setLiketComment] = useState(false);
   const [commentData, setCommentData] = useState(comment);
   const [isUser, setIsUser] = useState(false);
@@ -296,7 +308,11 @@ const Comment = ({ comment }: CommentProps) => {
             <TouchableOpacity
               onPress={() => {
                 openModal(
-                  <DeleteModal objId={commentData.objectId} type={1} />,
+                  <DeleteModal
+                    objId={commentData.objectId}
+                    type={1}
+                    fetchData={fetchComments}
+                  />,
                   "Confirmar"
                 );
               }}
@@ -488,7 +504,7 @@ export const Post = ({
   );
 };
 
-const DeleteModal = ({ objId, type }: any) => {
+const DeleteModal = ({ objId, type, fetchData }: any) => {
   const { closeModal } = useModal();
 
   const deletePost = async () => {
@@ -496,7 +512,9 @@ const DeleteModal = ({ objId, type }: any) => {
   };
 
   const deleteComment = async () => {
-    await axios.patch(`/deleteComment/${objId}`);
+    await axios.patch(`/deleteComment/${objId}`).then(() => {
+      fetchData();
+    });
   };
 
   return (
