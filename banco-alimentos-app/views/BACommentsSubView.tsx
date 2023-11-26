@@ -190,7 +190,6 @@ export default function BACommentsSubView({
         style={{
           flex: 1,
           paddingTop: 15,
-          overflow: "visible",
         }}
         contentContainerStyle={{
           flexGrow: 1,
