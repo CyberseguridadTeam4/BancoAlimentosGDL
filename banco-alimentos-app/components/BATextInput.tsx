@@ -33,7 +33,7 @@ function BATextInput({
   onChange,
   isPassword = false,
 }: Props): JSX.Element {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(isPassword);
 
   return (
     <View style={styles.wrapper}>
@@ -44,7 +44,7 @@ function BATextInput({
         placeholder={placeholder}
         value={value}
         onChangeText={onChange}
-        secureTextEntry={isPassword}
+        secureTextEntry={isPassword && showPassword}
         autoCorrect={false}
         spellCheck={false}
       />
