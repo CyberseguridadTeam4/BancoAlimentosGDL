@@ -43,7 +43,7 @@ export default function LogIn() {
         } else {
           console.log("Usuario no logeado");
           openModal(
-            <BAText>
+            <BAText type={TypeText.label2}>
               Asegurate de que tu contraseña o correo esten escritos
               correctamente. Y que tu correo ya este verificado en el email que
               se te envio.
@@ -54,11 +54,11 @@ export default function LogIn() {
       })
       .catch(function (error) {
         openModal(
-          <BAText>
+          <BAText type={TypeText.label2}>
             Asegurate de que tu contraseña o correo esten escritos
             correctamente. Y que tu correo ya este verificado en el email que se
             te envio.
-          </BAText>,
+          </BAText >,
           "Ops!!! Hubo un error"
         );
         console.log(error);
@@ -76,10 +76,15 @@ export default function LogIn() {
       if (response.status == 200) {
         console.log("resetPassword");
         openModal(
-          <BAText>
-            {email}
-          </BAText>,
-          "Restablecimiento enviado a:"
+          <View>
+            <BAText type={TypeText.label3} style={styles.text}>
+              Reset enviado a:
+            </BAText>
+            <BAText type={TypeText.label8} style={styles.modalText}>
+              {email}
+            </BAText>
+          </View>,
+          "Contraseña"
         );
       } else {
         console.log("Correo no existe");
@@ -214,6 +219,13 @@ const styles = StyleSheet.create({
   image: {
     width: 200,
     resizeMode: "contain",
+  },
+  text: {
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  modalText: {
+    marginTop: 20,
   },
 });
 
