@@ -90,7 +90,9 @@ export default function LogIn() {
     <>
       <BAView isScrolling={false} title="" style={styles.container}>
         <BAText type={TypeText.label3}>Bienvenido! </BAText>
-        <BAText type={TypeText.label4}>PioPio</BAText>
+        <BAText type={TypeText.label4} style={{ marginBottom: 10 }}>
+          PioPio
+        </BAText>
         <BAText type={TypeText.label1} style={styles.centerEmail}>
           Email:
         </BAText>
@@ -128,7 +130,7 @@ export default function LogIn() {
         <View style={styles.containerInline}>
           <BAText type={TypeText.label3}>Olvidaste tu contraseña?</BAText>
           <BAText type={TypeText.label5} onPress={() => resetPassword()}>
-            {"Recuperar"}
+            {" Recuperar"}
           </BAText>
         </View>
 
