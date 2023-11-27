@@ -79,6 +79,9 @@ export default {
   get EyeIcon(): ImageSourcePropType {
     return require("./EyeIcon.png");
   },
+  get EyeHideIcon(): ImageSourcePropType {
+    return require("./EyeHideIcon.png");
+  },
   get PhoneIcon(): ImageSourcePropType {
     return require("./PhoneIcon.png");
   },
@@ -102,5 +105,5 @@ export default {
   },
   get TrashIcon(): ImageSourcePropType {
     return require("./TrashCanIcon.png");
-  }
+  },
 };

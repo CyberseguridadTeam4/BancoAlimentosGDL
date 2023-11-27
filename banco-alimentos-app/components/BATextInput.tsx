@@ -51,7 +51,7 @@ function BATextInput({
       {isPassword && (
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
           <BAIcon
-            icon={showPassword ? BAIcons.EyeIcon : BAIcons.EyeIcon}
+            icon={showPassword ? BAIcons.EyeHideIcon : BAIcons.EyeIcon}
             color={BAPallete.Gray03}
           />
         </TouchableOpacity>
