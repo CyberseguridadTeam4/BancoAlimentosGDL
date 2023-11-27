@@ -100,7 +100,7 @@ const ViewSwitch = ({ viewIndex }: ViewSwitchProps) => {
     case 1:
       return <BAMapView />;
     case 2:
-      return <BABirdView />;
+      return <BABirdView schedulePushNotification={schedulePushNotification} />;
     case 3:
       return <BAAccountView />;
     case 4:

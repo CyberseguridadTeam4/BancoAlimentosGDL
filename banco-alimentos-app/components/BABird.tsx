@@ -17,7 +17,6 @@ import BAIcons from "../resources/icons/BAIcons";
 import BAIcon from "../resources/icons/BAIcon";
 import { useBird } from "./BABirdContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { schedulePushNotification } from "../App";
 
 const BIRD_COLORS: [string, string][] = [
   [BAPallete.SoftRed, BAPallete.WingRed],
@@ -66,7 +65,10 @@ type HeartReactionProps = {
   setHeartReaction: (v: boolean) => void;
 };
 
-export default function BABird({ birdData }: BirdData | any) {
+export default function BABird({
+  birdData,
+  schedulePushNotification,
+}: BirdData | any) {
   const [animIsPlaying, setAnimIsPlaying] = useState(false);
   const [hatchAnimControl, setHatchAnimControl] = useState(false);
   const [happyEye, setHappyEye] = useState(false);

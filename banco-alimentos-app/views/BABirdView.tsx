@@ -35,10 +35,17 @@ type BirdData = {
   };
 };
 
-export default function BABirdView() {
+export default function BABirdView({ schedulePushNotification }: any) {
   const { birdData } = useBird();
 
-  return !birdData ? <BABirdName /> : <BABird birdData={birdData} />;
+  return !birdData ? (
+    <BABirdName />
+  ) : (
+    <BABird
+      birdData={birdData}
+      schedulePushNotification={schedulePushNotification}
+    />
+  );
 }
 
 function BABirdName() {
