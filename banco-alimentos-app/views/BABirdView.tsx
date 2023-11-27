@@ -1,16 +1,15 @@
 import { StyleSheet, View } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import BAView from "../components/BAView";
 import BATextInput from "../components/BATextInput";
 import BAButton, { ButtonState } from "../components/BAButton";
-import BAText, { TypeText } from "../components/BAText";
+import BAText from "../components/BAText";
 import BASubView from "../components/BASubView";
 import BAPallete from "../resources/BAPallete";
 import { useModal } from "../components/Modal/BAModalContext";
 import axios from "../axios";
 import BABird from "../components/BABird";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useLoading } from "../components/Loading/BALoadingContext";
 import { useBird } from "../components/BABirdContext";
 
 type ColorButtonProps = {

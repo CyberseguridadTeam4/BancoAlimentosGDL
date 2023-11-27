@@ -45,6 +45,8 @@ function BATextInput({
         value={value}
         onChangeText={onChange}
         secureTextEntry={isPassword}
+        autoCorrect={false}
+        spellCheck={false}
       />
       {isPassword && (
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
@@ -72,21 +74,25 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   textInput: {
+<<<<<<< HEAD
     width: "80%",
+=======
+    flex: 1,
+>>>>>>> 293b05e43fd1d01d84540a4bab0f72939bf17f96
     textAlignVertical: "center",
-    borderColor: "transparent", // Set to your background color
+    borderColor: "transparent",
     borderWidth: 1,
   },
   shadow: {
-    // Apply shadow styles for Android
-    elevation: 4, // Adjust the elevation value as needed
+    elevation: 10,
+    backgroundColor: "#0000",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.2,
-    shadowRadius: 4, // Adjust the shadow radius as needed
+    shadowRadius: 4,
   },
 });
 

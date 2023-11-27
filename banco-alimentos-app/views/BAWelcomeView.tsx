@@ -23,7 +23,7 @@ export default function LogIn() {
   const [username, setUsername] = useState("");
   const [birthday, setBirthday] = useState("");
 
-  const {openModal} = useModal();
+  const { openModal } = useModal();
   const { setUser } = useUser();
 
   const userLogin = async () => {
@@ -33,15 +33,12 @@ export default function LogIn() {
         password: contraseña,
       })
       .then(function (response) {
-        console.log(response.data);
         if (response.status == 200) {
           setUser(response.data.user);
           AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
           axios.defaults.headers.common["Authorization"] =
             response.data.user.sessionToken;
-          console.log("Usuario logeado");
         } else {
-          console.log("Usuario no logeado");
           openModal(
             <BAText type={TypeText.label2}>
               Asegurate de que tu contraseña o correo esten escritos
@@ -74,7 +71,6 @@ export default function LogIn() {
     .then(function (response) {
       console.log(response.data);
       if (response.status == 200) {
-        console.log("resetPassword");
         openModal(
           <View>
             <BAText type={TypeText.label3} style={styles.text}>
@@ -87,7 +83,6 @@ export default function LogIn() {
           "Contraseña"
         );
       } else {
-        console.log("Correo no existe");
         openModal(
           <BAText>
             Verifica que tu email este bien escrito. 
