@@ -151,7 +151,7 @@ export default function SignUp({
           onPress={() => {
             setUserRoot(user);
             serEmailRoot(email);
-            setBirthDateRoot(date);
+            setBirthDateRoot(dateOfBirth);
             setIsInPasswordPage(true);
           }}
         />}
