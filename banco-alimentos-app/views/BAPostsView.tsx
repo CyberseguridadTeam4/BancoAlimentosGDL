@@ -8,27 +8,48 @@ import React, { useCallback, useEffect, useState } from "react";
 import BAView from "../components/BAView";
 import BAText, { TypeText } from "../components/BAText";
 import BAPallete from "../resources/BAPallete";
-import BAIcon, { IconSize } from "../resources/icons/BAIcon";
+import BAIcon from "../resources/icons/BAIcon";
 import BAIcons from "../resources/icons/BAIcons";
 import axios from "../axios";
-import BASubView from "../components/BASubView";
 import BAButton, { ButtonState } from "../components/BAButton";
 import { useSheet } from "../components/Sheet/BASheetContext";
 import BAMultiTextInput from "../components/BAMultiTextInput";
-import BACommentsSubView from "./BACommentsSubView";
+import BACommentsSubView, { ProfilePicture } from "./BACommentsSubView";
 import { useLoading } from "../components/Loading/BALoadingContext";
 import { useBird } from "../components/BABirdContext";
 import BAReportView from "./BAReportView";
+import { useUser } from "../components/BAUserContext";
+import BAProfilePictures from "../assets/profilePictures/BAProfilePictures";
+import { useModal } from "../components/Modal/BAModalContext";
+
+type PostType = {
+  text: string;
+  title: string;
+  userData: [
+    username: string,
+    colorProfilePicture: number,
+    idProfilePicture: number,
+    visBadge: number
+  ];
+  nViews: number;
+  nLikes: number;
+  createdAt: string;
+  updatedAt: string;
+  reported: boolean;
+  objectId: string;
+  isliked: boolean;
+};
 
 type PostProps = {
   post: {
     text: string;
     title: string;
-    userId: {
-      __type: string;
-      className: string;
-      objectId: string;
-    };
+    userData: [
+      username: string,
+      colorProfilePicture: number,
+      idProfilePicture: number,
+      visBadge: number
+    ];
     nViews: number;
     nLikes: number;
     createdAt: string;
@@ -38,22 +59,24 @@ type PostProps = {
     isliked: boolean;
   };
   onClickPost: () => void;
+  isReportHide?: boolean;
+  isLikeHide?: boolean;
+  isShareHide?: boolean;
+  updatePost: (newPost: PostType) => void;
 };
 
-type PostsProps = {
-  userData: any;
-};
-
-export default function BAPostsView({ userData }: PostsProps) {
-  const [posts, setPosts] = useState<any[]>([]);
+export default function BAPostsView() {
+  const [posts, setPosts] = useState<PostType[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
-
-  const { openLoading, closeLoading } = useLoading();
   const [chosenPost, setChosenPost] = useState<any>(null);
 
+  const { openLoading, closeLoading } = useLoading();
+  const { userData } = useUser();
+  const index = 0;
+
   const getPosts = async () => {
-    await axios.get("/getPosts").then((res: any) => {
+    await axios.get(`/getPosts/${index}`).then((res: any) => {
       const postsData = res.data.posts;
       postsData.reverse();
       setPosts(postsData);
@@ -78,6 +101,17 @@ export default function BAPostsView({ userData }: PostsProps) {
         setRefreshing(false);
       });
   }, []);
+
+  const updatePost = (newPost: PostType) => {
+    const postsCopy = posts;
+    const postIndex = posts.findIndex(
+      (post) => post.objectId == newPost.objectId
+    );
+
+    postsCopy[postIndex] = newPost;
+
+    setPosts(postsCopy);
+  };
 
   const AddButton = () => {
     return (
@@ -108,7 +142,7 @@ export default function BAPostsView({ userData }: PostsProps) {
         {posts.length > 0 &&
           posts.map((item) => {
             return (
-              <>
+              <View key={item.objectId}>
                 {!item.reported && (
                   <Post
                     post={item}
@@ -117,9 +151,10 @@ export default function BAPostsView({ userData }: PostsProps) {
                       setIsCommentsOpen(true);
                       setChosenPost(item);
                     }}
+                    updatePost={updatePost}
                   />
                 )}
-              </>
+              </View>
             );
           })}
       </BAView>
@@ -127,31 +162,48 @@ export default function BAPostsView({ userData }: PostsProps) {
         <BACommentsSubView
           isOpen={isCommentsOpen}
           setIsOpen={setIsCommentsOpen}
-          userData={userData}
           post={chosenPost}
+          updatePost={updatePost}
         />
       )}
     </>
   );
 }
 
-export const Post = ({ post, onClickPost }: PostProps) => {
+export const Post = ({
+  post,
+  onClickPost,
+  isReportHide = false,
+  isLikeHide = false,
+  isShareHide = false,
+  updatePost,
+}: PostProps) => {
   const [likedPost, setLiketPost] = useState(post.isliked);
   const [postData, setPostData] = useState(post);
+  const [isUser, setIsUser] = useState(false);
 
   const { dispatchInteraction } = useBird();
   const { openSheet, closeSheet } = useSheet();
+  const { userData } = useUser();
+  const { openModal } = useModal();
+
+  useEffect(() => {
+    setIsUser(postData.userData[0] == userData.username);
+  }, []);
 
   useEffect(() => {
     setPostData(post);
-  }, [post]);
+    setLiketPost(post.isliked);
+  }, [post, post.isliked]);
 
   const likePost = useCallback(async (isLike: boolean) => {
     const postData = post;
     isLike ? (postData.nLikes += 1) : (postData.nLikes -= 1);
-    dispatchInteraction(postData.objectId);
-    await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);
+    isLike && dispatchInteraction(postData.objectId);
+    postData.isliked = isLike;
+    updatePost(postData);
     setPostData({ ...postData });
+    await axios.patch(`/likePost/${post.objectId}/${isLike ? 1 : -1}`, post);
   }, []);
 
   const calculateDate = (postCreation: string): string => {
@@ -187,14 +239,34 @@ export const Post = ({ post, onClickPost }: PostProps) => {
     <TouchableOpacity style={styles.postBox} onPress={onClickPost}>
       <View style={styles.header}>
         <View style={styles.row}>
-          <View style={styles.profilePic} />
+          <ProfilePicture
+            color={postData.userData[1]}
+            pic={postData.userData[2]}
+            badge={postData.userData[3]}
+            username={postData.userData[0]}
+          />
           <BAText type={TypeText.label3} style={{ fontSize: 16 }}>
             {postData.title}
           </BAText>
         </View>
-        <BAText type={TypeText.label3} style={{ fontSize: 14 }}>
-          {calculateDate(postData.createdAt)}
-        </BAText>
+        <View style={[styles.row, { gap: 20 }]}>
+          <BAText type={TypeText.label3} style={{ fontSize: 14 }}>
+            {calculateDate(postData.createdAt)}
+          </BAText>
+          {isUser && (
+            <TouchableOpacity
+              onPress={() => {
+                openModal(<DeleteModal objId={post.objectId} />, "Confirmar");
+              }}
+            >
+              <BAIcon
+                icon={BAIcons.TrashIcon}
+                color={BAPallete.Red01}
+                size={"medium"}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
       <BAText
         style={{ marginVertical: 20, fontSize: 18 }}
@@ -211,68 +283,74 @@ export const Post = ({ post, onClickPost }: PostProps) => {
               size={"medium"}
             />
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() =>
-              openSheet(
-                <BAReportView
-                  closeSheet={closeSheet}
-                  type={0}
-                  objId={post.objectId}
-                />,
-                "Reportar"
-              )
-            }
-          >
-            <BAIcon
-              icon={BAIcons.FlagIcon}
-              color={BAPallete.Red01}
-              size={"medium"}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={[styles.row, { gap: 20 }]}>
-          <TouchableOpacity
-            onPress={() => {
-              setLiketPost(!likedPost);
-              likePost(!likedPost);
-            }}
-          >
-            <View style={styles.likeContainer}>
-              <BAText type={TypeText.label3}>{postData.nLikes}</BAText>
+
+          {!isReportHide && (
+            <TouchableOpacity
+              onPress={() =>
+                openSheet(
+                  <BAReportView
+                    closeSheet={closeSheet}
+                    type={0}
+                    objId={post.objectId}
+                  />,
+                  "Reportar"
+                )
+              }
+            >
               <BAIcon
-                icon={
-                  likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
-                }
+                icon={BAIcons.FlagIcon}
                 color={BAPallete.Red01}
                 size={"medium"}
               />
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <BAIcon
-              icon={BAIcons.ShareIcon}
-              color={BAPallete.Red01}
-              size={"medium"}
-            />
-          </TouchableOpacity>
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={[styles.row, { gap: 20, marginRight: 10 }]}>
+          {!isLikeHide && (
+            <TouchableOpacity
+              onPress={() => {
+                setLiketPost(!likedPost);
+                likePost(!likedPost);
+              }}
+            >
+              <View style={styles.likeContainer}>
+                <BAText type={TypeText.label3}>{postData.nLikes}</BAText>
+                <BAIcon
+                  icon={
+                    likedPost ? BAIcons.HeartIconActivated : BAIcons.HeartIcon
+                  }
+                  color={BAPallete.Red01}
+                  size={"medium"}
+                />
+              </View>
+            </TouchableOpacity>
+          )}
+          {false && (
+            <TouchableOpacity>
+              <BAIcon
+                icon={BAIcons.ShareIcon}
+                color={BAPallete.Red01}
+                size={"medium"}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </TouchableOpacity>
   );
 };
 
-const CreatePostView = ({ userData, closeSheet }: any) => {
+const CreatePostView = ({ closeSheet }: any) => {
   const [text, setText] = useState("");
 
+  const { userData } = useUser();
   const publishPost = useCallback(async (textPost: string) => {
     await axios
       .post(`/post`, {
         text: textPost,
-        title: userData.user.username,
-        userId: userData.user,
+        title: userData.username,
       })
       .then((res) => {
-        console.log(res);
         closeSheet();
       })
       .catch((error) => console.log(error));
@@ -290,6 +368,29 @@ const CreatePostView = ({ userData, closeSheet }: any) => {
         state={ButtonState.alert}
         onPress={() => publishPost(text)}
         text="Send"
+      />
+    </View>
+  );
+};
+
+const DeleteModal = ({ objId }: any) => {
+  const { closeModal } = useModal();
+
+  const deletePost = async () => {
+    await axios.patch(`/deletePost/${objId}`);
+  };
+  return (
+    <View>
+      <BAText type={TypeText.label3} style={{ marginBottom: 20 }}>
+        ¿Quieres eliminar este post? Esta acción no es reversible
+      </BAText>
+      <BAButton
+        onPress={() => {
+          deletePost();
+          closeModal();
+        }}
+        state={ButtonState.alert}
+        text="Aceptar"
       />
     </View>
   );
@@ -326,16 +427,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginRight: 5,
-  },
-  profilePic: {
-    width: 40,
-    aspectRatio: 1 / 1,
-    borderRadius: 10,
-    backgroundColor: "white",
-    shadowRadius: 5,
-    shadowColor: BAPallete.StrongBlue,
-    shadowOpacity: 0.15,
-    marginRight: 15,
   },
   footer: {
     flexDirection: "row",

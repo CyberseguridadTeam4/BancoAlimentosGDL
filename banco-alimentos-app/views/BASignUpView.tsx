@@ -104,6 +104,7 @@ export default function SignUp({
           value={email}
           onChange={setEmail}
         />
+
         <BAText style={styles.center}>Fecha de nacimimento:</BAText>
 
 

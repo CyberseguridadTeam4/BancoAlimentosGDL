@@ -122,12 +122,14 @@ export function BAModal({ title, content, onClose }: BAModalProps) {
         style={[styles.content, { transform: [{ scale: modalScale }] }]}
       >
         <View style={styles.header}>
-          <BAText type={TypeText.label0}>{title}</BAText>
+          <BAText type={TypeText.label0} style={{ fontSize: 24 }}>
+            {title}
+          </BAText>
           <TouchableOpacity onPress={onCloseModal}>
             <BAIcon
               icon={BAIcons.CrossIcon}
               color={BAPallete.Red01}
-              size={"large"}
+              size={20}
             />
           </TouchableOpacity>
         </View>

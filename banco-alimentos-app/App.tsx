@@ -1,67 +1,89 @@
-import { StyleSheet, View, StatusBar } from "react-native";
-import { useEffect, useState } from "react";
+import { StyleSheet, View, StatusBar, Platform, Button } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import BABottomBar from "./components/BABottomBar";
 import React from "react";
 import BABirdView from "./views/BABirdView";
 import BAContextProviderWrapper from "./components/BAContextProviderWrapper";
 import BAModalController from "./components/Modal/BAModal";
 import BASheetController from "./components/Sheet/BASheet";
-import BAToastController from "./components/Toast/BAToast";
 import BAPostsView from "./views/BAPostsView";
 import BAMapView from "./views/BAMapView";
 import BAAccountView from "./views/BAAccountView";
 import BAWelcomeView from "./views/BAWelcomeView";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "./axios";
 import BASettingsView from "./views/BASettingsView";
 import BALoading from "./components/Loading/BALoading";
 import { BirdProvider } from "./components/BABirdContext";
+import { UserProvider, useUser } from "./components/BAUserContext";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import Constants from "expo-constants";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function App() {
-  const [loggedUser, setLoggedUser] = useState<UserProps | null>(null);
-  const [viewIndex, setViewIndex] = useState(2);
+  const [expoPushToken, setExpoPushToken] = useState<
+    Notifications.ExpoPushToken | string
+  >();
+  const [notification, setNotification] = useState<any>(false);
+  const notificationListener = useRef<any>();
+  const responseListener = useRef<any>();
 
   useEffect(() => {
-    (async () => {
-      const sessionToken = await AsyncStorage.getItem("sessionToken");
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
 
-      if (sessionToken != null) {
-        await axios
-          .get(`/authSessionToken/${sessionToken}`)
-          .then((res): any => {
-            setLoggedUser(res.data);
-            axios.defaults.headers.common["Authorization"] = sessionToken;
-          })
-          .catch((error): any => {
-            console.log(error);
-          });
-      }
-    })();
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {});
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, []);
 
+  return (
+    <UserProvider>
+      <AppContent />
+    </UserProvider>
+  );
+}
+
+export function AppContent() {
+  const [viewIndex, setViewIndex] = useState(2);
+
+  const { userData } = useUser();
   return (
     <View style={styles.container}>
       <BAContextProviderWrapper>
         <StatusBar barStyle={"dark-content"} />
-        {loggedUser ? (
-          <BirdProvider birdPointer={loggedUser.user.pollo}>
-            <ViewSwitch
-              viewIndex={viewIndex}
-              loggedUser={loggedUser}
-              setLoggedUser={setLoggedUser}
-            />
+        {userData.objectId != "" ? (
+          <BirdProvider birdPointer={userData.pollo}>
+            <ViewSwitch viewIndex={viewIndex} />
             <BALoading />
             <BABottomBar viewIndex={viewIndex} setViewIndex={setViewIndex} />
           </BirdProvider>
         ) : (
           <>
             <BALoading />
-            <BAWelcomeView setLoggedUser={setLoggedUser} />
+            <BAWelcomeView />
           </>
         )}
         <BASheetController />
         <BAModalController />
-        <BAToastController />
       </BAContextProviderWrapper>
     </View>
   );
@@ -69,49 +91,20 @@ export default function App() {
 
 type ViewSwitchProps = {
   viewIndex: number;
-  loggedUser: UserProps;
-  setLoggedUser: (data: any) => void;
 };
 
-type UserProps = {
-  user: {
-    username: string;
-    badges: [];
-    email: string;
-    idProfilePicture: number;
-    visBadge: number;
-    pollo: any;
-    createdAt: string;
-    updatedAt: string;
-    ACL: any;
-    sessionToken: string;
-    objectId: string;
-  };
-};
-
-const ViewSwitch = ({
-  viewIndex,
-  loggedUser,
-  setLoggedUser,
-}: ViewSwitchProps) => {
+const ViewSwitch = ({ viewIndex }: ViewSwitchProps) => {
   switch (viewIndex) {
     case 0:
-      return <BAPostsView userData={loggedUser} />;
+      return <BAPostsView />;
     case 1:
       return <BAMapView />;
     case 2:
-      return (
-        <BABirdView
-          birdPointer={loggedUser.user.pollo}
-          username={loggedUser.user.username}
-        />
-      );
+      return <BABirdView schedulePushNotification={schedulePushNotification} />;
     case 3:
-      return <BAAccountView userData={loggedUser.user} />;
+      return <BAAccountView />;
     case 4:
-      return (
-        <BASettingsView userData={loggedUser} setUserData={setLoggedUser} />
-      );
+      return <BASettingsView />;
     default:
       return <BABirdView />;
   }
@@ -124,3 +117,71 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
 });
+
+export async function schedulePushNotification(name: string) {
+  const DAY_SECONDS = 86400;
+
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: `${name} te extraña :(`,
+      body: "Interactua con usuarios para obtener comida y alimentar a tu pajarito",
+    },
+    trigger: { seconds: DAY_SECONDS },
+  });
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: `${name} te extraña :(`,
+      body: "Interactua con usuarios para obtener comida y alimentar a tu pajarito",
+    },
+    trigger: { seconds: DAY_SECONDS * 2 },
+  });
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: `${name} te extraña :(`,
+      body: "Interactua con usuarios para obtener comida y alimentar a tu pajarito",
+    },
+    trigger: { seconds: DAY_SECONDS * 3 },
+  });
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: `${name} te extraña :(`,
+      body: "Interactua con usuarios para obtener comida y alimentar a tu pajarito",
+    },
+    trigger: { seconds: DAY_SECONDS * 4 },
+  });
+}
+
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Platform.OS === "android") {
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  if (Device.isDevice) {
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    const { data: tokenId } = await Notifications.getExpoPushTokenAsync({
+      projectId: Constants.expoConfig?.extra?.eas.projectId,
+    });
+
+    token = tokenId;
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  return token;
+}

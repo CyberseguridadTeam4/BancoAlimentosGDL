@@ -1,36 +1,30 @@
-import {
-  StyleSheet,
-  View,
-  StatusBar,
-  Alert,
-  Dimensions,
-  Image,
-} from "react-native";
+import { StyleSheet, View, Image, Alert } from "react-native";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
 import BAIcons from "../resources/icons/BAIcons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BAView from "../components/BAView";
-import axios from "../axios";
 import React from "react";
 import BASubView from "../components/BASubView";
 import BASignUpView from "./BASignUpView";
 import BAPasswordCreationView from "./BAPasswordCreationView";
+import { useUser } from "../components/BAUserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "../axios";
+import { useModal } from "../components/Modal/BAModalContext";
 
-type WelcomeProps = {
-  setLoggedUser: (data: any) => void;
-};
-
-export default function LogIn({ setLoggedUser }: WelcomeProps) {
+export default function LogIn() {
   const [isInRegisterPage, setIsInRegisterPage] = useState(false);
   const [isInPasswordPage, setIsInPasswordPage] = useState(false);
   const [email, setTextEmail] = useState("");
   const [contraseña, setTextContraseña] = useState("");
 
-  const [user, setUser] = useState("");
+  const [username, setUsername] = useState("");
   const [birthday, setBirthday] = useState("");
+
+  const { openModal } = useModal();
+  const { setUser } = useUser();
 
   const userLogin = async () => {
     axios
@@ -39,19 +33,56 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
         password: contraseña,
       })
       .then(function (response) {
-        console.log(response.data);
         if (response.status == 200) {
-          setLoggedUser(response.data);
+          setUser(response.data.user);
           AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
           axios.defaults.headers.common["Authorization"] =
             response.data.user.sessionToken;
-          console.log("Usuario logeado");
         } else {
-          console.log("Usuario no logeado");
+          openModal(
+            <BAText>
+              Asegurate de que tu contraseña o correo esten escritos
+              correctamente. Y que tu correo ya este verificado en el email que
+              se te envio.
+            </BAText>,
+            "Ops!!! Hubo un error"
+          );
         }
       })
       .catch(function (error) {
+        openModal(
+          <BAText>
+            Asegurate de que tu contraseña o correo esten escritos
+            correctamente. Y que tu correo ya este verificado en el email que se
+            te envio.
+          </BAText>,
+          "Ops!!! Hubo un error"
+        );
         console.log(error);
+      });
+  };
+
+  const resetPassword = async () => {
+    axios
+      .post("/resetPassword", {
+        email: email,
+      })
+      .then(function (response) {
+        if (response.status == 200) {
+          openModal(<BAText>{email}</BAText>, "Restablecimiento enviado a:");
+        } else {
+          openModal(
+            <BAText>Verifica que tu email este bien escrito.</BAText>,
+            "Ops!!! Hubo un error"
+          );
+        }
+      })
+      .catch(function (error) {
+        console.error(error);
+        openModal(
+          <BAText>Escribe el correo de tu cuenta!</BAText>,
+          "Ops!!! Hubo un error"
+        );
       });
   };
 
@@ -59,7 +90,9 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
     <>
       <BAView isScrolling={false} title="" style={styles.container}>
         <BAText type={TypeText.label3}>Bienvenido! </BAText>
-        <BAText type={TypeText.label4}>PioPio</BAText>
+        <BAText type={TypeText.label4} style={{ marginBottom: 10 }}>
+          PioPio
+        </BAText>
         <BAText type={TypeText.label1} style={styles.centerEmail}>
           Email:
         </BAText>
@@ -94,6 +127,13 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
           onPress={() => userLogin()}
         />
 
+        <View style={styles.containerInline}>
+          <BAText type={TypeText.label3}>Olvidaste tu contraseña?</BAText>
+          <BAText type={TypeText.label5} onPress={() => resetPassword()}>
+            {" Recuperar"}
+          </BAText>
+        </View>
+
         <Image
           source={require("../resources/icons/BAMXLogo.png")}
           style={styles.image}
@@ -107,7 +147,7 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
       >
         <BASignUpView
           setIsInPasswordPage={setIsInPasswordPage}
-          setUserRoot={setUser}
+          setUserRoot={setUsername}
           serEmailRoot={setTextEmail}
           setBirthDateRoot={setBirthday}
         />
@@ -119,11 +159,12 @@ export default function LogIn({ setLoggedUser }: WelcomeProps) {
         onReturn={() => setIsInPasswordPage(false)}
       >
         <BAPasswordCreationView
-          username={user}
+          username={username}
           email={email}
-          name={user}
+          name={username}
           setIsInBirdPage={() => {}}
-          setLoggedUser={setLoggedUser}
+          setIsInRegisterPage={setIsInRegisterPage}
+          setIsInPasswordPage={setIsInPasswordPage}
         />
       </BASubView>
     </>
@@ -136,13 +177,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F4F5FF",
     alignItems: "center",
-    // height: Dimensions.get("window").height,
-    gap: 19,
+    gap: 10,
     paddingHorizontal: 20,
   },
   containerInline: {
     flexDirection: "row",
-    marginBottom: 30,
+    marginBottom: 20,
   },
   center: {
     width: "100%",
@@ -155,8 +195,11 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   image: {
-    marginTop: 10,
     width: 200,
     resizeMode: "contain",
   },
 });
+
+function openModal(arg0: React.JSX.Element, arg1: string) {
+  throw new Error("Function not implemented.");
+}

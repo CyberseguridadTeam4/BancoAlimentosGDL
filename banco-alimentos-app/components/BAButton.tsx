@@ -129,6 +129,12 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     shadowColor: BAPallete.StrongBlue,
     shadowOpacity: 0.15,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    elevation: 10,
+    backgroundColor: "#0000",
   },
   disabledBg: {
     width: "100%",
