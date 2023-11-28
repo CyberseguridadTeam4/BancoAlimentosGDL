@@ -63,6 +63,7 @@ type PostProps = {
   isLikeHide?: boolean;
   isShareHide?: boolean;
   updatePost: (newPost: PostType) => void;
+  getPosts?: () => void;
 };
 
 export default function BAPostsView() {
@@ -76,6 +77,7 @@ export default function BAPostsView() {
   const index = 0;
 
   const getPosts = async () => {
+    openLoading();
     await axios.get(`/getPosts/${index}`).then((res: any) => {
       const postsData = res.data.posts;
       postsData.reverse();
@@ -87,7 +89,6 @@ export default function BAPostsView() {
   const { openSheet, closeSheet } = useSheet();
 
   useEffect(() => {
-    openLoading();
     getPosts();
   }, []);
 
@@ -119,7 +120,11 @@ export default function BAPostsView() {
         style={{ marginRight: 5 }}
         onPress={() =>
           openSheet(
-            <CreatePostView userData={userData} closeSheet={closeSheet} />,
+            <CreatePostView
+              userData={userData}
+              closeSheet={closeSheet}
+              getPosts={getPosts}
+            />,
             "Create Post"
           )
         }
@@ -152,6 +157,7 @@ export default function BAPostsView() {
                       setChosenPost(item);
                     }}
                     updatePost={updatePost}
+                    getPosts={getPosts}
                   />
                 )}
               </View>
@@ -177,6 +183,7 @@ export const Post = ({
   isLikeHide = false,
   isShareHide = false,
   updatePost,
+  getPosts,
 }: PostProps) => {
   const [likedPost, setLiketPost] = useState(post.isliked);
   const [postData, setPostData] = useState(post);
@@ -256,7 +263,10 @@ export const Post = ({
           {isUser && (
             <TouchableOpacity
               onPress={() => {
-                openModal(<DeleteModal objId={post.objectId} />, "Confirmar");
+                openModal(
+                  <DeleteModal objId={post.objectId} getPosts={getPosts} />,
+                  "Confirmar"
+                );
               }}
             >
               <BAIcon
@@ -340,17 +350,21 @@ export const Post = ({
   );
 };
 
-const CreatePostView = ({ closeSheet }: any) => {
+const CreatePostView = ({ closeSheet, getPosts }: any) => {
   const [text, setText] = useState("");
 
   const { userData } = useUser();
+  const { dispatchInteraction } = useBird();
+
   const publishPost = useCallback(async (textPost: string) => {
+    dispatchInteraction(undefined, 3);
     await axios
       .post(`/post`, {
         text: textPost,
         title: userData.username,
       })
       .then((res) => {
+        getPosts();
         closeSheet();
       })
       .catch((error) => console.log(error));
@@ -373,11 +387,13 @@ const CreatePostView = ({ closeSheet }: any) => {
   );
 };
 
-const DeleteModal = ({ objId }: any) => {
+const DeleteModal = ({ objId, getPosts }: any) => {
   const { closeModal } = useModal();
 
   const deletePost = async () => {
-    await axios.patch(`/deletePost/${objId}`);
+    await axios.patch(`/deletePost/${objId}`).then(() => {
+      getPosts();
+    });
   };
   return (
     <View>
