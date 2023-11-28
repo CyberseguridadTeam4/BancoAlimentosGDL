@@ -1,4 +1,10 @@
-import { Button, StyleSheet, View } from "react-native";
+import { 
+  Pressable,
+  StyleSheet,
+  View,
+  Platform
+} from "react-native";
+
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
@@ -6,6 +12,7 @@ import BAIcons from "../resources/icons/BAIcons";
 import { useState } from "react";
 import React from "react";
 import { useModal } from "../components/Modal/BAModalContext";
+import DateTimePicker from "@react-native-community/datetimepicker"; 
 
 export default function SignUp({
   setIsInPasswordPage,
@@ -13,18 +20,70 @@ export default function SignUp({
   serEmailRoot,
   setBirthDateRoot,
 }: any) {
-  const [user, setUser] = useState("");
-  const [email, setEmail] = useState("");
-  const [birthDate, setBirthDate] = useState("");
 
-  // const [open, setOpen] = useState(false);
-  const {openModal} = useModal();
+  const [user, setUser] = useState("");
+  const [email, setEmail] = useState(""); 
+  const [dateOfBirth, setDateOfBirth] = useState("");
+
+  const {openModal} = useModal(); 
+
+  const [date, setDate] = useState(new Date());
+  const [isPickerShow, setIsPickerShow] = useState(false);
+
+  const validAge = new Date();
+  validAge.setFullYear(validAge.getFullYear() - 18);
+
+
+  const calculateAge = (date: Date) => {
+    const today = new Date();
+    let age = today.getFullYear() - date.getFullYear();
+    const m = today.getMonth() - date.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < date.getDate())) {
+      age--;
+    }
+    return age;
+   };   
 
   function missing () {
-    return user === "" || email === "" || birthDate === ""
+    return user === ""  || email === "" || date === null;
   }
 
-  return (
+  const formatDate = (date: Date) => {
+    const day = String(date.getDate()).padStart(2,'0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`; 
+  };
+
+  const dateString = formatDate(date);
+
+  const toggleDatePicker = () => {
+    setIsPickerShow(!isPickerShow);
+  };
+
+  const onChangeText = (text: string) => {
+    const [day, month, year] = text.split('/').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
+    setDate(selectedDate);  
+   }; 
+
+    
+   const onChangeValue = (event: any, selectedDate?: Date) => {
+      const currentDate = selectedDate || date;
+      setIsPickerShow(Platform.OS === 'ios');
+      setDate(currentDate);
+      setDateOfBirth(currentDate.toLocaleDateString());
+    }
+
+    const showMode = () => {
+      setIsPickerShow(true);
+    };
+   
+    
+
+
+    return (
     <>
       <View style={styles.container}>
         <BAText style={styles.center}>Usuario:</BAText>
@@ -34,9 +93,11 @@ export default function SignUp({
           value={user}
           onChange={setUser}
         />
+
         <BAText type={TypeText.label1} style={styles.center}>
           Email:
         </BAText>
+
         <BATextInput
           placeholder="Email"
           icon={BAIcons.SMSIcon}
@@ -46,35 +107,55 @@ export default function SignUp({
 
         <BAText style={styles.center}>Fecha de nacimimento:</BAText>
 
-        {/* <DateTimePicker /> */}
-        
-        <BATextInput
-          placeholder="dd/mm/yyyy"
-          icon={BAIcons.BirdIcon}
-          value={birthDate}
-          onChange={setBirthDate}
-        />
-        {missing() ? <BAButton
+
+        {isPickerShow && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode={'date'}
+            display="default"
+            onChange={onChangeValue}
+            maximumDate={validAge}
+          />
+        )}
+
+        <Pressable style={styles.pressable}        
+        onPress={() => {
+          toggleDatePicker();
+        }}
+        >
+          <BATextInput
+            placeholder={dateOfBirth || "dd/mm/yyyy"}
+            icon={BAIcons.BirdIcon}
+            value={dateOfBirth}
+            onChange={(text) => setDateOfBirth(text)}
+            editable={false}
+          />
+        </Pressable>
+
+
+
+          {missing() ? <BAButton
+            text="Siguiente"
+            state={ButtonState.alert}
+            style={styles.centerSiguiente}
+            onPress={() => {
+              openModal(
+                <BAText>Asegurate de escribir correctamente la informacion en todos los campos</BAText>,
+                "Campos incompletos"
+              )
+            }}
+          /> : <BAButton
           text="Siguiente"
           state={ButtonState.alert}
           style={styles.centerSiguiente}
           onPress={() => {
-            openModal(
-              <BAText>Asegurate de escribir correctamente la informacion en todos los campos</BAText>,
-              "Campos incompletos"
-            )
+            setUserRoot(user);
+            serEmailRoot(email);
+            setBirthDateRoot(dateOfBirth);
+            setIsInPasswordPage(true);
           }}
-        /> : <BAButton
-        text="Siguiente"
-        state={ButtonState.alert}
-        style={styles.centerSiguiente}
-        onPress={() => {
-          setUserRoot(user);
-          serEmailRoot(email);
-          setBirthDateRoot(birthDate);
-          setIsInPasswordPage(true);
-        }}
-      />}
+        />}
       </View>
     </>
   );
@@ -96,4 +177,10 @@ const styles = StyleSheet.create({
   centerSiguiente: {
     marginTop: 150,
   },
+  pressable: {
+    width: "100%",
+    textAlignVertical: "center",
+    borderColor: "transparent", // Set to your background color
+    borderWidth: 1,
+  }
 });

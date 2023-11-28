@@ -16,17 +16,23 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.iker8av.piopio",
       " ios.config.googleMapsApiKey": "AIzaSyBZ-L6y4RM_Adga1qdKEj8ZTMCBkMHE_3o"
-      
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff",
         "android.config.googleMaps.apiKey": "AIzaSyBZ-L6y4RM_Adga1qdKEj8ZTMCBkMHE_3o"
-      }
+      },
+      "package": "com.iker8av.piopio"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "09c158e8-4a89-4b20-a6a4-5965f970e503"
+      },
+      "owner": "ikerochoa"
     }
   }
 }

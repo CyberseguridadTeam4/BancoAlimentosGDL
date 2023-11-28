@@ -71,7 +71,6 @@ export default function SignUp({
         })
         .then(function (response) {
           setUserCreated(true);
-          // setUser(response.data.user);
         })
         .catch(function (error) {
           console.log(error);

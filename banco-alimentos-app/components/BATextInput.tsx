@@ -23,7 +23,8 @@ type Props = {
   placeholder?: string;
   value: string;
   onChange: (input: string) => void;
-  isPassword?: boolean; // New prop to indicate if it's a password input
+  isPassword?: boolean;// New prop to indicate if it's a password input
+  editable?: boolean; 
 };
 
 function BATextInput({
@@ -32,8 +33,9 @@ function BATextInput({
   value,
   onChange,
   isPassword = false,
+  editable = true,
 }: Props): JSX.Element {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(isPassword);
 
   return (
     <View style={styles.wrapper}>
@@ -44,12 +46,14 @@ function BATextInput({
         placeholder={placeholder}
         value={value}
         onChangeText={onChange}
-        secureTextEntry={isPassword}
+        secureTextEntry={isPassword && showPassword}
+        autoCorrect={false}
+        spellCheck={false}
       />
       {isPassword && (
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
           <BAIcon
-            icon={showPassword ? BAIcons.EyeIcon : BAIcons.EyeIcon}
+            icon={showPassword ? BAIcons.EyeHideIcon : BAIcons.EyeIcon}
             color={BAPallete.Gray03}
           />
         </TouchableOpacity>
@@ -72,21 +76,21 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   textInput: {
-    width: "100%",
+    flex: 1,
     textAlignVertical: "center",
-    borderColor: "transparent", // Set to your background color
+    borderColor: "transparent",
     borderWidth: 1,
   },
   shadow: {
-    // Apply shadow styles for Android
-    elevation: 4, // Adjust the elevation value as needed
+    elevation: 10,
+    backgroundColor: "#0000",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.2,
-    shadowRadius: 4, // Adjust the shadow radius as needed
+    shadowRadius: 4,
   },
 });
 

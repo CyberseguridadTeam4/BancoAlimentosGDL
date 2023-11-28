@@ -1,9 +1,9 @@
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, Alert } from "react-native";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
 import BAIcons from "../resources/icons/BAIcons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BAView from "../components/BAView";
 import React from "react";
 import BASubView from "../components/BASubView";
@@ -12,6 +12,7 @@ import BAPasswordCreationView from "./BAPasswordCreationView";
 import { useUser } from "../components/BAUserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "../axios";
+import { useModal } from "../components/Modal/BAModalContext";
 
 export default function LogIn() {
   const [isInRegisterPage, setIsInRegisterPage] = useState(false);
@@ -22,6 +23,7 @@ export default function LogIn() {
   const [username, setUsername] = useState("");
   const [birthday, setBirthday] = useState("");
 
+  const { openModal } = useModal();
   const { setUser } = useUser();
 
   const userLogin = async () => {
@@ -31,15 +33,12 @@ export default function LogIn() {
         password: contraseña,
       })
       .then(function (response) {
-        console.log(response.data);
         if (response.status == 200) {
           setUser(response.data.user);
           AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
           axios.defaults.headers.common["Authorization"] =
             response.data.user.sessionToken;
-          console.log("Usuario logeado");
         } else {
-          console.log("Usuario no logeado");
           openModal(
             <BAText>
               Asegurate de que tu contraseña o correo esten escritos
@@ -63,11 +62,37 @@ export default function LogIn() {
       });
   };
 
+  const resetPassword = async () => {
+    axios
+      .post("/resetPassword", {
+        email: email,
+      })
+      .then(function (response) {
+        if (response.status == 200) {
+          openModal(<BAText>{email}</BAText>, "Restablecimiento enviado a:");
+        } else {
+          openModal(
+            <BAText>Verifica que tu email este bien escrito.</BAText>,
+            "Ops!!! Hubo un error"
+          );
+        }
+      })
+      .catch(function (error) {
+        console.error(error);
+        openModal(
+          <BAText>Escribe el correo de tu cuenta!</BAText>,
+          "Ops!!! Hubo un error"
+        );
+      });
+  };
+
   return (
     <>
       <BAView isScrolling={false} title="" style={styles.container}>
         <BAText type={TypeText.label3}>Bienvenido! </BAText>
-        <BAText type={TypeText.label4}>PioPio</BAText>
+        <BAText type={TypeText.label4} style={{ marginBottom: 10 }}>
+          PioPio
+        </BAText>
         <BAText type={TypeText.label1} style={styles.centerEmail}>
           Email:
         </BAText>
@@ -104,10 +129,7 @@ export default function LogIn() {
 
         <View style={styles.containerInline}>
           <BAText type={TypeText.label3}>Olvidaste tu contraseña?</BAText>
-          <BAText
-            type={TypeText.label5}
-            onPress={() => console.log("Recuperacion Contraseña")}
-          >
+          <BAText type={TypeText.label5} onPress={() => resetPassword()}>
             {" Recuperar"}
           </BAText>
         </View>

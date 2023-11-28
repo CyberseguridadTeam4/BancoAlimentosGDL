@@ -133,6 +133,8 @@ const styles = StyleSheet.create({
       width: 0,
       height: 0,
     },
+    elevation: 10,
+    backgroundColor: "#0000",
   },
   disabledBg: {
     width: "100%",
