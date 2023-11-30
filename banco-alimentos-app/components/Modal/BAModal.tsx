@@ -122,7 +122,13 @@ export function BAModal({ title, content, onClose }: BAModalProps) {
         style={[styles.content, { transform: [{ scale: modalScale }] }]}
       >
         <View style={styles.header}>
-          <BAText type={TypeText.label0} style={{ fontSize: 24 }}>
+          <BAText
+            type={TypeText.label0}
+            style={{
+              fontSize: 24,
+              width: "90%",
+            }}
+          >
             {title}
           </BAText>
           <TouchableOpacity onPress={onCloseModal}>
