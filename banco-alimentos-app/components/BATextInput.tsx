@@ -49,6 +49,7 @@ function BATextInput({
         secureTextEntry={isPassword && showPassword}
         autoCorrect={false}
         spellCheck={false}
+        editable={editable}
       />
       {isPassword && (
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>

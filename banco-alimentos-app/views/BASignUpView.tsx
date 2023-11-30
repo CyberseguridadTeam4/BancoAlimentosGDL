@@ -80,9 +80,6 @@ export default function SignUp({
       setIsPickerShow(true);
     };
    
-    
-
-
     return (
     <>
       <View style={styles.container}>
