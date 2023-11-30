@@ -1,5 +1,12 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { StyleSheet, Text, View, Dimensions, PixelRatio, Modal } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  PixelRatio,
+  Modal,
+} from "react-native";
 import BAButton, { ButtonState } from "../components/BAButton";
 import BAText, { TypeText } from "../components/BAText";
 import BATextInput from "../components/BATextInput";
@@ -17,7 +24,6 @@ export default function SignUp({
   setLoggedUser, // Fixed prop name
   setIsInRegisterPage,
   setIsInPasswordPage,
-  
 }: any) {
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
@@ -32,9 +38,8 @@ export default function SignUp({
     const showModal = async () => {
       openModal(
         <View>
-          <BAText>
-            Usuario creado exitosamente.             Por favor confirma tu correo en el email enviado.
-          </BAText>
+          <BAText>Usuario creado exitosamente.</BAText>
+          <BAText>Por favor confirma tu correo en el email enviado.</BAText>
           <BAButton
             text="OK"
             state={ButtonState.alert}
@@ -48,7 +53,7 @@ export default function SignUp({
         "Cuenta creada!"
       );
     };
-    
+
     // Call the function only when passwords have been entered
     if (userCreated) {
       showModal();
@@ -82,27 +87,29 @@ export default function SignUp({
     <>
       <View style={styles.container}>
         <BAText style={styles.center}>Contraseña:</BAText>
-        { <BATextInput
-          placeholder="Contraseña"
-          icon={BAIcons.PersonIcon}
-          value={password}
-          onChange={setPassword}
-          isPassword={true} // Use secureTextEntry for password input
-        />
-      }
-      {
-        <BAText type={TypeText.label1} style={styles.center}>
-          Confirmar contraseña:
-        </BAText>
-      }
-      {
-        <BATextInput
-          placeholder="Contraseña"
-          icon={BAIcons.SMSIcon}
-          value={passwordConf}
-          onChange={setPasswordConf}
-          isPassword={true} // Use secureTextEntry for password input
-        /> }
+        {
+          <BATextInput
+            placeholder="Contraseña"
+            icon={BAIcons.PersonIcon}
+            value={password}
+            onChange={setPassword}
+            isPassword={true} // Use secureTextEntry for password input
+          />
+        }
+        {
+          <BAText type={TypeText.label1} style={styles.center}>
+            Confirmar contraseña:
+          </BAText>
+        }
+        {
+          <BATextInput
+            placeholder="Contraseña"
+            icon={BAIcons.SMSIcon}
+            value={passwordConf}
+            onChange={setPasswordConf}
+            isPassword={true} // Use secureTextEntry for password input
+          />
+        }
         <PasswordMeter
           password={password}
           confidence={0}
@@ -110,8 +117,8 @@ export default function SignUp({
           updatePassword={function (text: string): void {
             throw new Error("Function not implemented.");
           }}
-      />
-        {seguridad ? 
+        />
+        {seguridad ? (
           <BAButton
             text="Confirmar"
             state={ButtonState.alert}
@@ -119,20 +126,23 @@ export default function SignUp({
             onPress={() => {
               createUser();
             }}
-          /> : 
+          />
+        ) : (
           <BAButton
             text="Confirmar"
             state={ButtonState.alert}
             style={styles.centerSiguiente}
             onPress={() => {
               openModal(
-                  <BAText>Asegurate de que tu contraseña cumpla con los puntos de seguridad</BAText>,
-                  "Contraseña insegura"
-                )
-              }
-            }
+                <BAText>
+                  Asegurate de que tu contraseña cumpla con los puntos de
+                  seguridad
+                </BAText>,
+                "Contraseña insegura"
+              );
+            }}
           />
-        }
+        )}
       </View>
     </>
   );
@@ -162,5 +172,3 @@ const styles = StyleSheet.create({
 function openSheet(arg0: React.JSX.Element, arg1: string) {
   throw new Error("Function not implemented.");
 }
-
-

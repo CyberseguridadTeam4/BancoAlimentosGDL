@@ -27,18 +27,38 @@ export default function LogIn() {
   const { setUser } = useUser();
 
   const userLogin = async () => {
-    axios
-      .post("/userLogin", {
-        username: email,
-        password: contraseña,
-      })
-      .then(function (response) {
-        if (response.status == 200) {
-          setUser(response.data.user);
-          AsyncStorage.setItem("sessionToken", response.data.user.sessionToken);
-          axios.defaults.headers.common["Authorization"] =
-            response.data.user.sessionToken;
-        } else {
+    if (email == "" || email == "") {
+      openModal(
+        <BAText>Asegurate de hayas escrito tu usuario y contraseña.</BAText>,
+        "Campos vacios"
+      );
+    } else {
+      axios
+        .post("/userLogin", {
+          username: email,
+          password: contraseña,
+        })
+        .then(function (response) {
+          if (response.status == 200) {
+            setUser(response.data.user);
+            AsyncStorage.setItem(
+              "sessionToken",
+              response.data.user.sessionToken
+            );
+            axios.defaults.headers.common["Authorization"] =
+              response.data.user.sessionToken;
+          } else {
+            openModal(
+              <BAText>
+                Asegurate de que tu contraseña o correo esten escritos
+                correctamente. Y que tu correo ya este verificado en el email
+                que se te envio.
+              </BAText>,
+              "Ops!!! Hubo un error"
+            );
+          }
+        })
+        .catch(function (error) {
           openModal(
             <BAText>
               Asegurate de que tu contraseña o correo esten escritos
@@ -47,19 +67,9 @@ export default function LogIn() {
             </BAText>,
             "Ops!!! Hubo un error"
           );
-        }
-      })
-      .catch(function (error) {
-        openModal(
-          <BAText>
-            Asegurate de que tu contraseña o correo esten escritos
-            correctamente. Y que tu correo ya este verificado en el email que se
-            te envio.
-          </BAText>,
-          "Ops!!! Hubo un error"
-        );
-        console.log(error);
-      });
+          console.log(error);
+        });
+    }
   };
 
   const resetPassword = async () => {
