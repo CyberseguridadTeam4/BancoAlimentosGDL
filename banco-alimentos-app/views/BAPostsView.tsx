@@ -357,7 +357,7 @@ const CreatePostView = ({ closeSheet, getPosts }: any) => {
   const { dispatchInteraction } = useBird();
 
   const publishPost = useCallback(async (textPost: string) => {
-    dispatchInteraction(undefined, 3);
+    dispatchInteraction("");
     await axios
       .post(`/post`, {
         text: textPost,
