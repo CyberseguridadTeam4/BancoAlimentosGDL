@@ -27,7 +27,7 @@ export default function LogIn() {
   const { setUser } = useUser();
 
   const userLogin = async () => {
-    if (email == "" || email == "") {
+    if (email == "" || contraseña == "") {
       openModal(
         <BAText>Asegurate de hayas escrito tu usuario y contraseña.</BAText>,
         "Campos vacios"
@@ -79,7 +79,7 @@ export default function LogIn() {
       })
       .then(function (response) {
         if (response.status == 200) {
-          openModal(<BAText>{email}</BAText>, "Restablecimiento enviado a:");
+          openModal(<BAText>{email}</BAText>, "Se ha enviado un correo a:");
         } else {
           openModal(
             <BAText>Verifica que tu email este bien escrito.</BAText>,
