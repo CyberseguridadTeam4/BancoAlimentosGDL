@@ -23,7 +23,8 @@ type Props = {
   placeholder?: string;
   value: string;
   onChange: (input: string) => void;
-  isPassword?: boolean; // New prop to indicate if it's a password input
+  isPassword?: boolean;// New prop to indicate if it's a password input
+  editable?: boolean; 
 };
 
 function BATextInput({
@@ -32,6 +33,7 @@ function BATextInput({
   value,
   onChange,
   isPassword = false,
+  editable = true,
 }: Props): JSX.Element {
   const [showPassword, setShowPassword] = useState(isPassword);
 
@@ -47,6 +49,7 @@ function BATextInput({
         secureTextEntry={isPassword && showPassword}
         autoCorrect={false}
         spellCheck={false}
+        editable={editable}
       />
       {isPassword && (
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
