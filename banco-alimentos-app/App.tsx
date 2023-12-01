@@ -18,6 +18,10 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 
+import { LogBox } from "react-native";
+LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -119,7 +123,7 @@ const styles = StyleSheet.create({
 });
 
 export async function schedulePushNotification(name: string) {
-  const DAY_SECONDS = 86400;
+  const DAY_SECONDS = 10;
 
   await Notifications.scheduleNotificationAsync({
     content: {
